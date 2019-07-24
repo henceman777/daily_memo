@@ -6,9 +6,6 @@ CPU: 运算器/控制器/寄存器
 Memory:RAM
 I/O: Input/Output
 
-
-
-
 8bits = 1Byte
 1024Bytes = 1KB
 
