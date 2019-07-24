@@ -1,0 +1,381 @@
+#Linux SysAdmin
+
+1.linux文件系统
+stat命令查看元数据
+inode：索引区中每个文件元数据条件
+格式化是创建文件系统的过程
+
+块: super block
+
+连接文件：一个inode可以被多次引用,有计数器,引用数为0时会被标记为无用的
+硬链接的两个文件指向同一个inode
+硬链接：
+	不能对目录文件创建硬链接
+	硬链接不能跨分区
+	创建硬链接会增加inode引用计数
+
+软连接:
+	不受分区限制
+	对文件创建符号链接不会增加引用计数
+	
+文件被删除:
+	inode被标记空闲,此inode指向的磁盘块被标记为空闲
+	
+文件复制：
+	创建一个新文件,并原文件中的数据在新文件指向的磁盘块中再写一个的过程
+	
+文件移动:
+	改变文件访问路径
+	跨分区移动,在新分区创建文件,把数据复制过去删除原分区数据
+	
+- linux文件系统的分类:
+ext234, xfs, ffs, ufs, reiserfs, jfs, vfat, ntfs
+交换分区swap
+网络文件系统: nfs, cifs(smbfs)
+分布式文件系统: ceph
+光盘文件系统； iso9660
+btrfs
+
+
+2. 磁盘管理：
+I/O设备: 磁盘/网卡
+设备文件: 特殊的文件,只有inode没有数据,关联至一个驱动程序,进而跟对应的设备交互
+
+- 磁盘设备文件:
+	/dev/hd:  IDE并口
+	/dev/sd: usb串口/sata串口/scsi并口/sas串行
+	主+扩展分区/dev/sd[1-4]
+	逻辑分区/dev/sd5开始
+	
+- 硬盘分区
+	磁道track, 扇区sector
+	柱面cylinder, 分区根据柱面划分
+	MBR:主引导记录, 512bytes,引导OS; 446bytes的bootloader+64bytes分区表+2bytes的有效性标记
+	/proc
+	
+- 分区的创建
+	fdisk -l
+	partprobe/ partx -a Device/ kpartx -af DEVICE
+	分区创建工具: sfdisk, parted
+	
+- 创建文件系统:
+mkfs -t ext4 #等于mkfs.ext4
+lsmod  #linux内核是模块化,模块支持动态装载和卸载
+ext3/4/xfs 有日志功能的文件系统
+
+mke2fs
+blkid  #查看指定块设备的信息
+e2label #查看或设定卷标
+tune2fs -l DEVICE #查看超级块信息
+dumpe2fs -f DEVICE
+
+tune2fs -j  #修改分区属性
+
+fsck #修复
+
+交换分区swap;可缓解物理内存资源不足的情况
+	mkswap -L label DEVICE
+	swapon -a #启用所有交换分区
+	
+- 文件系统的挂载
+	挂载点: 访问入口
+	挂载： mount
+	查看已挂载的设备: mount, cat /proc/mounts, cat /etc/mtab
+	
+df -h
+du -sh
+自动挂载设备的配置文件: /etc/fstab
+
+
+3. RAID
+RAID level:
+	raid0,无容错,读写提升n*disk
+	raid1,写性能下降,读性能提升,容错
+	raid4:读写性能提升,有一块容错盘
+	raid5：读写性能提升,有容错能力
+	raid10：读写性能提升,有容错能力n*disk/2
+	raid6:两块校验盘,至少4块盘
+
+md
+mdadm
+dm: device mapper
+- 创建一个10G空间的RAID0
+mdadm -C /dev/md0 -a yes -n 2 -l 0 /dev/sdb{1,2}	
+
+- 创建大小为10G空间的RAID5：3*5G，6*2G 				(n-1)*2G
+mdadm -C /dev/md1 -a yes -n 3 -l 5 /dev/sda{3,5} /dev/sdb3
+
+cat /proc/mdstat: 当前系统上所有已启用的软件RAID设备及其相关信息
+
+4. LVM
+pv->vg->lv
+- 创建逻辑卷
+lvcreate -n lv_name -L 1G Vg_name
+lvextend -L 4G /dev/myvg/mylv  #扩展物理卷
+resize2fs  /dev/myvg/mylv
+
+5. Linux解压缩工具
+compress/uncompress -> *.Z格式文件
+gzip/bzip2/xz-> .gz/.bz2/.xz/.zip
+
+归档工具tar:
+
+mount /dev/cdrom /media/cdrom  #挂载光盘
+
+6. 网络配置管理
+INNA和ICNAA
+IP地址划分
+
+路由协议: RIP2, OSPF, EIGRP
+可路由协议: IP协议
+
+端口用来标记进程
+socket
+
+TCP/IP协议
+
+DNS
+
+- 网络基础知识:
+	TCP/IP:
+		OSI分层,物理/链路/网络/传输/会话/表示/应用层
+	TCP三次握手/四次断开
+
+- Linux网络属性配置
+	IP/netmask
+	路由
+	DNS
+	主机名
+	
+ifconfig(net-tools)
+ip(iproute2)
+
+dig -t A FQDN
+dig -x IP
+
+- 网络管理工具
+ping, traceroute, mtr, netstat(ss), ethtool, nmap, ncat, tcpdump
+
+- ip命令
+ip link
+	show
+	ifup/ifdown
+ip addr show
+ip rounte list
+		
+
+7. Linux程序安装
+- 包管理工具:
+Debian: dpkg, .deb ->apt-get
+Redhat: rpm, .rpm ->yum
+
+- yum使用
+yum repolist all
+yum list
+yum info xyz
+yum grouplist
+yum clean all
+yum install -y pack_name
+yum check-update
+yum remove ...
+yum groupinstall ...
+
+- 自建repo仓库
+	基于光盘镜像
+	ftp/http/nfs:
+		service httpd start
+		/var/www/html/
+		rpm -ivh createrepo-
+		yum install createrepo
+		createrepo /path/to/rpm
+		
+
+
+
+sed命令
+
+8. 进程管理
+进程状态：
+	R运行态：running
+	睡眠态：sleeping
+		S可中断睡眠：interruptable
+		D不可中断睡眠：等待外部满足之前无法继续运行, uninterruptable
+	T停止态：不会被内核调度并运行，stopped
+	Z僵死态：zombi
+
+进程创建机制：每一个进程都是由其父进程fork()自身而来
+
+进程间通信：IPC (InterProcess Communication)
+	同一主机：
+		signal
+		shm：共享内存
+		semerphor: 旗语
+	不同主机：
+		rpc: Remote Procedure Calling
+		socket: 	
+
+Linux进程管理工具：ps, pstree, pidof, top, htop, pmap, vmstat, dstat, kill, job, glance
+
+9. Linux作业控制
+job：
+fg %job_num
+bg %job_num
+kill %job_num
+
+ctrl+z #送往后台stopped
+nuhup command & 
+
+	
+10. 内核管理和系统启动流程
+kernel的功能:
+	进程管理
+	文件系统管理
+	硬件驱动
+	内存管理
+	安全
+	网络子系统
+	标准库glibc
+	调用
+	
+- 内核设计风格:
+单内核体系: Linux; 支持模块化,模块可以动态加载和卸载, .ko
+微内核体系: Windows/Solaris
+
+Linux启动流程:
+Post加电自检—BIOS(boot sequnce)-MBR(bootloader)GRUB(LILO)->kernel初始化,探测硬件,装载驱动,装载rootfs,/sbin/init
+->/usr/lib/systemd/system/
+
+lsmod显示内核已装载的模块
+modprobe -r Mod_name
+modinfo
+depmod
+
+- 内核参数的配置:
+/proc 是内核映像
+
+常见参数:
+kernel.hostname
+vm.drop_caches
+net.ipv4.icmp_echo_ignore_all
+net.ipv4.ip_forward
+
+- 修改内核参数的方法:
+ echo "" > /proc/sys/
+ sysctl -w variable=VALUE
+ vi /etc/sysctl.conf
+ sysctl -a
+ sysctl -p
+
+udev创建设备文件是根据udev规则,/etc/udev/rules.d/
+
+- bash子进程
+exec command #
+
+- screen工具
+screen -ls
+screen -r SID
+
+- lftp
+
+
+11. 定制和编译内核
+cat /proc/cpuinfo
+x86info
+lscpu
+lspci
+lsusb
+lsblk
+
+- 编译内核: Development Tools,Server Platform Development, ncurses-devel
+配置内核:
+	make config
+	make allyesconfig
+	make allnoconfig
+	make menuconfig
+	make gconfig
+	make kconfig
+	
+编译:
+make
+
+安装内核模块:
+	make module_install
+	/lib/modules/VERSION/
+	
+安装内核:
+	make install
+	编辑grub.conf添加一条title
+	
+make clean
+make mrproper
+make distclean
+
+精简linux
+
+12. 系统安装：
+POST-> bootloader(kernel+ramdisk)-> anaconda
+anaconda接口有：text和GUI
+
+建议单独分区: /, /home, /usr, /var, swap
+
+- kickstart+pxe文件, 
+	http/tftp/nfs, DHCP
+如何配置PXE：
+	1、配置dhcp服务
+		subnet ... netmask ... {
+			...
+			next-server TFTP-SERVER-IP;
+			filename "pxelinux.0";
+		}
+
+	2、配置tftp server
+		# yum install tftp-server
+		# chkconfig tftp on
+		# service xinetd restart
+		# ss -unl | grep :69
+
+	3、提供PXE的工作环境
+		# yum install syslinux
+		# cp /usr/share/syslinux/pxelinux.0  /var/lib/tftpboot/
+
+	4、提供引导内核等文件
+		挂载系统光盘，假设位置为/media/cdrom/
+		# cp /media/cdrom/images/pxeboot/{vmlinuz,initrd.img}  /var/lib/tftpboot/
+		# cp /media/cdrom/isolinux/{splash.jpg,vesamenu.c32,boot.msg}  /var/lib/tftpboot
+		# mkdir /var/lib/tftpboot/pxelinux.cfg/
+		# cp /media/cdrom/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg/default
+
+	5、提供安装源
+		基于http服务实现
+		# yum -y install httpd
+		# mkdir -pv /var/www/html/centos/6/x84_64 
+		# mount --bind /media/cdrom /var/www/html/centos/6/x84_64
+
+	6、提供ks.cfg文件
+
+
+- Linux故障排除：CentOS 6
+	紧急救援模式：rescue,小的Linux
+	1、grub损坏
+		# chroot /mnt/sysimage
+		# grub
+		grub> root (DEVICE,PART)
+		grub> setup (DEVICE)
+		# grub-install /dev/DEVICE
+	2、bash损坏
+		重装bash包
+	3、文件系统损坏
+		进入紧急救援模式
+		/etc/fstab，禁止开机自动挂载
+	4、驱动文件损坏
+		grub: 
+			e:
+			kernel:
+			emergency：
+				不会执行/etc/rc.d/rc.sysinit
+						
+
+shell编程
+
+gawk
+

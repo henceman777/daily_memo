@@ -1,0 +1,205 @@
+公钥基础设施PKI/CFSSL证书生成工具
+
+- 公钥基础设施PKI
+CA(Certication Authority)证书，指的是权威机构签发的证书
+密钥在非对称加密领域指的是公钥和私钥
+
+RSA即是非对称加密算法
+
+- 证书的编码格式
+PEM(Privacy Enhanced Mail)通常用于数字证书认证机构(CA)，扩展名.pem .crt .cer和.key
+内容是Base64编码的ASCII码
+DER(Distinguished Encoding Rules)与PEM不同在于使用二进制而不是Base64编码的ASCII,扩展名.der
+和.cer
+
+- 证书签名请求CSR
+CSR(Certificate Signing Request),是向CA机构申请数字证书使用的请求文件
+提交给CA机构后,签名后会收到.crt文件
+
+- 数字签名
+数字签名就是"非对称加密+摘要算法",目的不是加密而是防止他人篡改数据
+× A发数据给B,A事先用摘要算法得到数据指纹,然后A用私钥加密指纹,加密后的指纹就是A的签名
+× B受到A的签名后,用同样的摘要算法计算指纹,然后用A公开的公钥解密签名
+× 比较两个签名,相同则数据未被篡改;
+× 如果C想要篡改数据,数据篡改后指纹会变化,所以要改签名;然而没有A的私钥
+
+常见的摘要算法有：MD5、SHA1、SHA256
+使用私钥对传输的文本的摘要进行加密,得到的密文即被称为这次传输的签名
+
+- 数字证书和公钥
+数字证书是由CA对证书申请者真实身份验证后,用CA根证书对申请人的基本信息和公钥进行签名
+(加盖公章)后形成的数字文件
+实际上数字证书就是CA认证过的公钥和其他信息,Email、国家、域名等
+
+
+- CFSSL工具
+是CloudFlare开源的一款PKI/TLS工具
+证书包含如下身份信息:
+^ 证书的所有组织信息 
+^ 公钥
+^ 证书颁发组织的信息
+^ 证书颁发组织授予的权限,证书有效期、适用的主机名、用途等
+^ 使用证书颁发组织私钥创建的数字签名
+
+- 创建认证中心CA
+生成CA证书的私钥(root证书和私钥)
+
+vi ca-csr.json
+
+{
+  "CN": "www.jinmax.com",  #一般写域名
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",        #国家
+      "ST": "BeiJing",  #州、省
+      "L": "BeiJing",   #地区、城市
+      "O": "51yunv",    #组织名称、公司名
+      "OU": "ops"		#组织单位名、部门
+    }
+  ]
+}
+
+！生成CA证书和CA私钥和CSR
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca  #初始化ca
+ll ca*
+ca.csr  #证书签名请求
+ca-csr.json #请求文件
+ca-key.pem  #CA的私钥  
+ca.pem    #证书
+
+！使用CA私钥重新生成
+cfssl gencert -initca -ca-key key.pem ca-csr.json | cfssljson -bare ca
+cfssl gencert -renewca -ca cert.pem -ca-key key.pem  #用现有的CA私钥和CA证书，重新生成
+cfssl certinfo -csr ca.csr  #查看CSR信息
+
+@ 配置证书生成策略
+vim ca-config.json
+{
+  "signing": {
+    "default": {
+      "expiry": "8760h"   #默认策略有效期9760h(1年)
+    },
+    "profiles": {
+      "etcd": {   #指明了证书的用途
+        "usages": [
+            "signing",   #表示该证书用于签名其他证书
+            "key encipherment",
+            "server auth",  #表示client可用CA对server提供的证书进行验证
+            "client auth"   #表示server可用CA对client提供的证书进行验证
+        ],
+        "expiry": "8760h"
+      }
+    }
+  }
+}
+
+
+- cfssl常用命令
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca ## 初始化ca
+cfssl gencert -initca -ca-key key.pem ca-csr.json | cfssljson -bare ca ## 使用现有私钥, 重新生成
+cfssl certinfo -cert ca.pem
+cfssl certinfo -csr ca.csr
+
+
+-- 安装
+wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+mv cfssl_linux-amd64 /usr/local/bin/cfssl
+mv https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 /usr/local/bin/cfssljson
+chmod +x /usr/local/bin/cfssl /usr/local/bin/cfssl-certinfo /usr/local/bin/cfssljson
+
+
+mkdir /root/ssl
+cd /root/ssl
+cfssl print-defaults config > config.json   #默认配置模板
+cfssl print-defaults csr > csr.json 		#默认csr请求模板
+
+cat > ca-config.json <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
+        "expiry": "87600h"
+      }
+    }
+  }
+}
+EOF
+
+知识点：
+ca-config.json：可以定义多个 profiles，分别指定不同的过期时间、使用场景等参数；后续在签名证书时使用某个 profile；此实例只有一个kubernetes模板。
+signing：表示该证书可用于签名其它证书；生成的 ca.pem 证书中 CA=TRUE；
+server auth：表示client可以用该 CA 对server提供的证书进行验证；
+client auth：表示server可以用该CA对client提供的证书进行验证；
+注意标点符号，最后一个字段一般是没有都好的。
+
+创建证书请求：
+cat > ca-csr.json <<EOF
+{
+  "CN": "kubernetes",    
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "GuangDong",
+      "L": "ShenZhen",
+      "O": "k8s",
+      "OU": "System"
+    }
+  ],
+    "ca": {
+       "expiry": "87600h"
+    }
+}   
+EOF
+
+
+知识点：
+"CN"：Common Name，kube-apiserver 从证书中提取该字段作为请求的用户名 (User Name)
+
+
+=============================
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certificate and key
+[certs] Generating "apiserver" certificate and key
+[certs] apiserver serving cert is signed for DNS names [host01 kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 192.168.40.143]
+[certs] Generating "apiserver-kubelet-client" certificate and key
+[certs] Generating "front-proxy-ca" certificate and key
+[certs] Generating "front-proxy-client" certificate and key
+[certs] Generating "etcd/ca" certificate and key
+[certs] Generating "apiserver-etcd-client" certificate and key
+[certs] Generating "etcd/peer" certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [host01 localhost] and IPs [192.168.40.143 127.0.0.1 ::1]
+[certs] Generating "etcd/healthcheck-client" certificate and key
+[certs] Generating "etcd/server" certificate and key
+[certs] etcd/server serving cert is signed for DNS names [host01 localhost] and IPs [192.168.40.143 127.0.0.1 ::1]
+[certs] Generating "sa" key and public key
+
+
+kubeadm init --image-repository=registry.aliyuncs.com/google_containers --pod-network-cidr=10.244.0.0/16 --kubernetes-version=v1.15.0
+
+##kubadm init报错
+
+kubeadm init \
+--apiserver-advertise-address=192.168.40.143 \
+--image-repository registry.aliyuncs.com/google_containers \
+--kubernetes-version v1.13.1 \
+--pod-network-cidr=10.244.0.0/16

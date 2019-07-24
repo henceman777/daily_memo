@@ -1,0 +1,103 @@
+1. 虚拟化技术
+- 硬件级虚拟化
+本地操作系统基础上增加一层Hypervisor用来虚拟化硬件资源(CPU/硬盘/内存等)
+通过虚拟化的资源安装OS
+Hyper-V技术;Vmware,Xen,Virtualbox等
+
+虚拟化的缺点: 创建虚拟机都要创建一个OS,增大了资源的浪费
+
+- 系统级虚拟化OS level
+系统容器（例如LXC）提供的环境非常接近您从虚拟机获得的环境，与此同时又省去了运行单独内核和模拟所有硬件所带来的开销。
+
+2. 容器技术, 基于Go语言开发
+将环境和应用打包
+devops的最佳方案,
+
+->1979年UNIX V7引入chroot Jail系统调用,"重定向进程及其子进程的根目录到一个文件系统上的新位置”
+->2000年FreeBSD引入 FreeBSD jails技术,
+->2001年LinuxVServer
+->2005年OpenVZ
+->2006年Google推出的Process Containers技术, 2007年加入Liunx内核改名作Cgroups
+->2008年基于Cgroups的资源管理能力和namespace的隔离能力推出LXC(内核实现)
+->2011年Warden始于CloudFoundry
+->2013年Docker的发布,开始使用LXC后来替换成libcontainer,分层镜像模型、RestFul API
+->2014年CoreOS推出Rocket,rkt; Docker发布Swarm; Fig项目被Docker收购改名为Compose
+  2014年6月Google发布基于Borg的k8s
+->2015年Dokcer发布runC,实际上利用libcontainer,是可移植的容器运行时,后来runC捐赠给OCI
+->2015年OCI标准提出,OCI旨在建立软件容器的通用标准,由CoreOS、Docker等共同发起;runtime-spec和image-spec
+->2016年Docker开始使用containerd作为容器运行时,可以和runC交互
+->2017年转型商业化,将容器运行时捐赠给CNCF社区,改名Moby
+
+
+Docker User->Docker CLI->Docker Engine->Container->runC/OCI runtime
+
+k8s创建了容器运行时接口ORI,允许k8s运行不同的容器运行时
+
+
+容器特点:
+应用间隔离
+共享OS的kernel
+可运行在任意平台OS
+
+区别:
+虚拟机技术虚拟出一套硬件，在其上运行一个完整的OS
+容器直接运行在内核上，更轻
+容器间隔离，容器有自己的文件系统
+
+容器的优点:
+一次构建到处运行Build Once, Run Anywhere
+快速应用交付和部署
+升级和扩容
+高效的资源利用率
+
+- 镜像
+UnionFS是分层、轻量级高性能的文件系统
+是Docker镜像的基础,联合挂载
+bootfs包含bootloader和kernel引导加载kernel,最底层,boot加载完后会写在bootfs
+rootfs在bootfs之上,包含linux系统的/dev、/proc、/bin、/etc等目录,就是不同的发行版
+
+镜像是只读的,当容器启动时,新的可写层会加载到镜像顶部,成为容器层
+
+3. Docker
+docker基于LXC技术管理容器
+Docker引擎基于runC和containerd
+Docker Engine负责镜像管理,Containerd管理容器
+engine将镜像交由containerd运行,containerd使用runC运行容器
+
+- Docker领导了OCI开放容器计划标准Open Container Initiative
+
+CNCF云原生计算基金会，致力于云原生CloudNative技术的普及
+CNCF Landscape路线：
+容器化Docker
+CI/CD
+应用编排,k8s,helm
+监控和分析; Prometheus,Grafana, Fluentd日志,ES, Jaeger追踪
+服务代理发现和治理; CoreDNS, Envy, LInkerd
+网络; Calico, Flannel, Weave Net
+分布式数据库和存储; etcd
+流和消息处理; gRPC, NATs
+容器镜像库和运行环境; Harbor
+软件发布; Notary
+
+数据库: MySQL、MariaDB、MongoDB、PostgreSQL、Cassandra、TiDB等
+流处理和消息队列: Spark、Storm、RocketMQ、Kafka、RabbitMQ等
+应用和镜像制作; Helm、Docker Compose、Packer
+CI/CD：Jenkins、Atlassian的Bamboo
+
+监控：Prometheus、Nagios、Grafana、Zabbix
+日志：Fluentd、ELK
+追踪：Jaeger
+编排：k8s、Mesos、Docker Swarm
+服务发现：Zookeeper、Consul、CoreOS旗下的Etcd
+云原生网络：Calico、Flannel、Open vSwitch
+自动化和配置: Ansible、Chef、Puppet、Vmware、Openstack
+
+
+Docker Inc、Mesosphere、Google的容器编排之争
+
+
+Namespace来源于IBM
+CGroups来源于Google
+
+
+- k8s源于Google的Borg/Omega

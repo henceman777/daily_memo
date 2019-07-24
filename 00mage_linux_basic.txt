@@ -1,0 +1,461 @@
+1. 计算机基础
+ENIARC
+
+- 计算机组成
+CPU: 运算器/控制器/寄存器
+Memory:RAM
+I/O: Input/Output
+
+
+
+
+8bits = 1Byte
+1024Bytes = 1KB
+
+总线: 地址总线/控制总线/数据总线
+中断
+
+cache/buffer
+
+DMA(Direct Memory Access)
+
+
+程序=指令+数据
+
+多道处理程序->time sharing(分时系统)
+
+内存：分段/分页
+
+GE，Bell实验室，MIT-->Muiltcs
+ken Tompson 游戏,Unix
+
+Unics->Unix
+
+Dennis Ritche,B语言->C语言
+Bell实验被AT&T收购
+
+- SystemV
+IBM:AIX/PowerPC
+SUN:Sparc/SunOS>Solaris
+HP:Alpha,HP-UX
+
+- BSD
+
+C语言:预处理->编译->汇编->链接
+
+Minix->Linus Torvals,Linux
+
+- 发行版：
+slackware：SUSE
+Debian: Ubuntu
+Redhat: CentOS, Fedora
+LFS: Linux From Scratch
+
+so文件: shared object
+dll文件: Dynamic Link Labraries
+
+Posix
+
+- 自由软件,自由使用/学习/修改/分发/创建衍生版
+FSF：Free Software Fundation
+ASF：Apache Software Fundation
+
+GPLv2/GPLv3, LGPL, BSD, Apache License, MIT, CC
+
+发行版=开源程序+Kernel
+
+Android：Linux Kernel+JVM+java程序
+IOS：FreeBSD+object-C(Swift)
+
+- Linux原则
+一切皆文件
+由程序组成,一个程序做一件事
+尽可能避免和用户交互
+文本文件保存配置信息
+
+
+- Linux层次:
+运行程序,内核把程序调度至硬件执行
+用户接口,能够为用户提供启动其他应用的机制
+CLI：shell;sh,csh,ksh,bash,zsh,tchsh
+GUI: Gnome/c/GTK/
+	KDE/C++/QT
+	XFCE轻量级
+	
+- 终端
+虚拟终端Ctrl—Alt-F1..6; /dev/tty1
+图形终端Ctrl-ALt-F7
+伪终端,ssh连接;图形界面下的命令提示符; /dev/pts/*
+物理终端:console控制台,/dev/console
+串行终端：/dev/ttyS*
+
+
+startx & 启动Xwindows
+startx -- :2 &
+
+- OS的功能:
+进程调度/文件系统/网络协议栈/内存管理/驱动程序/安全
+
+2. Linux基础
+- prompt命令提示符
+管理员#
+普通用户$
+
+- 环境变量
+变量是有名称的地址空间
+PS1: \u当前用户名
+	 \h主机名
+	 \H FQDN
+	 \W 工作目录
+	 \$ 提示符
+	 
+- Linux文件系统, 区分大小写字符
+层次化的树型结构,FHS
+路径/分隔符
+
+
+- 命令历史
+history, HISTSIZE
+HISTFILE, ~/.bash_history
+HISTFILESIZE
+
+history 2 #显示最近2条命令
+history -c  #清空
+history -d offset #删除指定偏移量的命令
+history -a filename  #将当前会话命令写入指定文件
+
+- bash调用历史命令
+!32  #执行第32条命令
+!!   #上一条命令
+!str  #最近一次str开头的命令
+!$    #调用上一条命令的最后参数
+Esc.  #同上
+
+- Linux日期命令
+Linux有两个始终,系统时钟和硬件时钟
+hwclock -s  #以硬件为准
+hwclock -w   #以系统为准
+
+which --skip-alias #显示命令的完整路径
+
+- FHS:
+/bin, /sbin 二进制命令
+/lib, /lib64 共享库文件和内核模块
+/etc 配置文件
+/usr/bin, /usr/sbin/, /usr/lib 库文件
+/usr/share/man, /usr/share/doc
+/dev 设备
+/proc 伪文件系统,内核和进程信息的虚拟文件系统接口
+/sys 伪文件系统,硬件设备信息虚拟文件系统接口
+/boot 系统引导加载时用到的静态文件,内核和ramdisk(Centos5:initrd; CentOS6:initramfs),grub
+/home
+/root
+/mnt
+/media
+/srv 服务用到的数据
+/tmp
+/var 常变化的文件, /var/log
+/misc 杂
+/opt  第三方应用安装位置
+/usr/local
+/selinux Security Enhanced Linux
+
+- 应用程序的组成
+二进制程序+库文件+配置文件+帮助
+
+
+- 文件相关
+文件类型: 普通/目录/链接/设备/管道/套接字文件
+file filename #查看文件类型
+
+目录管理:
+cd, pwd, ls
+mkdir, rmdir
+
+mkdir /tmp/{x,y,z}
+
+cat, tac, head, tail, less , more
+touch, cp, mv, stat, nano, vim
+
+- bash命令别名
+alias ll="ls -l"
+unalias
+
+- bash文件名通配符
+* 任意长度任意字符
+? 任意单个字符
+[abc] 范围内,任意单个字符 
+[^0-9a-z]  范围外
+字符集合: [:space:] 空白字符
+		  [:punct:] 标点符号
+		  [:lower:] 小写
+		  [:digit:] 数字
+		  [:alnum:]
+		  [:alpha:] 字母
+
+		  
+- echo 命令
+ehco \n
+echo \t
+echo \033[haha\033[0m
+
+
+
+- 文本处理命令
+wc
+cut
+sort
+uniq
+
+- bash特性之输入,输出重定向和管道
+
+
+/etc/passwd文件:
+user:passwd:UID:GID:注释:家目录:默认shell
+
+/etc/group：
+组名:组密码点位:GID:逗号分隔的属组内的用户列表
+
+
+- 加密方式
+对称加密:使用同一个密钥
+公钥加密:一对密钥
+单向加密: md5,sha256,数字签名
+
+- Linux权限
+rwx
+
+
+
+查看当前shell进程中的所有变量：set
+查看当前shell进程中的所有环境变量：export, printenv, env
+
+ASCII: 128常用字符
+
+- bash的配置文件：
+	profile类：为交互式登录的用户提供配置
+		全局：
+			/etc/profile
+			/etc/profile.d/*.sh
+		用户：
+			~/.bash_profile
+
+		功用：
+			1、设定环境变量
+			2、运行命令或脚本
+
+	bashrc类：为非交互式的用户提供配置
+		全局：
+			/etc/bashrc
+		用户：
+			~/.bashrc
+
+		功用：
+			1、设定本地变量
+			2、定义命令别名
+
+	登录类型：
+		交互式：
+			直接通过终端输入账号和密码登录；
+			使用su -l USERNAME 或 su - USERNAME；
+
+		非交互式：
+			su USERNAME
+			图形界面下打开的终端
+			执行脚本
+
+	通过编辑配置文件修改的配置生效？
+		1、退出并重新登录；
+		2、让bash重读此配置文件;
+			. FILE
+			source FILE
+
+	交互登录的用户：
+		/etc/profile --> /etc/profile.d/*.sh --> ~/.bash_profile --> ~/.bashrc --> /etc/bashrc
+
+	非交互登录的用户：
+		~/.bashrc --> /etc/bashrc --> /etc/profile.d/*.sh
+		
+		
+- 正则表达式
+字符匹配：
+.   :匹配任意单个字符
+[]  :匹配指定范围内的任意单个字符
+[0-9], [[:digit:]]
+[a-z], [[:lower:]]
+[A-Z], [[:upper:]]
+[[:space:]]
+[[:punct:]]
+[[:alpha:]]
+[[:alnum:]]
+[^]:
+
+次数匹配元字符：用于实现指定其前面的字符所能够出现的次数
+*	: 任意长度，它前面的字符可以出现任意次
+	例如：x*y
+	xxy, xyy, y, 
+\?	:0次或1次，它前面的字符是可有可无的
+	例如：x\?y
+	xy, y, ay
+\{m\}	:m次，它前的字符要出现m次
+		例如：x\{2\}y
+		xy, xxy, y, xxxxy, xyy
+\{m,n\}	:至少m次，至多n次
+		例如：x\{2,5\}y
+		xy, y, xxy
+\{m,\}	:至少m次
+\{0,n\} :至多n次
+.*		:意长度的任意字符
+
+位置锚定:
+^	:行首锚定；
+	写在模式最左侧
+$	:行尾锚定：
+	写在模式最右侧
+^$	:空白行
+不包含特殊字符的连续字符组成的串叫单词：
+
+\<	:词首，出现于单词左侧，\b
+	\<char
+\>	:词尾，出现于单词右侧, \b
+	char\>
+	
+分组:
+\(\)
+	例如：\(ab\)*
+	分组中的模式匹配到的内容，可由正则表达式引擎记忆在内存中，之后可被引用
+
+引用：
+	例如\(ab\(x\)y\).*\(mn\)
+		有编号：自左而后的左括号，以及与其匹配右括号
+		\(a\(b\(c\)\)mn\(x\)\).*\1
+
+\#	:引用第n个括号所匹配到的内容，而非模式本身
+	例如：
+	\(ab\?c\).*\1
+
+	abcmnaaa
+	abcmnabc
+	abcmnac
+	acxyac
+	
+- 扩展的正则表达式;
+字符匹配:
+	.
+	[]
+	[^]
+次数匹配:
+	*
+	?
+	+
+	{m}
+	{m,n}
+	{m,}
+	{0,n}
+锚定:
+	^
+	$
+	\<, \b
+	\>, \b
+	^$, ^[[:space:]]*$
+分组:
+	()
+	\1, \2, \3引用
+	
+或者:
+	a|b
+	
+	
+3. vim使用
+
+4. shell编程
+
+5. 文件查找
+grep, locate, find
+
+- 查找/var/目录属主为root且属组为mail的所有文件；
+find /var -user root -a -group mail
+
+- 查找/usr目录下不属于root、bin或hadoop的所用文件；
+find /usr -not -user root -a -not -user bin -a -not -user hadoop
+find /usr -not \(-user root -o -user bin -o -user hadoop\)
+
+- 查找/etc/目录下最近一周内其内容修改过的，且不属于root且不属于hadoop的文件；
+find /etc -mtime -7 -a -not \(-user root -o -user hadoop\)
+
+- 查找当前系统上没有属主或属组，且最近1个月内曾被访问过的文件；
+find / \(-nouser -o -nogroup\) -a -atime -30
+
+- 查找/etc/目录下大于1M且类型为普通文件的所有文件；
+find /etc -size +1M -type f
+
+- 查找/etc/目录所有用户都没有写权限的文件；
+find /etc/ -not -perm +222
+
+- 查找/etc/目录下至少有一类用户没有写权限；
+find /etc/ -not -perm -222
+
+- 查找/etc/init.d/目录下，所有用户都有执行权限且其它用户有写权限的文件；
+find /etc/init.d/ -perm -113 
+
+find和xargs
+
+6. 文件特殊权限
+安全上下文
+suid, sgid
+sticky
+
+
+7. 任务计划和facl
+at, batch
+
+- crontab
+service crond status
+
+系统cron, /etc/crontab
+用户cron,/var/spool/cron目录下
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+
+使用cron的注意项:
+- 命令使用绝对路径
+- 脚本中定义专用的PATH环境变量
+
+- 丢弃邮件通知, 输出重定向:
+> /dev/null
+&> /dev/null
+> /dev/null 2>&1
+
+crontab -l
+crontab -u uername -e
+crontab -r
+
+示例:
+每4小时执行一次对/etc/目录的备份，备份至/backup目录中，保存的目录名为etc-2014071004；
+0 */4 * * * [ -d /backup ] || mkdir /backup; /bin/cp -a /etc /backup/etc-$(date +'%Y%m%d%H')
+
+每周3,5,7备份/var/log/messages文件至/backup/message_logs/目录中，保存的文件名为messages-2014071004；
+3 1 * * 3,5,7 
+
+每天每两小时取当前系统/proc/meminfo中的以S开头的信息保存至/stats/memory.txt中
+2 */2 * * * grep -i "^S" /proc/meminfo >> /stats/memory.txt 
+
+工作日的工作时间内，每小时执行一次'echo "howdy"'
+10 8-18 * * 1-5 echo "howdy"
+
+anacron是crontab的补充机制
+
+
+- facl: file acl(acess control list)
+facl机制普通用户可以单独向某用户或组设定对某文件的访问权限
+
+getfacl
+setfacl -m u:username:mode
+
