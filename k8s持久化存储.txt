@@ -1,0 +1,179 @@
+k8s持久化存储
+
+1. 共享存储为分布式系统重要一部分，存储要求稳定、可用、性能、可靠
+
+DAS本地存储、NAS网络存储、SAN存储局域网、SDS软件定义存储
+
+文件存储POSIX/MPI、块存储iSCSI/QEMU和对象存储S3/Swift
+
+kubernets存储相关的概念是PV和PVC,PV分为静态和动态
+动态PV需要引入StorageClass的概念
+
+- 块存储通常只支持RWO，比如AWSElasticBlockStore，AzureDisk
+- 有些产品能做到支持ROX，比如GCEPersistentDisk，RBD，ScaleIO等
+- 文件存储（分布式文件系统）支持RWO/ROX/RWX三种模式，比如CephFS，GlusterFS和AzureFile
+对象存储不需要PV/PVC来做资源抽象，应用可以直接访问和使用
+
+本文整理了使用容器存储的场景及其特点：
+- 配置:
+并发访问ROX、RWX,分布式文件存储最优选择
+
+- 日志:
+容器场景中,日志是重要一部分,可能会有大量并发读请求
+
+- 应用:(数据库/消息队列/大数据)
+Kafka、MySQL、Cassandra、PostgreSQL、ElasticSearch、HDF等本身具有存储能力,对底层存储要求是高IOPS,低延迟
+底层存储有好的数据冗余机制,上层应用就可以避免复杂的故障和恢复处理
+
+- 备份:
+应用数据和数据库的备份,高吞吐量,数据量大,低成本;文件存储和对象存储最优
+综合应用场景,高性能文件存储是最好的选择
+
+
+2. 各类存储产品
+对于容器场景,主要有4中方案:
+- 分布式文件存储：
+开源的Glusterfs,Cephfs,Lustre,Moosefs,Lizardfs商业产品EMC的isilon等
+- 分布式块存储：Ceph,SheepDog,商业产品的EMC的Scale IO,VMWare的vSAN等;不适合容器场景(因为不支持RWX)
+- Local-Disk：缺点明显
+- 传统NAS：协议网关是性能瓶颈
+
+服务质量（QoS）
+
+3. kubernetes持久化存储方案的重点在于存储和容器支持上
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. PV 持久化卷 PersistentVolume
+Ceph/GlusterFS/NFS等通过插件机制完成和共享存储对接
+
+PVC持久化卷声明，PVC是用户存储的一种声明，PVC类似Pod
+(pod消耗节点，PVC消耗PV资源；pod可以请求CPU和内存，PVC可以请求特定的存储空间和访问模式)
+
+- StorageClass的定义，将存储资源定义为某种类型的资源(快存储/慢存储等)
+用户根据StorageClass的描述就可以非常直观的知道存储资源的具体特性了，这样根据应用的特性去申请存储资源了
+
+2. NFS
+
+- NFS server端
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+
+yum -y install nfs-utils rpcbind
+
+chmod 755 /data/k8s/
+
+- 配置NFS,默认配置文件在/etc/exports文件下
+vi /etc/exports
+/data/k8s  *(rw,sync,no_root_squash)  #任何人都有权限连接,使用root时权限则转换成匿名使用者,uid变成nobody
+
+- 启动服务
+启动服务nfs需要向rpc注册，rpc一旦重启注册文件就会丢失，向他注册的服务就需要重启
+systemctl start rpcbind.service
+systemctl enable rpcbind
+systemctl status rpcbind
+
+systemctl start nfs.service
+systemctl enable nfs
+systemctl status nfs
+
+rpcinfo -p|grep nfs
+
+cat /var/lib/nfs/etab #查看具体目录挂载权限
+
+- NFS客户端
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+yum -y install nfs-utils rpcbind
+
+systemctl start rpcbind.service
+systemctl enable rpcbind.service
+systemctl start nfs.service
+systemctl enable nfs.service
+
+showmount -e 192.168.30.147  #查看NFS服务端共享目录
+
+mkdir -p /root/kubeadm/data  #客户端新建目录
+mount -t nfs 192.168.30.147:/data/k8s /root/kubeadm/data  #挂载
+
+- 有了NFS共享存储,就可以使用PV和PVC了
+PV作为存储资源,主要包括存储能力、访问模式、存储类型、回收策略等信息
+
+- 现在新建一个PV对象,使用NFS类型的后端存储,1G的存储空间,访问模式为ReadWriteOnce,回收策略是Recycle
+vi pv1-demo.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+name: pv1
+spec:
+capacity:
+storage: 1Gi
+accessModes:
+  ReadWriteOnce
+  - persistentVolumeReclaimPolicy: Recycle
+  - nfs:
+    path: /data/k8s
+  - server: 192.168.30.147
+
+
+kubectl create -f pv1-demo.yaml
+kubectl get pv
+
+- 新建PVC
+pvc-nfs.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

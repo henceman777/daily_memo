@@ -1,0 +1,389 @@
+
+1. 创建一个应用到k8s集群
+master上创建一个deployment
+kubectl create deployment nginx --image=nginx
+
+创建一个service
+kubectl create service nodeport nginx --tcp 80:80
+kubectl get svc
+
+node上测试验证:
+curl ...
+
+kubectl delete deployments/nginx services/nginx
+
+2. 使用yaml文件创建deployment来部署应用
+思路:
+nodejs应用->Dockfile打包成image->push到registry->yaml配置清单方式部署到k8s集群
+
+2.1 nodejs程序
+server.js
+var http = require('http');
+ 
+var handleRequest = function(request, response) {
+  console.log('Received request for URL: ' + request.url);
+  response.writeHead(200);
+  response.end('Hello World!');
+};
+var www = http.createServer(handleRequest);
+www.listen(8081);
+
+node server.js
+
+2.2 应用打包成Docker镜像并push
+vi Dockerfile
+FROM node:8.11.2
+WORKDIR app
+COPY . .
+EXPOSE 8081
+ENTRYPOINT ["node","server.js"]
+
+docker build -t jinmeng260/kube-node-demo01:v1 .
+docker images 
+
+docker login -u jinmeng260  #登录docker Hub
+docker push jinmeng260/kube-node-demo01:v1
+
+2.3 yaml文件创建deployment
+vi node-deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kube-node
+spec:
+  replicas: 2
+  template:
+    metadata:
+	  labels:
+	    app: web
+	spec:
+      containers:
+        - name: kube-node-demo-instance
+          image: jinmeng260/kube-node-demo01:v1
+		  ports: 
+		    - containerPort: 8081
+	  imagePullSecrets:
+        - name: myregistrykey 	  
+			
+
+kubectl -f node-deployment.yaml  #创建deployment
+kubectl get pods
+kubectl describe pods/kube-node-xxadaq
+
+#配置secret拉取私有仓库
+kubectl create secret docker-registry myregistrykey \
+--docker-server=https://index.docker.io/v1/ \
+--docker-username=jinmeng260 \
+--docker-password=xxxx \
+--docker-email=jinmeng260@gmail.com
+
+kubectl get secrets
+
+#重新创建deployment
+kubectl delete deployments/kube-node
+kubectl create -f node-deployment.yaml
+kubectl get pods -o wide
+curl 10.244.2.66:8081
+
+3. 使用yaml文件创建service向外暴露服务
+ReplicationController会动态的在其他节点创建pod来保持应用的运行,每个Pod有独立的IP地址,
+Service可以看作是一组相同服务Pods对外访问的接口,Service作用于哪些Pods通过Label Selector来定义的
+Pod能被Service访问,Pod之间发现和路由是由k8s的Service处理
+
+Service四种类型:
+- ClusterIP
+- NodePort, 可对外部服务
+- LoadBalancer, 可提供外部服务
+- ExternalName
+
+3.1 使用yaml文件创建service(NodePort)
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-node-service
+  labels:
+    name: kube-node-service
+spec:
+  type: NodePort      #这里代表是NodePort类型的
+  ports:
+  - port: 80          #这里的端口和clusterIP(10.97.114.36)对应,即10.97.114.36:80,供内部访问
+    targetPort: 8081  #端口一定要和container暴露出来的端口对应,nodejs暴露出来的端口是8081,所以这里也应是8081
+    protocol: TCP
+    nodePort: 32143   # 所有的节点都会开放此端口,此端口供外部调用
+  selector:
+    app: web          #这里选择器一定要选择容器的标签,之前写name:kube-node是错的
+	
+kubectl create -f service.yaml #创建Service/Kube-node-service
+kubectl get svc
+
+curl local:32124
+curl ClusterIP
+
+kubectl get nodes -o wide	
+kubectl get pods -o wide
+
+kube-proxy负责为service提供cluster内部的服务发现和负载均衡
+
+3.2 命令行expose来创建service
+kubectl expose deployment kube-node --type=NodePort
+kubectl get svc
+kubectl describe svc/kube-node
+
+Pod的IP是由flannel插件分配的
+
+3.3 yaml文件方式创建Service
+kubectl expose deployment kube-node --type=LoadBalancer
+
+vi service-lb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-node-service-lb
+  labels:
+    name: kube-node-service-lb
+spec:
+  type: LoadBalancer
+  clusterIP: 10.99.201.198
+  ports:
+  - port: 80
+    targetPort: 8081
+    protocol: TCP
+    nodePort: 32145
+  selector:
+    app: web
+status:
+  loadBalancer:
+    ingress:
+    - ip: 192.168.174.127    #这里是云服务商提供的负载匀衡器的IP地址
+	
+kubectl create -f service-lb.yaml
+
+
+4. 安装k8s的web ui, Dashboard
+kubectl create -f \
+https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl describe pods/kubernetes-dashboard-6948bdb78-w9452 --namespace=kube-system
+
+kubectl apply -f \
+https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+kubectl proxy
+
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+
+kubectl create serviceaccount cluster-admin-dashboard-sa
+kubectl create clusterrolebinding cluster-admin-dashboard-sa \
+--clusterrole=cluster-admin \
+--serviceaccount=default:cluster-admin-dashboard-sa 
+
+kubectl get secret | grep cluster-admin-dashboard-sa
+kubectl describe secrets/cluster-admin-dashboard-sa-token-6thzn  #copy token
+kubectl proxy
+
+5. k8s集群安装问题总结
+- 问题1：
+kubectl get nodes
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+
+kubectl cluster-info
+
+- 问题2：
+快速分配管理员权限
+kubectl create serviceaccount --namespace kube-system <serviceaccountname>
+kubectl create clusterrolebinding <rolebindingname> --clusterrole=cluster-admin --serviceaccount=<serviceaccountname>
+kubectl patch deploy --namespace kube-system <objectname> -p '{"spec":{"template":{"spec":{"serviceAccount":"<serviceaccountname>"}}}}'
+
+- 问题3：
+Unable to connect to the server: dial tcp 10.20.2.224:6443: connect: no route to host
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+或者root用户:
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
+scp -r /etc/kubernetes/admin.conf ${node1}:/etc/kubernetes/admin.conf
+echo “export KUBECONFIG=/etc/kubernetes/admin.conf” >> ~/.bash_profile
+source ~/.bash_profile
+
+- 问题4：
+Unable to connect to the server: dial tcp 201.22.0.34:443: getsockopt: operation timed out
+
+journalctl -f -u kubelet.service
+kubectl apply -f kube-proxy-rbac.yaml或者flannel.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+
+- 问题5：
+运行 etcdctl cluster-health。始终报错
+error #0: dial tcp 127.0.0.1:4001: connect: connection refused
+error #1: client: endpoint http://127.0.0.1:2379 exceeded header timeout
+
+- 问题6：
+{ "insecure-registries":["192.168.1.100:5000"] }
+
+sed -e 's/KUBELET_CGROUP_ARGS=--cgroup-driver=systemd/KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs/' \
+/etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+systemctl daemon-reload && systemctl start kubelet && systemctl enable kubelet
+
+kubectl taint nodes k8s-master node-role.kubernetes.io/master=:NoSchedule #设置master不可运行pod
+kubectl taint nodes --all node-role.kubernetes.io/master-  #解除限制
+
+kubeadm reset #重置集群
+
+- 问题7：
+Unable to update cni config: No networks found in /etc/cni/net.d
+
+vi /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+Environment="KUBELET_NETWORK_ARGS=--network-plugin=cni --cni-conf-dir=/etc/cni/ --cni-bin-dir=/opt/cni/bin"
+
+
+dial tcp 172.17.1.52:6443: getsockopt: connection refused
+
+添加火墙规则：
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=6443/tcp --permanent
+firewall-cmd --zone=public --add-port=2379-2380/tcp --permanent
+firewall-cmd --zone=public --add-port=10250-10255/tcp --permanent
+firewall-cmd --zone=public --add-port=30000-32767/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --zone=public --list-ports
+
+- 问题8. 如果使用本地代理先要unset代理
+unset http_proxy https_proxy && kubeadm init --kubernetes-version=v1.15.0 --pod-network-cidr=10.244.0.0/16
+
+- 问题9：docker代理文件
+Error response from daemon: Get https://index.docker.io/v1/search?q=flannel%3Av0.
+
+vi /usr/lib/systemd/system/docker.service.d/http-proxy.conf
+[Service]
+Environment="HTTP_PROXY=http://localhost:3129/" "HTTPS_PROXY=http://localhost:3129/" "NO_PROXY=localhost,127.0.0.1"
+
+systemctl daemon-reload
+systemctl restart docker
+
+
+- 安装dashboard:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+
+kubectl create serviceaccount dashboard-admin -n kube-system
+kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
+kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | awk '/dashboard-admin/{print $1}')
+
+token:
+eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4tMmc4cWMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiZjJlMTk4OGMtMDQ4MS00NGNmLWIyNGItYjNhMmZhNGU0M2YwIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.o2_RJ371Tb_gY2iK0Guo2x-3MtNqqoQfEVpYRu1hnM9RelfWmEVWRvW_Uirzfv5_lKcf2J_G3nkS5wDBzYD0m6870n-xAQGZvBWFcAqDxCgMcnikIReboA_JBvlCzR7c4bOoWAR7M6ldTWtQf56MA9A0KUc27hEMOKGTMlS1TCKyw8xrY7b7sx6I0UmfHoxvmtw9ZJQNuN6nHYl0eMSiJLTZ8OebQ-uk3-wC6kPbkaD8u5MnkxFr4eLxEtHzOoFqxJiBPJXIqzzzJ0vmwWIxF07XsGn7BPF4f_pC2wsPsF5OYxOC10rnjRsExpgpPeO6LTBNfDRyQMNWRCEJvmWuWg
+
+============================================================
+kubeadm安装k8s集群总结:
+
+- 查询部署需要的镜像
+[root@host01 vim]# kubeadm config images list --kubernetes-version=1.14.0
+k8s.gcr.io/kube-apiserver:v1.14.0
+k8s.gcr.io/kube-controller-manager:v1.14.0
+k8s.gcr.io/kube-scheduler:v1.14.0
+k8s.gcr.io/kube-proxy:v1.14.0
+k8s.gcr.io/pause:3.1
+k8s.gcr.io/etcd:3.3.10
+k8s.gcr.io/coredns:1.3.1
+
+- 拉取镜像(k8s.gcr.io访问问题)
+docker pull luutqf/kube-apiserver:v1.14.0
+docker pull luutqf/kube-controller-manager:v1.14.0
+docker pull luutqf/kube-scheduler:v1.14.0
+docker pull luutqf/kube-proxy:v1.14.0
+docker pull luutqf/pause:3.1
+docker pull luutqf/etcd:3.3.10
+docker pull luutqf/coredns:1.3.1
+
+
+- 给镜像打tag
+docker tag luutqf/kube-apiserver:v1.14.0 k8s.gcr.io/kube-apiserver:v1.14.0
+docker tag luutqf/kube-controller-manager:v1.14.0 k8s.gcr.io/kube-controller-manager:v1.14.0
+docker tag luutqf/kube-scheduler:v1.14.0 k8s.gcr.io/kube-scheduler:v1.14.0
+docker tag luutqf/kube-proxy:v1.14.0 k8s.gcr.io/kube-proxy:v1.14.0
+docker tag luutqf/pause:3.1 k8s.gcr.io/pause:3.1
+docker tag luutqf/etcd:3.3.10 k8s.gcr.io/etcd:3.3.10
+docker tag luutqf/coredns:1.3.1 k8s.gcr.io/coredns:1.3.1
+
+
+
+- 拉取脚本
+#!/bin/bash
+#v1.12.0版本
+#执行此脚本之后，就可以使用kubeadm初始化集群了
+
+images=(kube-apiserver:v1.12.0 kube-controller-manager:v1.12.0 kube-scheduler:v1.12.0 kube-proxy:v1.12.0 kubernetes-dashboard-amd64:v1.10.0 pause:3.1 etcd:3.2.24 coredns:1.2.2)
+
+for ima in ${images[@]}
+do
+   docker pull registry.cn-shenzhen.aliyuncs.com/lurenjia/$ima
+   docker tag registry.cn-shenzhen.aliyuncs.com/lurenjia/$ima   k8s.gcr.io/$ima
+   docker rmi -f $(docker images |grep registry.cn-shenzhen.aliyuncs.com |awk '{print $1":"$2}')
+
+done
+docker pull registry.cn-shenzhen.aliyuncs.com/lurenjia/flannel:v0.10.0-amd64
+docker tag registry.cn-shenzhen.aliyuncs.com/lurenjia/flannel:v0.10.0-amd64 quay.io/coreos/flannel:v0.10.0-amd64
+docker rmi -f registry.cn-shenzhen.aliyuncs.com/lurenjia/flannel:v0.10.0-amd64
+
+
+docker save k8s.gcr.io/kube-apiserver:v1.14.0          > kube-apiserver_v1.14.0.tar           
+docker save k8s.gcr.io/kube-controller-manager:v1.14.0 > kube-controller-manager_v1.14.0.tar
+docker save k8s.gcr.io/kube-scheduler:v1.14.0          > kube-scheduler_v1.14.0.tar           
+docker save k8s.gcr.io/kube-proxy:v1.14.0              > kube-proxy_v1.14.0.tar               
+docker save k8s.gcr.io/pause:3.1                       > pause_3.1.tar                        
+docker save k8s.gcr.io/etcd:3.3.10                     > etcd_3.3.10.tar                      
+docker save k8s.gcr.io/coredns:1.3.1                   > coredns_1.3.1.tar                    
+
+soft="kube-apiserver kube-controller-manager kube-scheduler kube-proxy"
+for s in ${soft}; do
+docker save k8s.gcr.io/$s:v1.14.0 > ${s}_v1.14.0.tar
+done
+
+
+======================================================================
+kubeadm init --kubernetes-version=1.15.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.40.144
+
+#还可以通过配置文件安装
+kubeadm config print init-defaults
+
+- pod的cni网络安装(calico/flannel/weave/canal)
+kubectl apply -f flannel.yaml
+kubectl apply -f calico.yaml
+
+- 去除master节点上的taint
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+- 高可用master
+kubeadm config print init-defaults >kubeadm-init-config.yml
+
+Environment="KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs"
+#Environment="KUBELET_CGROUP_ARGS=--cgroup-driver=systemd"
+
+kubectl -n kube-system get cm kubeadm-config -oyaml
+
+
+kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=v1.13.0
+
+##去除污点
+kubectl taint nodes 192-168-40-144 node-role.kubernetes.io/master:NoSchedule-
+
+#修改kubernetes服务 nodeport 类型的端口范围
+vi /etc/kubernetes/manifests/kube-apiserver.yaml
+- --service-node-port-range=1-65535
+
+systemctl daemon-reload
+systemctl restart kubelet
+kubectl delete -f kube-service.yml
+kubectl create -f kube-service.yml
+
+===========================================================\
+CNI: Contaniner Network Interface
+google和coreos主导制定的容器网络标准,是一种协议,综合考虑了灵活性、扩展性、ip分配、多网卡等
+
+CRI: Contaniner Runtime Interface
+接口使用Protocol Buffer基于gRPC,
+
+OCI: Open Container Initive
+
+
+
+

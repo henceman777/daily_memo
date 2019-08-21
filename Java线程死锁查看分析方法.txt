@@ -1,0 +1,86 @@
+Java线程死锁查看分析方法
+
+jconsole  #JDK自带的图形化界面工具
+
+- 打开线程选项卡，检测死锁
+
+jstack是JDK自带的命令行工具，生成JVM当前时刻的线程快照，主要用于线程dump分析
+jps  #查看java进程id
+jstack -l pid
+查看dump分析
+
+线程的状态:
+runnable  #具备线程运行条件
+wait on condition #等待条件发生
+wait for monitor entry  #monitor是实现线程间互斥和协作的主要手段,对象或Class锁
+Object.wait()
+deadlock
+blocked
+
+
+- 死锁产生的必要条件
+互斥条件
+请求和保持条件
+不剥夺条件
+环路等待条件
+
+- java线程排查过程
+1.获取java进程的pid
+jps #获取java进程的pid
+ps -mp pid -o THREAD,tid,time
+ps -Lfp pid 或ps -mp pid -o THREAD, tid, time   #查看对应进程下线程信息
+pstree -p 22564 #进程id下的线程id
+ps –o nlwp 27989 #可以看到该进程内有多少个线程
+ps -eLo pid ,stat | grep 27989 | grep running | wc -l
+
+
+2.查看java进程下的线程
+top -Hp pid  或top -Hp 28174 -d 1 -n 1 #查看该进程里CPU较高的线程pid
+
+3.将线程id转化为16进制
+echo 'obase=16,thread_id'|bc #线程id转化为16进制,或者
+printf "%x\n"  pid  #转为16进制
+
+4.jstack导出堆栈信息
+jstack -l pid > threaddumpfile.log  #导出java进程堆栈信息
+jstack pid |grep tid -A 30  #打印堆栈信息
+pstack
+ps -mp pid -o THREAD,tid,time  #显示线程列表
+
+5.查看jstack dump文件内pid的线程
+
+#查看进程下的线程信息，查看运行时间最长的线程号(可选)
+ps p pid -L -o pcpu,pid,tid,time,tname > psp.info
+
+轻量级进程（LWP）是一种实现多任务的方法。与普通进程相比，LWP与其他进程共享所有（或大部分）它的逻辑地址空间和系统资源；
+与线程相比，LWP有它自己的进程标识符，优先级，状态，以及栈和局部存储区，并和其他进程有着父子关系
+
+
+
+
+
+
+- jmap查看java程序内存分配情况
+jmap -histo pid(查看实例) 
+
+- jstat
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
