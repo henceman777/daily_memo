@@ -243,9 +243,6 @@ StatefulSet
 DaemonSet
 
 pod模板包含了pod的定义
-
-
-
 		
 		
 
