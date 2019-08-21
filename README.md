@@ -1,2 +1,2 @@
 # daily_memo
-- this repo contain my daily learning notes
+- this repo contains my daily learning notes
