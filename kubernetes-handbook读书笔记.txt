@@ -243,6 +243,18 @@ StatefulSet
 DaemonSet
 
 pod模板包含了pod的定义
+pod像豌豆荚,由一个或者多个容器组成（例如Docker容器），它们共享容器存储、网络和容器运行配置项
+Pod中的容器总是被同时调度，有共同的运行环境
+
+Pod中共享的环境包括Linux的namespace、cgroup和其他可能的隔绝环境
+Pod中的容器共享IP地址和端口号，它们之间可以通过localhost互相发现。它们之间可以通过进程间通信，例如SystemV信号或者POSIX共享内存
+
+Pod中的容器也有访问共享volume的权限，这些volume会被定义成pod的一部分并挂载到应用容器的文件系统中
+
+通常，用户不需要手动直接创建Pod，而是应该使用controller（例如Deployments），即使是在创建单个Pod的情况下。
+Controller可以提供集群级别的自愈功能、复制和升级管理。
+
+
 		
 		
 
