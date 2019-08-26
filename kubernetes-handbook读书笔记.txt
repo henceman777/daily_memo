@@ -254,11 +254,346 @@ Pod中的容器也有访问共享volume的权限，这些volume会被定义成po
 通常，用户不需要手动直接创建Pod，而是应该使用controller（例如Deployments），即使是在创建单个Pod的情况下。
 Controller可以提供集群级别的自愈功能、复制和升级管理。
 
+4.2 init容器
+4.3 pause容器
+pause容器主要:
+在pod中担任Linux命名空间共享的基础
+启用pid命名空间,开启init进程
 
+4.4 pod的安全策略
+PodSecurityPolicy
+创建 Pod 安全策略 psp.yaml  
+  
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: permissive
+spec:
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  hostPorts:
+  - min: 8000
+    max: 8080
+  volumes:
+  - '*'
+  
+kubectl create -f ./psp.yaml  
+  
+kubectl get psp #获取podsercuritypolicy
+kubectl edit psp permissive
+kubectl delete psp permissive
+
+使用RBAC
+当 Pod 基于 Deployment、ReplicaSet 创建时，它是创建 Pod 的 Controller Manager
+
+4.5 pod的生命周期
+pod的phase是pod在其生命周期中的简单宏观概述
+Pending,等待容器创建
+Running, pod已绑定到一个节点上,
+Successed, pod中的容器都成功终止
+Failed, 至少一个容器因失败终止
+Unknown, 无法获取pod状态
+
+Pod状态:
+PodStatus对象
+
+容器探针是kubelet对容器执行定期诊断:
+1.ExecAction,容器内部执行指定的命令
+2.TCPSocketAction, 指定端口上的容器IP地址进行TCP检查
+3.HTTPGetAction, GTTP Get请求状态码200-400则成功
+
+重启策略:
+PodSpec中有一个restartPolicy字段,可能值有Always、OnFailure、Never
+restartPolicy 仅指通过同一节点上的 kubelet 重新启动容器
+
+4.6 Pod Preset：
+Preset 就是预设，有时候想要让一批容器在启动的时候就注入一些信息，比如 secret、volume、volume mount 和环境变量
+
+4.7 Pod中断和PDB(Pod中断预算)
+自愿中断:
+
+程序所有者操作包括：
+    删除管理该 pod 的 Deployment 或其他控制器
+    更新了 Deployment 的 pod 模板导致 pod 重启
+    直接删除 pod（意外删除）
+
+集群管理员操作包括：
+    排空（drain）节点进行修复或升级。
+    从集群中排空节点以缩小集群（了解集群自动调节）。
+    从节点中移除一个 pod，以允许其他 pod 使用该节点。
+
+处理中断:
+应用程序所有者可以为每个应用程序创建一个 PodDisruptionBudget 对象（PDB）
+PDB 将限制在同一时间自愿中断的复制应用程序中宕机的 Pod 的数量
+
+5. 集群资源管理
+5.1 node
+node是集群工作节点,物理机或虚拟机
+
+- node的状态
+Address:
+	Hostname、ExternalIP、InternalIP
+Condition:
+	OutOfDisk、Ready、MemoryPressure、DiskPressure
+Capacity:
+	CPU、内存、可运行最大的Pod数量
+Info：
+	节点版本信息
+	
+- node管理：
+kubectl cordon <node>  #禁止pod调度到该节点
+kubectl drain <node>   #驱逐该节点上所有的pod,通常该节点需要维护时使用该命令
+kubectl uncordon <node>  #即可将该节点添加到kubernetes集群中
+
+5.2 namespace:
+集群使用namespace创建多个"虚拟集群",这些namespace可以完全隔离
+
+例如生产、测试、开发划分不同的namespace
+
+- namespace的使用：
+kubectl get ns
+
+5.3 Label
+label是附着到object上的键值对,可以创建object时指定
+label能够将组织架构映射到系统架构上(康威定律),
+常用的标签:
+    "release" : "stable", "release" : "canary"
+    "environment" : "dev", "environment" : "qa", "environment" : "production"
+    "tier" : "frontend", "tier" : "backend", "tier" : "cache"
+    "partition" : "customerA", "partition" : "customerB"
+    "track" : "daily", "track" : "weekly"
+    "team" : "teamA","team:" : "teamB"
+
+- Label selector
+Label不是唯一的,通过label selector,客户端/用户可以指定一个object集合
+通过label selector对object的集合进行操作
+示例:
+kubectl get pods -l environment=production,tier=frontend
+kubectl get pods -l 'environment in (production),tier in (frontend)'
+kubectl get pods -l 'environment in (production, qa)'
+kubectl get pods -l 'environment,environment notin (frontend)'
+
+- API object中设置label selector
+在service、replicationcontroller等object中有对pod的label selector，使用方法只能使用等于操作，例如：
+selector:
+    component: redis
+
+在Job、Deployment、ReplicaSet和DaemonSet这些object中，支持set-based的过滤，例如：
+selector:
+  matchLabels:
+    component: redis
+  matchExpressions:
+    - {key: tier, operator: In, values: [cache]}
+    - {key: environment, operator: NotIn, values: [dev]}
+
+5.4 annnotation注解
+
+- 关联元数据到对象
+Label和Annotation都可以将元数据关联到Kubernetes资源对象。
+Label主要用于选择对象，可以挑选出满足特定条件的对象。相比之下，annotation 不能用于标识及选择对象
+
+annotation和label一样都是key/value键值对映射结构：
+"annotations": {
+  "key1" : "value1",
+  "key2" : "value2"
+}
+
+5.5 Taint和Toleration(污点和容忍)
+Taint 和 toleration 相互配合，可以用来避免 pod 被分配到不合适的节点上。
+每个节点上都可以应用一个或多个 taint ，这表示对于那些不能容忍这些 taint 的 pod，是不会被该节点接受的
+toleration 应用于 pod 上，则表示这些 pod 可以（但不要求）被调度到具有相应 taint 的节点上
+
+- 为node设置taint
+kubectl taint nodes node1 key1=value1:NoSchedule
+kubectl taint nodes node1 key1=value1:NoExecute
+kubectl taint nodes node1 key2=value2:NoSchedule
+
+#删除taint
+kubectl taint nodes node1 key1:NoSchedule-
+kubectl taint nodes node1 key1:NoExecute-
+kubectl taint nodes node1 key2:NoSchedule-
+
+#查看taint
+kubectl describe nodes node1
+
+- 为pod设置toleration
+tolerations:
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoSchedule"
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoExecute"
+- key: "node.alpha.kubernetes.io/unreachable"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 6000
+  
+5.6 垃圾回收
+垃圾收集器负责删除指定对象  
+  
+kubectl delete replicaset my-repset --cascade=false
+
+6. 控制Controller Manager
+控制器controller相当于状态机,控制pod的具体状态和行为
+
+6.1 Deployment
+deployment为pod和replicaSet提供声明式declarative方法,用来替换之前的replicationController
+- 应用场景
+定义deployment来创建pod和replicaSet
+滚动升级和回滚应用
+扩容和缩容
+暂停和继续deployment
+
+一个简单的nginx定义:
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
 		
-		
+kubectl scale deployment nginx-deployment --replicas=4  #扩容
+kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
+
+kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1  #更换镜像版本
+kubectl rollout undo deployment/nginx-deployment  #回滚
+
+- Deployment是什么
+在 Deployment 中描述您想要的目标状态是什么，Deployment controller 就会帮您将 Pod 和ReplicaSet 的实际状态改变到您的目标状态		
+
+- 创建Deployment
+kubectl create -f https://kubernetes.io/docs/user-guide/nginx-deployment.yaml --record
+kubectl get deployments
+kubectl get rs
+kubectl get pods
+kubectl get pods --show-labels
+
+- 更新Deployment
+Deployment 的 rollout 当且仅当 Deployment 的 pod template（例如.spec.template）中的label更新或者镜像更改时被触发
+其他更新，例如扩容Deployment不会触发 rollout
+
+kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1
+kubectl edit deployment/nginx-deployment
+kubectl rollout status deployment/nginx-deployment #查看rollout状态
+kubectl get deployments
+kubectl get rs
+kubectl get pods
 
 
+- rollover(多个rollout并行)
+
+- label selector更新:
+
+- 回退Deployment
+kubectl rollout history deployment/nginx-deployment  #Deployment 的 revision
+kubectl rollout history deployment/nginx-deployment --revision=2
+kubectl rollout undo deployment/nginx-deployment  #回退历史版本
+kubectl rollout undo deployment/nginx-deployment --to-revision=2  #指定某个历史版本
+
+- 扩容deployment
+kubectl scale deployment nginx-deployment --replicas 10
+kubectl autoscale deployment nginx-deployment --min=10 --max=15 --cpu-percent=80
+
+- 比例扩容
+例如，您正在运行中含有10个 replica 的 Deployment。maxSurge=3，maxUnavailable=2
+
+- 暂停和恢复deployment
+kubectl rollout pause deployment/nginx-deployment
+kubectl set image deploy/nginx nginx=nginx:1.9.1
+kubectl rollout history deploy/nginx
+kubectl set resources deployment nginx -c=nginx --limits=cpu=200m,memory=512Mi
+
+kubectl rollout resume deploy nginx  #恢复这个Deployment
+kubectl get rs -w
+
+
+用例:
+- 金丝雀deployment
+使用 Deployment 对部分用户或服务器发布 release，您可以创建多个 Deployment，每个 Deployment 对应一个 release，
+参照 managing resources 中对金丝雀模式的描述
+
+6.2 StatefulSet
+解决有状态的服务,应用场景有:
+- 稳定的持久化存储,即pod重新调度后还能访问到相同的持久化数据,基于PVC实现
+- 稳定的网络标志,podname和hostname不变,基于headless service来实现是
+- 有序的部署,有序扩展, 基于init container来实现
+- 有序的收缩、有序的删除 
+每个Pod的DNS格式为 statefulSetName-{0..N-1}.serviceName.namespace.svc.cluster.local
+
+
+- 使用statefulset
+适于用: 稳定有序的网络标志、稳定持久化的存储、有序部署的scale、有序删除和终止、有序自动的滚动升级
+
+
+- 组件
+示例
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: nginx
+        image: gcr.io/google_containers/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+      annotations:
+        volume.beta.kubernetes.io/storage-class: anything
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+		  
+		  
 
 
 

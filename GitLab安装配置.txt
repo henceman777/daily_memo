@@ -1,0 +1,58 @@
+systemctl stop firewalld
+systemctl disable firewalld
+yum -y install curl policycoreutils openssh-server openssh-clients postfix
+curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+systemctl start postfix && systemctl enable postfix
+yum install -y gitlab-ce
+
+
+mkdir -p /etc/gitlab/ssl/
+openssl genrsa -out "/etc/gitlab/ssl/gitlab.example.com.key" 2048
+openssl req -new -key "/etc/gitlab/ssl/gitlab.example.com.key" -out "/etc/gitlab/ssl/gitlab.example.com.csr"
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:cn
+State or Province Name (full name) []:sh
+Locality Name (eg, city) [Default City]:sh
+Organization Name (eg, company) [Default Company Ltd]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) []:192-168-40-144
+Email Address []:jinmeng260@gmail.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:jinmax
+An optional company name []:jinmax
+
+
+
+openssl x509 -req -days 3650 -in "/etc/gitlab/ssl/gitlab.example.com.csr" -signkey "/etc/gitlab/ssl/gitlab.example.com.key" \
+-out "/etc/gitlab/ssl/gitlab.example.com.crt"
+
+openssl dhparam -out "/etc/gitlab/ssl/dhparams.pem" 2048
+
+cd /etc/gitlab/ssl/
+ll
+-rw-r--r-- 1 root root 1281 Aug 15 17:32 192-168-40-144.crt
+-rw-r--r-- 1 root root 1106 Aug 15 17:18 192-168-40-144.csr
+-rw-r--r-- 1 root root 1679 Aug 15 17:16 192-168-40-144.key
+-rw-r--r-- 1 root root  424 Aug 15 17:34 dhparams.pem
+
+
+
+###配置文件修改
+cd /etc/gitlab
+cp gitlab.rb gitlab.rb.cp
+vi gitlab.rb
+external_url 'https://...'
+nginx['redirect_http_to_https'] = true
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.example.com.crt"
+nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.example.com.key"
+nginx['ssl_dhparam'] = /etc/gitlab/ssl/dhparams.pem
+
+
