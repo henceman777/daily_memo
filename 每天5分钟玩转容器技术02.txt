@@ -1,0 +1,100 @@
+1. 镜像的内部结构
+hello-world
+
+docker pull hello-world
+docker images
+docker run hello-world
+
+2. base镜像
+2.1 rootfs
+内核kernel,linux启动后会加载bootfs文件系统,之后bootfs会卸载掉
+用户空间的文件系统是rootfs,包含/dev、/proc、/bin等
+base镜像只需要提供rootfs即可,底层使用宿主机的kernel
+
+不同发行版的主要区别就是rootfs
+
+2.2 镜像分层结构
+
+2.3 可写的容器层
+只有当需要修改时才复制一份数据，这种特性被称作 Copy-on-Write
+
+3. 构建镜像
+docker commit 容器名 镜像名
+
+Dockerfile 构建文件:
+docker build -t 镜像名 .  #Dockerfile文件目录执行
+docker history #会显示镜像的构建历史
+
+4. 镜像的缓存特性
+Docker 会缓存已有镜像的镜像层，构建新镜像时，如果某镜像层已经存在，就直接使用，无需重新创建
+在构建镜像时不使用缓存，可以在 docker build 命令中加上 --no-cache 参数。
+Dockerfile 中每一个指令都会创建一个镜像层，上层是依赖于下层的
+
+
+5. Dockerfile常用的命令
+- FROM
+指定base镜像
+
+- MAINTAINER
+指定作者,等信息
+
+- COPY
+负责文件到镜像
+COPY src dst或者
+COPY ["src", "dst"]
+
+- ADD
+类似COPY,支持自动解压
+
+- ENV
+设置环境变量
+
+- EXPOSE
+指定容器的进程监听某个端口,
+
+- VOLUME
+声明VOLUME
+
+- WORKDIR
+为后面的RUN、CMD、ENTRYPOINT、ADD、COPY命令指定工作目录
+
+- RUN
+在容器中运行指定的命令
+
+- CMD
+容器启动时运行的命令,CMD可以被docker run之后的参数替换
+
+- ENTRYPOINT
+设置容器启动时运行的命令
+CMD或docker run之后的参数当作参数传递给ENTRYPOINT
+
+5.1 例子
+FROM busybox
+MAINTAINER nobody
+WORKDIR /testdir
+RUN touch file01
+COPY ['bunch.tar.gz', '.']
+ENV WELCOME "welcome be here."
+
+5.3 RUN/CMD/ENTRYPOINT命令的对比
+
+- RUN执行命令并创建新的镜像层,RUN常用于安装软件,
+RUN apt-get update && apt-get install -y \  
+bzr \
+git
+
+注意：apt-get update 和 apt-get install 被放在一个 RUN 指令中执行，这样能够保证每次安装的是最新的包
+
+- CMD设置容器启动后默认执行的命令,CMD会被docker run后面的命令行参数替换
+- ENTRYPOINT配置容器启动时运行的命令
+
+Shell模式和Exec模式：
+ENV VAR=123
+CMD echo $VAR  #会调用/bin/sh -c,变量会被shell解析
+
+ENV VAR=123
+CMD ["/bin/echo","hello $VAR"] #exec模式下变量不会被shell解析, 希望使用shell变量则["/bin/sh","-c","cmd"]形式指定
+
+CMD 和 ENTRYPOINT 推荐使用 Exec 格式，因为指令可读性更强，更容易理解。RUN 则两种格式都可以
+
+
