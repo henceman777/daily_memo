@@ -1,0 +1,87 @@
+### Docker的存储资源
+
+1. storage driver管理的镜像层和容器层
+容器由最上的可写层容器层和若干只读的镜像层组成
+分层结构的最大特性就是copy-on-write
+- 新数据会直接存放在嘴上层的容器层
+- 修改现有的数据会先从镜像层拷贝到容器层修改后保存在容器层
+- 多层中有相同名称的文件则,用户只能看到最上层的文件
+
+docker支持多种存储引擎,AUFS、Device Mapper、btrfs、overlayFS、VFS等
+
+docker jnfo 查看默认的Storage Driver
+
+2. data volume
+本质是Docker容器的宿主机的目录和文件被直接mount到容器的文件系统中
+
+- bind volume
+将宿主机上已存在的目录或文件mount到容器
+docker run -d -p 80:80 -v ~/htdocs:/usr/local/apache2/htdocs httpd
+
+docker run -d -p 80:80 -v ~/htdocs:/usr/local/apache2/htdocs:ro httpd  #指定数据的ro只读
+
+#还可以指定单独的文件
+docker run -d -p 80:80 -v ~/index.html:/usr/local/apache2/htdocs/index.html httpd
+echo "hello max"> ~/index.html
+curl 127.0.0.1
+
+- docker managed volume
+docker自己管理的volume,只需要指定mount挂载点
+docker run -d -p 80:80 -v /usr/local/apache2/htdocs httpd
+docker inspect container_id  #查看Mounts字段
+一般是mount源在宿主机的/var/lib/docker/volumes/下生成目录/_data
+
+docker managed volume 的创建过程：
+> 容器启动时，简单的告诉 docker "我需要一个 volume 存放数据，帮我 mount 到目录 /abc"
+> docker 在 /var/lib/docker/volumes 中生成一个随机目录作为 mount 源
+> 如果 /abc 已经存在，则将数据复制到 mount 源
+> 将 volume mount 到 /abc
+
+
+docker volume ls
+docker volume inspect ...
+
+- 对比 bind mount和docker managed volume
+
+### 共享数据
+1. 容器和宿主机的共享数据
+docker run -d -p 80:80 -v /usr/local/apache2/htdocs httpd
+docker cp ~/htdocs/index.html container_id:/usr/local/apache2/htdocs #docker cp可以在容器和宿主机之间拷贝文件
+
+2. 容器之间的数据共享
+- 将~/htdocs挂载到三个httpd容器上，指定相同的bind mount
+- 使用volume container
+专门为其他容器提供volume的容器,
+
+docker create --name vc_data -v ~/htdocs:/usr/local/apache2/htdocs \
+-v /other/useful/tools busybox
+
+docker run --name web1 -d -p 80 --volumes-from vc_data httpd  #即可使用volume container
+
+- data-packed volume container
+Dockerfile
+FROM busybox:latest
+ADD htdocs /usr/local/apache2/htdocs
+VOLUME /usr/local/apache2/htdocs
+
+docker build -t datapacked .
+docker create --name vc_data datapacked
+docker run -d -p 80:80 --volumes-from vc_data httpd
+
+
+### volume的生命周期管理
+1. 备份
+2. 恢复
+3. 迁移
+docker stop registry_container
+docker run -d -p 5000:5000 -v /myregistry:/var/lib/registry registry:latest
+4. 销毁
+docker volume rm $(docker volume ls -q)  #批量删除孤儿volume
+
+小结:
+    docker 为容器提供了两种存储资源：数据层和 Data Volume
+    数据层包括镜像层和容器层，由 storage driver 管理
+    Data Volume 有两种类型：bind mount 和 docker managed volume
+    bind mount 可实现容器与 host 之间，容器与容器之间共享数据
+    volume container 是一种具有更好移植性的容器间数据共享方案，特别是 data-packed volume container
+    最后我们学习了如何备份、恢复、迁移和销毁 Data Volume

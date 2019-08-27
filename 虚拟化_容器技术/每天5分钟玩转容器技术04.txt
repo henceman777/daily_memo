@@ -1,0 +1,132 @@
+### 容器的常用操作
+
+1. stop/start/restart容器
+docker stop #本质上是发送SIGTERM信号
+docker kill  #则是发送SIGKILL信号
+docker start #会保留容器第一次启动时的所有参数
+
+docker run -d --restart=always httpd #保证容器可以出现错误后自动重启
+--restart=on-failure:3 #意思是启动进程退出码非0,则重启容器,最多重启3次
+
+2. pause、unpause容器
+paused状态的容器不会占用CPU
+docker unpause恢复容器运行
+
+3. 删除容器
+docker rm -v $(docker ps -aq -f status=exited)
+
+注意：
+docker rm删除容器
+docker rmi是删除镜像
+
+### 容器状态机
+
+1. 创建容器
+docker create httpd
+docker ps -a
+docker start container_id  #docker run命令相当于docker create和docker start的组合
+docker ps
+
+2. 容器的退出分为
+- 正常退出
+- 非正常退出
+发生OOM或者正常退出时,--restart的策略会判断是否重启容器
+
+docker stop或docker kill不会触发重启
+
+### 限制容器对内存的使用
+1. 内存限额
+容器内存包括两部分: 物理内存和swap
+-m或--memory参数可以设置内存的限额,100M或2G
+--memory-swap设置内存+swap的使用限额
+
+docker run -m 200M --memory-swap=300M ubuntu #允许容器最多使用200M内存和100M的swap,默认是没限制的
+
+docker run -it -m 200M --memory-swap=300M progrium/stress --vm 1 --vm-bytes 280M  #压测
+
+指定-m而没指定--memory-swap，则memory-swap是-m的两倍
+
+### 限制容器对CPU的使用
+默认情况下没有限制
+1. docker通过-c或--cpu-shares设置cpu权重,默认是1024
+
+如:
+docker run --name "container_A" -c 1024 ubuntu
+docker run --name "container_B" -c 512 ubuntu 
+则container_A可以得到CPU是B的两倍
+
+
+### 限制容器Block IO
+docker可以通过设置权重、限制bps和iops的方式控制容器读写磁盘的带宽
+
+1. block IO权重
+--blkio-weight 与 --cpu-shares 类似，设置的是相对权重值，默认为 500
+
+如: container_A 读写磁盘的带宽是 container_B 的两倍
+docker run -it --name container_A --blkio-weight 600 ubuntu   
+docker run -it --name container_B --blkio-weight 300 ubuntu 
+
+2. 限制bps和iops
+bps(byte per second)每秒读写数据
+iops(IO per second)每秒io的次数
+
+通过以下参数控制容器的 bps 和 iops：
+--device-read-bps，限制读某个设备的 bps。
+--device-write-bps，限制写某个设备的 bps。
+--device-read-iops，限制读某个设备的 iops。
+--device-write-iops，限制写某个设备的 iops。 
+
+如: 限制容器写 /dev/sda 的速率为 30 MB/s
+docker run -it --device-write-bps /dev/sda:30MB ubuntu 
+time dd if=/dev/zero of=test.out bs=1M count=800 oflag=direct  #测试写速度
+
+
+### 实现容器底层的技术
+1. cgroup
+control group,linux通过cgroup设置进程使用CPU、内存、IO等资源限额 
+
+ll /sys/fs/cgroup
+
+docker run -it --cpu-shares 512 progrium/stress -c 1
+ls /sys/fs/cgroup/cpu/docker/container_id/cpu.shares  #即可查看cpu相关的配置
+
+/sys/fs/cgroup/memory/docker   #保存内存配置
+/sys/fs/cgroup/blkio/docker    #block io的配置
+
+2. namespace
+namespace管理着资源,让每个容器以为只有自己在使用
+namespace实现了容器间资源的隔离
+
+6中namespace：
+Mount、UTS、IPC、PID、Network和User
+
+- Mount namespace
+让容器看上去有了自己的文件系统
+
+- UTS namespace
+让容器有自己的hostname,通过-h或--hostname参数执行主机名
+
+- IPC namespace
+容器拥有自己的共享内存和信号量semaphore,实现进程间的通信
+
+- PID namespace
+ps axf查看容器进程
+所有容器都挂在dockerd进程下
+容器由自己的一套pid
+
+- Network namespace
+让容器由自己的独立的网卡、IP、路由等资源
+
+- User namespace
+实现了容器内可以管理自己的用户,host不能看到容器中创建的用户
+
+
+小结:
+容器状态转换
+容器限制使用CPU、memory、IO等资源
+实现容器的底层技术: cgroup和namespace
+
+
+
+
+

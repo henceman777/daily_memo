@@ -86,9 +86,37 @@ git
 注意：apt-get update 和 apt-get install 被放在一个 RUN 指令中执行，这样能够保证每次安装的是最新的包
 
 - CMD设置容器启动后默认执行的命令,CMD会被docker run后面的命令行参数替换
-- ENTRYPOINT配置容器启动时运行的命令
+CMD命令的三种格式:
+1、exec格式 CMD ['excutable',"para1","para2"],推荐
+2、CMD ["para1","para2"]为ENTRYPOINT指定额外参数,ENTRYPOINT必须使用exec格式
+3、shell格式，CMD command para1 para2
 
-Shell模式和Exec模式：
+- ENTRYPOINT配置容器启动时运行的命令，让容器以应用程序或者服务的形式运行
+ENTRYPOINT不会被忽略,一定会执行
+ENTRYPOINT的两种格式:
+1、exec格式：ENTRYPOINT ['excutable',"para1","para2"],推荐
+ENTRYPOINT 中的参数始终会被使用，而 CMD 的额外参数可以在容器启动时动态替换掉。
+比如下面的 Dockerfile 片段：
+ENTRYPOINT ["/bin/echo", "Hello"]  
+CMD ["world"]
+
+当容器通过 docker run -it [image] 启动时，输出为：
+Hello world
+
+而如果通过 docker run -it [image] CloudMan 启动，则输出为：
+Hello CloudMan 
+
+2、shell格式：ENTRYPOINT command para1 para2
+此格式会忽略任何CMD或者docker run的参数
+
+
+- 最佳实践
+1、RUN命令安装应用和软件包,构建镜像
+2、镜像用途是运行服务则优先使用exec模式的ENTRYPOINT指令,CMD可为ENTRYPOINT提供额外参数
+docker run可以指定替换默认参数
+3、为容器设置默认的启动命令可使用CMD
+
+- Shell模式和Exec模式：
 ENV VAR=123
 CMD echo $VAR  #会调用/bin/sh -c,变量会被shell解析
 
@@ -97,4 +125,37 @@ CMD ["/bin/echo","hello $VAR"] #exec模式下变量不会被shell解析, 希望�
 
 CMD 和 ENTRYPOINT 推荐使用 Exec 格式，因为指令可读性更强，更容易理解。RUN 则两种格式都可以
 
+6. 镜像的命名实践
+如ubuntu-with-vi
+
+- tag的使用
+
+7. 使用公共registry
+- Docker Hub注册
+- Docker Host上运行 docker login -u jinmeng260
+- docker tag httpd jinmeng260/httpd:v1
+- docker push jinmeng260/httpd:v1 #上传至docker Hub
+
+- docker pull jinmeng260/httpd:v1
+
+8. 创建本地registry
+- 启动registry
+mkdir /myregistry
+docker run -d -p 5000:5000 -v /myregistry:/var/lib/registry registry:2
+
+- docker tag重命名镜像
+docker tag jinmeng260/httpd:v1 registry_host:5000/jinmeng260/httpd:v1
+
+- docker push上传镜像
+docker push registry_host:5000/jinmeng260/httpd:v1
+
+- docker pull也可以拉取镜像了 
+docker pull registry_host:5000/jinmeng260/httpd:v1
+
+
+
+小结:
+镜像的分层结构
+docker rmi 删除本地镜像
+docker search 搜索docker hub上的镜像
 

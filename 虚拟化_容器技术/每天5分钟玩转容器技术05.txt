@@ -1,0 +1,121 @@
+### none和host网络的使用场景
+
+1. Docker网络
+docker网络可以从单个host上的容器网络和跨主机的网络
+
+docker安装时会自动创建三个网络:
+docker network ls  #输出
+NETWORK ID          NAME                DRIVER              SCOPE
+a5769547b82d        bridge              bridge              local
+675df0599f95        host                host                local
+328292d2246f        none                null                local
+
+- none网络
+这个网络下的容器只有lo没有其他的任何网卡,通过
+docker run -it --network=none busybox 
+
+- host网络
+host网络可以共享宿主机的网络栈,容器的网络和宿主机完全一致
+docker run -it --network=host busybox
+
+host网络的性能较好,但是牺牲了灵活性,需要考虑端口冲突等问题
+
+- bridge网络
+docker安装时会创建一个docker0的网桥网卡,不指定--network的情况下,创建的容器都会挂载到docker0上
+
+vethxxxxxx 是创建容器的虚拟网卡
+eth0@if34  是和上面的vethxxx一对veth pair,veth pair是成对出现的特殊网络设备,可以想象成一根
+虚拟网线连接起来的一对网卡,网卡一头是eth0@if34在容器内,另一头vethxxx挂在宿主机的docker0上
+
+docker inspect bridge  #查看bridge网络的配置信息
+bridge网络配置的subnet是172.17.0.0/16，网关是172.17.0.1也就是 docker0桥
+
+- 用户也可以创建user-defined网络
+
+2. 自定义网络
+docker的三种用户自定义网络驱动: bridge、overlay、macvlan
+overlay和macvlan用于跨主机的网络
+
+- bridge驱动创建dridge网络
+docker network create --driver bridge my_net
+brctl show
+
+docker network create --driver bridge --subnet=172.2.16.0/24 --gateway 172.22.16.1 my_net2
+docker run -it --network=my_net2 busybox #指定容器使用的网络
+docker run -it --network=my_net2 --ip=172.22.16.8 busybox  #可以指定容器静态IP
+
+
+3. 理解容器之间的网络联通性
+ip r #查看主机路由表
+sysctl -p net.ipv4.ip_forward = 1
+
+docker network connect my_net2 container_id
+
+### 容器间通信的三种方式
+1. IP通信
+具体做法是:
+容器创建时--network指定网络，或者
+docker network connect将现有的容器加入到指定的网络
+
+2. docker DNS server
+docker 1.10以后docker daemon实现了内嵌的DNS server,使容器可以通过容器名通信
+
+docker run -it --network=my_net2 --name=bbox1 busybox
+docker run -it --network=my_net2 --name=bbox2 busybox 
+
+docker DNS只能在用户自定义网络中使用
+
+3. joined容器
+joined容器可以实现容器间的通信
+joined容器很特别,可以使多个容器共享一个网络栈,共享网卡和配置信息,joined容器直接可以通过127.0.0.1通信
+
+具体步骤:
+docker run -d -it --name=web1 httpd
+docker run -it --network=container:web1 busybox  #join到web1的网络
+ip a
+
+joined容器的适用场合:
+不同容器中程序希望通过lo搞笑的通信
+希望监控其他容器网络流量
+
+
+### 容器如何访问外部
+1. 容器如何访问外部
+iptables -t nat -S
+
+在NAT 表中，有这么一条规则：
+-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE 
+含义是：
+来自 172.17.0.0/16 网段的包，目标地址是外网（! -o docker0），就把它交给 MASQUERADE 处理
+
+tcpdump -i docker0 -n icmp #抓包分析
+tcpdump -i ens33 -n icmp
+
+> busybox 发送 ping 包：172.17.0.2 > www.bing.com
+> docker0 收到包，发现是发送到外网的，交给 NAT 处理
+> NAT 将源地址换成 eth0 的 IP：10.0.2.15 > www.bing.com
+> ping 包从 eth0 发送出去，到达 www.bing.com
+
+通过NAT，docker实现了容器访问外网
+
+
+### 外部访问容器
+1. 端口映射
+docker可以将容器对外服务的端口映射到宿主机的某个端口上,外部通过这个端口访问容器
+docker run -p 80 httpd
+docker port container_id  #查看容器到宿主机的映射端口
+
+docker run -d -p 8080:80 httpd #指定映射到宿主机的8080端口上
+
+每个映射的端口,宿主机都会启动一个docker-proxy进程来处理访问容器的流量
+ps -ef|grep docker-proxy
+
+
+以 0.0.0.0:32773->80/tcp 为例分析:
+> docker-proxy 监听 host 的 32773 端口
+> 当curl访问 10.0.2.15:32773 时，docker-proxy 转发给容器 172.17.0.2:80。
+> httpd容器响应请求并返回结果。
+
+
+小结:
+容器网络

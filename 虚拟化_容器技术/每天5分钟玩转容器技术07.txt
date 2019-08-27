@@ -1,0 +1,45 @@
+### 安装docker machine
+
+1. docker machine
+可以批量安装和部署docker host,host可以是本地虚拟机、物理机、或云主机
+
+docker Machine支持的平台:
+- 常规Linux操作系统
+- 虚拟化平台-Vbox、Vmware、Hyper
+- Openstack
+- 公有云AWS、Azure、GCE、Digital Ocean等
+
+docker machine的这些环境或平台叫provider,使用相应的driver安装和部署docker host
+docker-machine create --driver [provider] hostx
+
+curl -L https://github.com/docker/machine/releases/download/v0.9.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+chmod +x /tmp/docker-machine &&
+cp /tmp/docker-machine /usr/local/bin/docker-machine
+
+docker-machine version
+
+从https://github.com/docker/machine/tree/master/contrib/completion/bash
+下载completion script, 将其放置到 /etc/bash_completion.d 目录下
+echo "PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '" >> $HOME/.bashrc：
+
+
+
+2. 创建Machine
+Machine就是运行docker daemon的主机
+docker-machine ls
+docker-machine create --driver generic --generic-ip-address=192.168.56.104 host1
+
+3. 管理docker-machine
+docker -H tcp://ip:2376 ps
+dcoker-machine env host1  #即可显示host1的所有环境变量
+eval $(docker-machine env host1)  #切换到host1
+
+docker-machine upgrade host1 host2  #更新machine的docker版本至最新
+docker-machine condfig host1   #查看machine的docker deamon配置
+
+stop/start/restart 是对 machine 的操作系统操作
+docker-machine scp 可以在不同 machine 之间拷贝文件,如
+docker-machine scp host1:/tmp/a host2:/tmp/b
+
+
+
