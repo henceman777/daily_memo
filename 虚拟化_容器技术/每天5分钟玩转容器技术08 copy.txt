@@ -1,0 +1,303 @@
+### 跨主机网络概述
+
+1. 单主机网络方案single-host
+- none
+- host
+- bridge
+- joined容器
+
+2. 跨主机网络方案multi-host
+- docker原生的overlay和macvlan
+- 第三方的, flannel,weave和calico
+
+众多网络方案通过libnetwork和CNM和Docker集成
+
+3. libnetwork和CNM(Container Network Model)
+CNM模型对容器网络进行了抽象:
+- sandbox
+是容器的网络栈,包含容器的interface、路由表、DNS等
+
+- endpoint
+作用是将sandbox接入network, endpoint的典型实现是veth pair
+一个endpoint只能属于一个网络也只能属于一个sandbox
+
+- Network
+包含一组endpoint,同一network的endpoint可以直接通信
+
+libnetwork和CNM定义了docker容器的网络模型:
+- Native Drivers
+none、bridge、overlay、macvlan
+
+- Remote Drivers
+flannel、weave、calico等
+
+### 准备overlay网络环境
+Docker提供overlay driver,使得用户可以创建基于Vxlan的overlay网络, Vxlan可将二层数据封装到UDP进行传输
+vxlan提供和vlan相同的以太网二层服务,
+
+Docker overlay网络需要一个key-value数据库用于保存网络状态信息,包括network,endpoint,IP等
+常用的软件有: Consul、etcd、zookeeper
+
+
+1. 容器方式运行consul
+docker run -d -p 8500:8500 -h consul --name consul progrium/consul -server -bootstrap
+
+通过 http://IP:8500 访问 Consul
+
+2. 修改配置文件
+host1 和 host2 的 docker daemon 的配置文件/etc/systemd/system/docker.service
+
+--cluster-store=consul://ip:8500 --cluster-advertise=ens33:2376
+
+systemctl daemon-reload
+systemctl restart docker.service
+
+host1和host2将注册到consul数据库中
+
+3. 创建overlay网络
+docker network create -d overlay ov_net1
+docker network ls
+
+host2上也可以看到ov_net1网络，因为host1将ov_net1网络信息存入了consul
+
+docker network inspect ov_net1
+
+IPAM指的是IP Address Management,docker自动为ov_net1分配IP空间
+
+4. 运行一个busybox容器并连接至ov_net1
+docker run -itd --name bbox1 --network ov_net1 busybox
+docker exec bbox1 ip r
+
+- docker 会创建一个 bridge 网络 “docker_gwbridge”，为所有连接到 overlay 网络的容器提供访问外网的能力
+docker network inspect docker_gwbridge  #172.18.0.0/16
+网桥docker_gwbridge就是作为这个网络的网关172.18.0.1，这样bbox1就可以访问外网了
+
+外网要访问容器，可通过主机端口映射，比如：
+docker run -p 80:80 -d --net ov_net1 --name web1 httpd 
+
+- 在host2中运行bbox2
+docker run -itd --name bbox2 --network ov_net1 busybox
+docker exec bbox2 ip r
+docker exec bbox2 ping -c 2 bbox1
+
+overlay网络中的容器可以通信也实现了DNS
+docker为每一个overlay网络创建了一个独立的network namespace,会有一个br0网桥
+endpoint还是由veth pair实现的,一端连容器的eth0,一端连接到namespace的br0上
+br0还会连接一个vxlan设备和其他host建立vxlan tunnel,实现了通信
+
+ln -s /var/run/docker/netns /var/run/netns
+docker exec bbox1 ip netns  #查看host1的网络namespace
+
+### 理解overlay网络的隔离
+docker network create -d overlay ov_net2
+docker run -itd --name bbox3 --network ov_net2 busybox
+
+在bbox3内ping不通bbox1,可见overlay网络是互相隔离的,要实现bbox3和bbox1的通信,需要
+docker network connect ov_net1 bbox3
+docker exec bbox3 ping -c 2 bbox1
+
+- overlay IPAM
+docker默认为overlay网路分配24位掩码的子网10.0.x.0/24,所有主机共享这个subnet,容器启动时会顺序从分配IP
+docker network create -d overlay --subnet 10.22.1.0/24 ov_net3  #可以手动指定subnet地址
+
+
+### macvlan网络
+macvlan本身是linux kernel模块,允许在同一个物理网卡上配置多个MAC地址,即多个interface,每个interface可以有自己的IP
+macvlan本质上是一种网络虚拟化技术
+macvlan的优点是性能极好,不需要创建网桥
+
+1. 准备环境
+ip link set ens33 promisc on #打开网卡的混杂模式
+ip link show ens33|grep PROMISC
+
+2. 创建macvlan网络
+docker network create -d macvlan \
+ --subnet=172.16.86.0/24 \
+ --gateway=172.16.86.1 \
+ -o parent=ens33 mac_net1
+
+host1上运行:
+docker run -itd --name bbox1 --ip=172.16.86.10 --network mac_net1 busybox
+host2上运行:
+docker run -itd --name bbox2 --ip=172.16.86.11 --network mac_net1 busybox
+
+docker没有为macvlan网络提供DNS服务,overlay网络是由DNS功能的
+
+
+### macvlan的网络结构分析
+1. macvlan不依赖bridge
+yum install bridge-utils  #安装brctl命令
+brctl show
+
+docker exec bbox1 ip link
+容器的eth0是ens33网卡通过macvlan虚拟出来的interface,这个interface直接和主机的网卡连接,无需NAT和端口映射
+
+2. 用sub-interface实现多macvlan的网络
+一个网卡只能创建一个macvlan网络
+vlan技术可以将网络的二层网络划分成多个逻辑网络(4096个),这些逻辑网络在层上是隔离的
+
+yum install -y vlan
+Linux网卡也支持vlan,同一个interface可以收发多个vlan的数据包,前提是创建vlan的sub-interface
+
+先要创建sub-interface网卡enp0s9.10和enp0s9.20配置
+然后,创建macvlan
+docker network create -d macvlan --subnet=172.16.10.0/24 --gateway=172.16.10.1 -o parent=enp0s9.10 mac_net10
+docker network create -d macvlan --subnet=172.16.20.0/24 --gateway=172.16.20.1 -o parent=enp0s9.20 mac_net20
+
+host1 中运行容器：
+docker run -itd --name bbox1 --ip=172.16.10.10 --network mac_net10 busybox
+docker run -itd --name bbox2 --ip=172.16.20.10 --network mac_net20 busybox
+
+host2 中运行容器：
+docker run -itd --name bbox3 --ip=172.16.10.11 --network mac_net10 busybox
+docker run -itd --name bbox4 --ip=172.16.20.11 --network mac_net20 busybox
+
+同一macvlan网络能通信,不同macvlan网络之间不能通信
+
+sysctl -w net.ipv4.ip_forward=1
+
+macvlan 网络的连通和隔离完全依赖 VLAN、IP subnet 和路由，docker 本身不做任何限制，用户可以像管理传统 VLAN 网络那样管理 macvlan
+
+
+### flannel网络
+flannel是CoreOS开发的容器网络解决方案,flannel为每个host分配一个subnet,容器从此subnet中分配IP,这些IP无需NAT和端口映射就可以跨主机通信
+flannel会为每个主机运行一个flanneld的agent,其职责就是从IP池中划分subnet,为了在各主机共享信息,flannel使用etcd存放网络配置
+数据包如何在主机间转发是通过backend实现的,常见的有vxlan和host-gw
+
+1. 192.168.56.101上安装配置etcd
+ETCD_VER=v2.3.7
+DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download
+curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+mkdir -p /tmp/test-etcd && tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/test-etcd --strip-components=1
+cp /tmp/test-etcd/etcd* /usr/local/bin/
+
+下载etcd可执行文件并保存到 /usr/local/bin/，启动 etcd 并打开 2379 监听端口。
+etcd -listen-client-urls http://192.168.56.101:2379 -advertise-client-urls http://192.168.56.101:2379
+
+测试 etcd 是否可用：
+etcdctl --endpoints=192.168.56.101:2379 set foo "bar"
+etcdctl --endpoints=192.168.56.101:2379 get foo 
+
+2. build flannel
+docker pull cloudman6/kube-cross:v1.6.2-2
+docker tag cloudman6/kube-cross:v1.6.2-2 gcr.io/google_containers/kube-cross:v1.6.2-2 
+
+git clone https://github.com/coreos/flannel.git
+cd flannel
+make dist/flanneld-amd64 
+scp dist/flanneld-amd64 192.168.56.104:/usr/local/bin/flanneld  #拷贝到host1
+scp dist/flanneld-amd64 192.168.56.105:/usr/local/bin/flanneld   #拷贝到host2
+
+3. 将flannel网络配置信息保存到etcd
+vi  flannel-config.json
+{
+  "Network": "10.2.0.0/16",
+  "SubnetLen": 24,
+  "Backend": {
+    "Type": "vxlan"
+  }
+} 
+
+将配置存入etcd：
+etcdctl --endpoints=192.168.56.101:2379 set /docker-test/network/config < flannel-config.json
+etcdctl get 
+
+4. 启动flannel
+host1 和 host2 上执行如下命令：
+flanneld -etcd-endpoints=http://192.168.56.101:2379 -iface=ens33 -etcd-prefix=/docker-test/network
+
+flanneld 启动后，host1 内部网络会发生一些变化:
+ip addr show flannel.1
+
+### docker中使用flannel
+1. 配置docker连接flannel
+vi /usr/lib/systemd/system/docker.service
+... --bip=10.244.0.1/24 --mtu=1450
+
+#参数保持一致如下
+cat  /run/flannel/subnet.env
+FLANNEL_NETWORK=10.244.0.0/16
+FLANNEL_SUBNET=10.244.0.1/24
+FLANNEL_MTU=1450
+FLANNEL_IPMASQ=true
+
+systemctl daemon-reload
+systemctl restart docker.service
+
+ip r
+
+则同主机的容器通过docker0通信,跨主机通过flannel.1转发
+
+2. 将容器连接到flannel网络
+docker run -itd --name bbox1 busybox
+docker run -itd --name bbox2 busybox
+
+### flannel的联通性和隔离
+flannel将各主机的docker0容器网络组成了一个大的互通网络,实现跨主机通信,没有隔离
+
+- flannel和外网连接
+容器通过docker0 NAT访问外网
+通过主机端口映射，外网可以访问容器内部
+
+
+### flannel的host-gw Backend
+1. host-gw backend 介绍
+flannel支持很多backend,vxlan、host-gw等
+host-gw不会封装数据包,而是在主机的路由表上创建到其他主机subnet的路由条目,从而实现跨主机通信
+
+vi  flannel-config.json
+{
+ "Network": "10.2.0.0/16",
+ "SubnetLen": 24,
+ "Backend": {
+   "Type": "host-gw"
+ }
+}
+
+更新 etcd 数据库：
+etcdctl --endpoints=192.168.56.101:2379 set /docker-test/network/config < flannel-config.json 
+
+#重启flanneld进程
+flanneld -etcd-endpoints=http://192.168.56.101:2379 -iface=enp0s8 -etcd-prefix=/docker-test/network
+
+ip route
+
+2. host-gw 和 vxlan 这两种 backend 做个简单比较。
+host-gw 把每个主机都配置成网关，主机知道其他主机的 subnet 和转发地址。vxlan 则在主机间建立隧道，不同主机的容器都在一个大的网段内（比如 10.2.0.0/16）。
+虽然 vxlan 与 host-gw 使用不同的机制建立主机之间连接，但对于容器则无需任何改变，bbox1 仍然可以与 bbox2 通信。
+由于 vxlan 需要对数据进行额外打包和拆包，性能会稍逊于 host-gw
+
+
+### Weave网络
+1. 介绍
+weave 是 Weaveworks 开发的容器网络解决方案
+weave 创建的虚拟网络可以将部署在多个主机上的容器连接起来
+对容器来说，weave 就像一个巨大的以太网交换机，所有容器都被接入这个交换机，容器可以直接通信，无需 NAT 和端口映射
+除此之外，weave 的 DNS 模块使容器可以通过 hostname 访问
+
+2. 环境介绍
+weave不依赖分部署数据库(etcd和consul)交换网络信息,每个主机只需运行weave组件就能建立跨主机容器网络
+
+- 安装weave
+curl -L git.io/weave -o /usr/local/bin/weave
+chmod a+x /usr/local/bin/weave
+
+- host1上启动weave
+weave launch  #weave组件都是以容器方式运行的
+weave运行了3个容器:
+weave主程序,负责建立weave网络收发数据、提供DNS服务
+weaveplugin是libnetwork CNM driver,实现了docker网络
+weaveproxy提供docker命令的代理,当用户运行docker cli创建容器时,会自动将容器添加到weave网络
+
+weave会创建新的docker network ls weave
+driver是weavemesh
+docker network inspect weave
+
+3. weave网络的结构
+eval $(weave env)
+docker run --name bbox1 -itd busybox
+eval $(weave env --restore)  #恢复之前的环境变量
+
+
+
+

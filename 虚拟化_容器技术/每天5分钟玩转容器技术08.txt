@@ -1,0 +1,103 @@
+### 跨主机网络概述
+
+1. 单主机网络方案single-host
+- none
+- host
+- bridge
+- joined容器
+
+2. 跨主机网络方案multi-host
+- docker原生的overlay和macvlan
+- 第三方的, flannel,weave和calico
+
+众多网络方案通过libnetwork和CNM和Docker集成
+
+3. libnetwork和CNM(Container Network Model)
+CNM模型对容器网络进行了抽象:
+- sandbox
+是容器的网络栈,包含容器的interface、路由表、DNS等
+
+- endpoint
+作用是将sandbox接入network, endpoint的典型实现是veth pair
+一个endpoint只能属于一个网络也只能属于一个sandbox
+
+- Network
+包含一组endpoint,同一network的endpoint可以直接通信
+
+libnetwork和CNM定义了docker容器的网络模型:
+- Native Drivers
+none、bridge、overlay、macvlan
+
+- Remote Drivers
+flannel、weave、calico等
+
+### 准备overlay网络环境
+Docker提供overlay driver,使得用户可以创建基于Vxlan的overlay网络, Vxlan可将二层数据封装到UDP进行传输
+vxlan提供和vlan相同的以太网二层服务,
+
+Docker overlay网络需要一个key-value数据库用于保存网络状态信息,包括network,endpoint,IP等
+常用的软件有: Consul、etcd、zookeeper
+
+
+1. 容器方式运行consul
+docker run -d -p 8500:8500 -h consul --name consul progrium/consul -server -bootstrap
+
+通过 http://IP:8500 访问 Consul
+
+2. 修改配置文件
+host1 和 host2 的 docker daemon 的配置文件/etc/systemd/system/docker.service
+
+--cluster-store=consul://ip:8500 --cluster-advertise=ens33:2376
+
+systemctl daemon-reload
+systemctl restart docker.service
+
+host1和host2将注册到consul数据库中
+
+3. 创建overlay网络
+docker network create -d overlay ov_net1
+docker network ls
+
+host2上也可以看到ov_net1网络，因为host1将ov_net1网络信息存入了consul
+
+docker network inspect ov_net1
+
+IPAM指的是IP Address Management,docker自动为ov_net1分配IP空间
+
+4. 运行一个busybox容器并连接至ov_net1
+docker run -itd --name bbox1 --network ov_net1 busybox
+docker exec bbox1 ip r
+
+- docker 会创建一个 bridge 网络 “docker_gwbridge”，为所有连接到 overlay 网络的容器提供访问外网的能力
+docker network inspect docker_gwbridge  #172.18.0.0/16
+网桥docker_gwbridge就是作为这个网络的网关172.18.0.1，这样bbox1就可以访问外网了
+
+外网要访问容器，可通过主机端口映射，比如：
+docker run -p 80:80 -d --net ov_net1 --name web1 httpd 
+
+- 在host2中运行bbox2
+docker run -itd --name bbox2 --network ov_net1 busybox
+docker exec bbox2 ip r
+docker exec bbox2 ping -c 2 bbox1
+
+overlay网络中的容器可以通信也实现了DNS
+docker为每一个overlay网络创建了一个独立的network namespace,会有一个br0网桥
+endpoint还是由veth pair实现的,一端连容器的eth0,一端连接到namespace的br0上
+br0还会连接一个vxlan设备和其他host建立vxlan tunnel,实现了通信
+
+ln -s /var/run/docker/netns /var/run/netns
+docker exec bbox1 ip netns  #查看host1的网络namespace
+
+### 理解overlay网络的隔离
+docker network create -d overlay ov_net2
+docker run -itd --name bbox3 --network ov_net2 busybox
+
+在bbox3内ping不通bbox1,可见overlay网络是互相隔离的,要实现bbox3和bbox1的通信,需要
+docker network connect ov_net1 bbox3
+docker exec bbox3 ping -c 2 bbox1
+
+- overlay IPAM
+docker默认为overlay网路分配24位掩码的子网10.0.x.0/24,所有主机共享这个subnet,容器启动时会顺序从分配IP
+docker network create -d overlay --subnet 10.22.1.0/24 ov_net3  #可以手动指定subnet地址
+
+
