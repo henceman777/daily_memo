@@ -298,6 +298,157 @@ eval $(weave env)
 docker run --name bbox1 -itd busybox
 eval $(weave env --restore)  #恢复之前的环境变量
 
+### weave网络的通信和隔离
+weave launch 192.168.56.104  #指定 host1 的 IP 192.168.56.104，这样 host1 和 host2 才能加入到同一个 weave 网络
+
+运行容器 bbox3：
+eval $(weave env)
+docker run --name bbox3 -itd busybox
+
+1. weave网络连通性
+
+2. weave网络的隔离
+要实现网络隔离，可以通过环境变量 WEAVE_CIDR 为容器分配不同 subnet 的 IP
+docker run -e WEAVE_CIDR=ip:10.32.6.6/24 -it busybox
 
 
+### weave网络和外网的通信
+- 首先将主机加入weave网络
+- 然后将主机当作访问weave网络的网关
+
+weave expose
+ip addr show weave
+
+- 让其他非 weave 主机访问到 bbox1 和 bbox3，只需将网关指向 host1。例如在 192.168.56.101 上添加如下路由：
+ip route add 10.32.0.0/12 via 192.168.56.104 
+
+1. IPAM
+10.32.0.0/12 是 weave 网络使用的默认 subnet，如果此地址空间与现有 IP 冲突，可以通过 --ipalloc-range 分配特定的 subnet。
+weave launch --ipalloc-range 10.2.0.0/16 
+
+### calico网络
+calico是纯三层虚拟网络方案
+Calico 为每个容器分配一个 IP，每个 host 都是 router，把不同 host 的容器连接起来
+Calico 还有一大优势：network policy。用户可以动态定义 ACL 规则，控制进出容器的数据包，实现业务需求
+
+1. 环境
+Calico 依赖 etcd 在不同主机间共享和交换信息，存储 Calico 网络状态。我们将在 host 192.168.56.101 上运行 etcd
+Calico 网络中的每个主机都需要运行 Calico 组件，提供容器 interface 管理、动态路由、动态 ACL、报告状态等功能0
+
+- host 192.168.56.101 上运行如下命令启动 etcd：
+etcd -listen-client-urls http://192.168.56.101:2379 -advertise-client-urls http://192.168.56.101:2379
+
+修改 host1 和 host2 的 Docker daemon 配置文件 /etc/systemd/system/docker.service， 连接 etcd：
+--cluster-store=etcd://192.168.56.101:2379 
+
+systemctl daemon-reload
+systemctl restart docker.service
+
+- 部署calico
+wget -O /usr/local/bin/calicoctl https://github.com/projectcalico/calicoctl/releases/download/v1.0.2/calicoctl
+chmod +x calicoctl
+calicoctl node run #host1和host2上启动calico
+
+- 创建calico网络
+docker network create --driver calico --ipam-driver calico-ipam ca_net1 #host1和host2上执行
+calico是global的网络,etcd会将cal_net1同步到所有主机
+
+### calico的网络结构
+1. host1 中运行容器 bbox1 并连接到 cal_net1：
+docker container run --net cal_net1 --name bbox1 -tid busybox
+
+docker exec bbox1 ip address
+cali0 是 calico interface，host1作为router负责转发目的地址为bbox1的数据包
+所有发送到bbox1的数据都会发给cali5f744ac07f0，因为cali5f744ac07f0与cali0是一对veth pair，bbox1 能够接收到数据
+
+host2 中运行容器 bbox2，也连接到 cal_net1：
+docker container run --net cal_net1 --name bbox2 -tid busybox
+
+calico 默认的 policy 规则是：容器只能与同一个 calico 网络中的容器通信
+
+calicoctl get profile cal_net1 -o yaml  #查看profile，profile定义该网络的policy
+
+### 定制calico的policy
+Calico 默认的 policy 规则是：容器只能与同一个 calico 网络中的容器通信
+calico 能够让用户定义灵活的 policy 规则，精细化控制进出容器的流量
+
+- 首先创建 cal_web。
+docker network create --driver calico --ipam-driver calico-ipam cal_web 
+
+- 在host1 中运行容器 web1，连接到 cal_web：
+docker container run --net cal_web --name web1 -d httpd
+
+- 创建 policy 文件 web.yml
+- apiVersion: v1
+  kind: profile
+  metadata:
+    name: cal_web
+  spec:
+    ingress:
+    - action: allow
+      protocol: tcp
+      source:
+        tag: cal_net2
+      destination:
+        ports:
+        - 80
+
+- 应用该policy
+caclicoctl apply -f web.yml
+
+docker exec bbox3 wget web1_IP
+
+### 如何定制calico的IP池
+- 首先定义一个 IP Pool，比如：
+cat << EOF | calicoctl create -f -
+- apiVersion: v1
+ kind: ipPool
+ metadata:
+   cidr: 17.2.0.0/16
+EOF
+
+- 可用此IP Pool创建calico网络:
+docker network create --driver calico --ipam-driver calico-ipam --subnet=17.2.0.0/16 my_net
+
+docker container run --net my_net --ip 17.2.3.11 -it busybox
+
+### 一文搞懂docker网络
+之前学习了docker的overlay、macvlan、flannel、weave、calico等跨主机网络方案
+PoC选型
+
+docker起初只提供了single-host的网络,后来涌现出跨主机multi-host的网络
+
+1. 集中网络的比较
+- 网络模型
+连接不同主机上容器的虚拟网络,这个虚拟网络的拓扑结构和实现技术就是网络模型
+> Docker overlay 如名称所示，是 overlay 网络，建立主机间 VxLAN 隧道，原始数据包在发送端被封装成 VxLAN 数据包，到达目的后在接收端解包。
+> Macvlan 网络在二层上通过 VLAN 连接容器，在三层上依赖外部网关连接不同 macvlan。数据包直接发送，不需要封装，属于 underlay 网络。
+> Flannel 我们讨论了两种 backend：vxlan 和 host-gw。vxlan 与 Docker overlay 类似，属于 overlay 网络。host-gw 将主机作为网关，依赖三层 IP 转发，不需要像 vxlan 那样对包进行封装，属于 underlay 网络。
+> Weave 是 VxLAN 实现，属于 overlay 网络。 
+
+- 分布式存储distributed store，etcd、consul等key-value数据库
+> Docker Overlay、Flannel和Calico 都需要 etcd 或 consul
+> Macvlan是简单的 local 网络，不需要保存和共享网络信息
+> Weave自己负责在主机间交换网络配置信息，也不需要 Distributed Store
+
+- IPAM 管理网络的IP
+> overlay网络中所有的主机共享一个subnet
+> macvlan需要用户自己管理subnet
+> flannel为每个主机自动分配独立的subnet,用户只需指定一个大的IP池
+> weave默认配置下所有容器使用10.32.0.0/12的subnet,可以通过--ipalloc-range避免冲突
+> calico从IP池中为主机分配自己的subnet
+
+- 连通性和隔离
+> 同一docker overlay的网络中的容器可以通信,实现跨网络访问，只有将容器加入多个网络。与外网通信可以通过 docker_gwbridge 
+> macvlan网络的连通或隔离完全取决于二层vlan和三层路由
+> 不同flannel网络中的容器可以直接通信,没有隔离
+> weave网络默认配置下的所有容器在一个大的subnet中,可以自由通信，如果要实现隔离,则指定不同的subnet
+> calico默认配置下只允许位于同一网络的容器间通信,但是通过强大的policy能够实现任意场景的访问控制
+
+- 性能
+underlay网络性能优于overlay
+Overlay 网络利用隧道技术，将数据包封装到 UDP 中进行传输。因为涉及数据包的封装和解封，存在额外的 CPU 和网络开销
+Macvlan、Flannel host-gw、Calico 的性能会优于 Docker overlay、Flannel vxlan 和 Weave
+
+Overlay 较 Underlay 可以支持更多的二层网段，能更好地利用已有网络，以及有避免物理交换机 MAC 表耗尽等优势
 

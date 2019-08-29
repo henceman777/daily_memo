@@ -1,0 +1,87 @@
+### 常见的docker容器监控方案
+
+1. docker自带的监控子命令
+docker container ps
+docker container ls
+docker container top [container_name]
+docker container top [container_name] -au
+
+docker container stats 21804a03bd98 #显示容器各种资源使用
+
+2. 监控利器sysdig
+sysdig是轻量级的系统监控工具,原生支持容器
+sysdig是将如strace、tcpdump、htop、iftop、lsof等工具集成,并提供友好的操作界面
+
+- 安装和运行 sysdig 的最简单方法是运行 Docker 容器：
+docker container run -it --rm --name=sysdig --privileged=true \
+          --volume=/var/run/docker.sock:/host/var/run/docker.sock \
+          --volume=/dev:/host/dev \
+          --volume=/proc:/host/proc:ro \
+          --volume=/boot:/host/boot:ro \
+          --volume=/lib/modules:/host/lib/modules:ro \
+          --volume=/usr:/host/usr:ro \
+          sysdig/sysdig 
+
+sysdig容器以privilege方式运行,且会读取操作系统的/dev、/proc
+
+docker container exec -it sysdig bash
+csysdig  #交互方式启动sysdig
+
+3. weave scope容器地图
+weave scope的最大特点是自动生成docker容器地图,直观的理解、监控和控制容器
+- 安装weave scope
+curl -L git.io/scope -o /usr/local/bin/scope
+chmod a+x /usr/local/bin/scope
+scope launch  #以容器方式启动weave scope
+
+Weave Scope 的访问地址为http://[Host_IP]:4040/ 
+
+- 容器监控
+weave scope将容器分为: weave自己的容器system container和其他容器application container
+weave scope界面是可交互的地图,
+
+- weave scope对主机监控
+weave scope除了监控容器还可以监控docker host
+
+scope launch 192.168.56.102 192.168.56.103  #在两个主机上启动weave scope
+
+4. cAdvisor数据收集利器
+cAdvisor是google开发的容器监控工具,
+
+docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:rw \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  google/cadvisor:latest
+
+通过http://[Host_IP]:8080访问cAdvisor
+
+- 监控docker host
+cAdvisor会显示当前host的资源使用情况,包括CPU、内存、网络、文件系统等
+
+- 监控容器
+
+
+
+》展示 Host 和容器两个层次的监控数据
+》展示历史变化数据
+
+可以把cAdvisor 定位为一个监控数据收集器，收集和导出数据是它的强项，而非展示数据
+cAdvisor 支持很多第三方工具，其中就包括下一节要重点学习的 Prometheus
+
+5. prometheus架构
+prometheus是优秀的监控工具,准确说是监控方案,包括监控数据收集、存储、处理、可视化和告警等
+
+- 架构
+Prometheus Server：负责从exporter拉取和存储监控数据,并提供一套灵活查询PromQL供用户使用
+Exporter： 负责收集目标对象(host、container)的性能数据,并通过Prometheus Server获取
+可视化组件： Grafana
+Alertmanager： 用户可以自定义基于监控数据的告警规则，支持email、pagerDuty、webhook等
+
+Pro最大的特点和亮点是多维数据模型
+
+

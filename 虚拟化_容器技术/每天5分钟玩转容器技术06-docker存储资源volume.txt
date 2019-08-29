@@ -9,7 +9,7 @@
 
 docker支持多种存储引擎,AUFS、Device Mapper、btrfs、overlayFS、VFS等
 
-docker jnfo 查看默认的Storage Driver
+docker info 查看默认的Storage Driver
 
 2. data volume
 本质是Docker容器的宿主机的目录和文件被直接mount到容器的文件系统中
