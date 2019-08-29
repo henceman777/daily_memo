@@ -65,15 +65,13 @@ cAdvisor会显示当前host的资源使用情况,包括CPU、内存、网络、�
 
 - 监控容器
 
-
-
 》展示 Host 和容器两个层次的监控数据
 》展示历史变化数据
 
 可以把cAdvisor 定位为一个监控数据收集器，收集和导出数据是它的强项，而非展示数据
 cAdvisor 支持很多第三方工具，其中就包括下一节要重点学习的 Prometheus
 
-5. prometheus架构
+### prometheus
 prometheus是优秀的监控工具,准确说是监控方案,包括监控数据收集、存储、处理、可视化和告警等
 
 - 架构
@@ -82,6 +80,121 @@ Exporter： 负责收集目标对象(host、container)的性能数据,并通过P
 可视化组件： Grafana
 Alertmanager： 用户可以自定义基于监控数据的告警规则，支持email、pagerDuty、webhook等
 
-Pro最大的特点和亮点是多维数据模型
+Prometheus最大的特点和亮点是多维数据模型
+通过添加不同的维度数据来满足不同的业务需求
+Prometheus丰富的查询语言能够灵活充分的挖掘数据的价值
+
+### 部署prometheus
+- Prometheus Server：本身以容器方式运行在host1
+- Exporter：将使用
+  Node Exporter,负责收集host硬件和操作系统数据,运行在所有host
+  cAdvisor负责收集容器数据,将以容器方式运行在所有host上
+
+- Grfana：显示多维数据,Grafana本身以容器方式运行host1
+
+1. 运行Node Exporter
+#各host上运行
+docker run -d -p 9100:9100 \
+-v "/proc:/host/proc" \
+-v "/sys:/host/sys" \
+-v "/:/rootfs" \
+--net=host \
+prom/node-exporter \
+--path.procfs /host/proc \
+--path.sysfs /host/sys \
+--collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
+
+Node Exporter启动后将通过9100提供host的监控数据,浏览器http://ip:9100/metric
+
+2. 运行cAdvisor
+#各host上运行
+docker run \
+--volume=/:/rootfs:ro \
+--volume=/var/run:/var/run:rw \
+--volume=/sys:/sys:ro \
+--volume=/var/lib/docker/:/var/lib/docker:ro \
+--publish=8080:8080 \
+--detach=true \
+--name=cadvisor \
+--net=host \
+google/cadvisor:latest
+
+cAdvisor启动后将通过8080提供host的监控数据,在浏览器http://ip:8080/metrics 测试一下
+
+3. 运行Prometheus Server
+#host1上执行
+docker run -d -p 9090:9090 \
+-v /root/prometheus.yml:/etc/prometheus/prometheus.yml \
+--name prometheus \
+--net=host \
+prom/prometheus
+
+#使用了--net=host，这样Prometheus Server可以直接与Exporter和Grafana通信
+
+vi prometheus.yml 
+global:
+  scrape_interval:    15s
+  evaluation_interval: 15s
+  external_labels:
+      monitor: 'codelab-monitor'
+
+rule_files:
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090','localhost:8080','localhost:9100','ip2:8080','ip2:9100']
+
+测试prometheus,浏览器打开http://ip1:9090/metrics, 点击菜单 Status -> Targets
+
+4. 运行grafana
+#host1上执行
+docker run -d -i -p 3000:3000 \
+-e "GF_SERVER_ROOT_URL=http://grafana.server.name" \
+-e "GF_SECURITY_ADMIN_PASSWORD=secret" \ #指定了 Grafana admin用户密码 secret
+--net=host \
+grafana/grafana
+
+Grafana启动后,在浏览器中打开http://ip1:3000/
+登录后，Grafana 将引导我们配置 Data Source
+访问https://grafana.com/dashboards?dataSource=prometheus&search=docker，有很多用于监控Docker的Dashboard
+可以下载这些现成的 Dashboard，然后 import 到我们的 Grafana 中就可以直接使用了
+
+
+### 对比各种docker监控方案
+ps/top/stats 和 cAdvisor 能够监控容器基本的资源使用情况
+Sysdig、Weave Scope 和 Prometheus 则能提供更丰富的数据
+
+Weave Scope和Prometheus可以监控整个集群，而其余的工具只提供单个 Host 的监控能力
+只有 Prometheus 具备原生的告警功能
+Sysdig、Weave Scope和cAdvisor可以监控到Host操作系统的状态，Prometheus可通过Exporter支持应用级别的监控，如监控ceph、haproxy等
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
