@@ -1,0 +1,50 @@
+### 日志管理之Docker logs
+
+1. docker logs
+docker run -d --name web01 -p 80:80 httpd
+docker logs -f web01
+
+2. docker日志机制 logging driver
+docker默认的logging driver是json-file
+
+docker info|grep 'Logging Driver'
+/var/lib/docker/containers/<contariner ID>/<contariner ID>-json.log  #日志记录的文件
+
+除了json-file，docker还支持多种的logging driver,如:
+none、syslog、journald、gelf、fluentd、awslogs、splunk、wtwlogs、gcplogs等
+
+可以通过--logging-driver指定使用的logging driver
+
+
+### ELK初探
+
+1. ELK组件简介
+- Elasticsearch
+近乎实时查询的全文搜索引擎
+
+- Logstash
+读取日志,并对其分析过滤,然后转发给其他组件(如elasticsearch)进行索引或存储,logstash支持丰富的input和output
+
+- kibana
+基于JavaScript的web图形界面,专门用于可视化elasticsearch的数据,用户创建dashboard来监控日志
+
+2. 日志处理流程
+logstash负责从各个容器或主机上收集提取日志,转发给elasticsearch进行索引和保存,kibana分析和可视化数据
+
+3. 安装ELK套件
+docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk  #容器中运行elk
+各组件监听的端口如下:
+5601 - Kibana web 接口
+9200 - Elasticsearch JSON 接口
+5044 - Logstash 日志接收接口 
+
+访问Kibana： http://[Host IP]:5601/
+访问一下 Elasticsearch 的 JSON 接口 http://[Host IP]:9200/_search?pretty 
+
+4. 将docker日志导入elk
+/var/lib/docker/containers/container_id/container_id-json.log
+ELK提供了Filebeat轻量级工具，可以将指定路径下的日志文件转发给ELK,filebeat海湖监控日志文件
+
+- 安装Filebeat
+
+
