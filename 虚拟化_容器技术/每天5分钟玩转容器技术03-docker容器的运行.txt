@@ -1,32 +1,31 @@
-1. 如何运行容器
-三种指定容器启动时运行的命令:
-1、CMD指令
-2、ENTRYPOINT指令
-3、docker run命令行中指定
+### 如何运行容器
+1. 三种指定容器启动时运行的命令:
+》CMD指令
+》ENTRYPOINT指令
+》docker run命令行中指定
 
 docker ps 或docker container ls查看运行中的容器
 docker ps -a 或docker container ls -a
 
-1.1 让容器长时间运行
+2. 让容器长时间运行
 容器常见的用途是运行后台服务
 docker run --name my_http_server -d httpd
 
-
-2. 进入容器的方法
+3. 进入容器的方法
 - docker attach
 docker attach container_id
 
 - docker exec
 docker exec -it container_id bash|sh
 
-2.1 对比attach和exec的区别
+》对比attach和exec的区别
 - attach直接进入容器启动命令的终端,不会启动新的进程
 - exec则是容器中打开新的终端,并可以启动新的进程
 - 如果想要在终端查看命令的输出用attach,否则用exec
 
 docker logs -f container_id  #查看启动命令的输出
 
-3. 运行容器的实践
+4. 运行容器的实践
 服务类容器提供服务
 工具类容器提供临时的额工作环境,busybox
 
@@ -40,8 +39,3 @@ docker logs -f container_id  #查看启动命令的输出
 - 短ID
 - 长ID
 - 容器名称 --name 命名,docker rename可以重命名
-
-
-
-
-
