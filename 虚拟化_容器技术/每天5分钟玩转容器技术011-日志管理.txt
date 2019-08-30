@@ -46,5 +46,127 @@ docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk  #容�
 ELK提供了Filebeat轻量级工具，可以将指定路径下的日志文件转发给ELK,filebeat海湖监控日志文件
 
 - 安装Filebeat
+curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.3.1-x86_64.rpm
+sudo rpm -vi filebeat-7.3.1-x86_64.rpm
+安装文档 https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation.html
+
+- 配置
+vi /etc/filebeat/filebeat.yml
+- input_type: log
+  path:
+    - /var/lib/docker/containers/*/*.log
+    - /var/log/syslog
+
+output.elasticsearch:
+  hosts: ["localhost:9200"]
+
+- 启动filebeat
+systemctl start filebeat.service
+
+- 管理日志
+正常情况下将日志发送给elasticsearch
+查看es的json接口： http://[Host IP]:9200/_search?pretty
+
+- kibana中展示日志
+配置一个index pattern，告诉kibana查询和分析elasticsearch中的哪些日志
+> 打开[Host IP]:5601
+> 指定index name or pattern为filebeat-*
+> Time-field name选择为@timestamp
+> Create创建后, 左侧Discover菜单可以看到容器syslog日志信息
+
+docker run busybox sh -c 'while true; do echo "Log message from container!"; sleep 10; done;'
 
 
+### 万能日志收集器Fluentd
+1. Fluentd简介
+Fluentd是开源数据收集器,plugin支持连接多种数据源和数据输出组件,可以收集容器日志
+
+2. 利用Filebeat将Fluentd收集到的日志转发给Elasticsearch
+- 安装Fluentd
+运行一个fluentd容器
+docker run -d -p 24224:24224 -p 24224:24224/udp -v /data:/fluentd/log fluent/fluentd
+
+- 重新配置filebeat
+vi /etc/filebeat/filebeat.yml
+- input_type: log
+  paths:
+    - /data/*.log
+
+systemctl restart filebeat.service
+
+- 监控容器日志
+docker run -d \
+--log-driver=fluentd \
+--log-opt fluentd-address=localhost:24224 \
+--log-opt tag="log-test-container-A" \
+busybox sh -c 'while true; do echo "log from container A"; sleep 10; done;'
+
+docker run -d \
+--log-driver=fluentd \
+--log-opt fluentd-address=localhost:24224 \
+--log-opt tag="log-test-container-B" \
+busybox sh -c 'while true; do echo "log from container B"; sleep 10; done;'
+
+注:
+--log-driver=fluentd                      #告诉Docker使用Fluentd的logging driver
+--log-opt fluentd-address=localhost:24224 #将容器日志发送到Fluentd的数据接收端口
+--log-opt tag="log-test-container-A/B"    #在日志中添加一个可选的tag，用于区分不同的容器
+
+
+### Graylog日志系统
+Graylog是与ELK可以相提并论的一款集中式日志管理方案，支持数据收集、检索、可视化Dashboard
+
+1. 架构
+Graylog负责接收来自各种设备和应用的日志，并为用户提供Web访问接口
+Elasticsearch用于索引和保存Graylog接收到的日志
+MongoDB 负责保存Graylog自身的配置信息
+Graylog 的部署方案很灵活，快速搭建一个all-in-one的环境；部署一个高可用高伸缩性的集群对于生成环境也是必要的
+
+2. 部署Graylog
+graylog和组件都以容器方式部署
+
+- MangoDB和elasticsearch
+docker run --name graylog-mongodb -d mongo:3
+docker run --name graylog-elasticsearch -d elasticsearch:2 elasticsearch -Des.cluster.name="graylog"
+
+- Graylog
+docker run --link graylog-mongo:mongo \
+           --link graylog-elasticsearch:elasticsearch \
+           -p 9000:9000 \
+           -p 12201:12201/udp \
+           -e GRAYLOG_WEB_ENDPOINT_URI="http://192.168.142.72:9000/api" \
+           -e GRAYLOG_PASSWORD_SECRET=somepasswordpepper \
+           -e GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918 \
+           -d graylog2/server
+
+echo -n yourpassword | shasum -a 256  #哈希指定密码
+http://[Host IP]:9000
+
+
+3. 配置Graylog
+System >Inputs >GELF UDP >Launch >Node中选择Graylog容器 >Title命名docker GELF input >其他默认
+与Graylog对接的Logging Driver是gelf,因此选择GELF UDP类型的input
+
+4. Graylog管理日期日志
+docker run -d \
+           --log-driver=gelf \
+           --log-opt gelf-address=udp://localhost:12201 \
+           --log-opt tag="log-test-container-A" \
+           busybox sh -c 'while true; do echo "log message from container A"; sleep 10; done;'
+
+docker run -d \
+           --log-driver=gelf \
+           --log-opt gelf-address=udp://localhost:12201 \
+           --log-opt tag="log-test-container-B" \
+           busybox sh -c 'while true; do echo "log message from container B"; sleep 10; done;'
+
+点击 Graylog 顶部菜单 Search，就能够查询到容器的日志
+与Kibana一样，Graylog也提供了强大的查询功能，如输入关键字container B能搜索出所有匹配的日志条目
+
+
+- 小结：
+Docker 日志管理的方案，由docker logs引出了Docker logging driver；进而学习了ELK stack；
+通过fluentd logging driver，我们很容易将fluentd接入到日志管理方案中；
+最后我们还实践了与 ELK 同等量级的 Graylog
+
+与容器监控一样，容器日志管理。没有最好的，只有最适合的
