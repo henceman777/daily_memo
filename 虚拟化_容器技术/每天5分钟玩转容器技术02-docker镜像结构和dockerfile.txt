@@ -1,37 +1,35 @@
-1. 镜像的内部结构
+### 镜像的内部结构-镜像
 hello-world
 
 docker pull hello-world
 docker images
 docker run hello-world
 
-2. base镜像
-2.1 rootfs
+1. base镜像
+- rootfs
 内核kernel,linux启动后会加载bootfs文件系统,之后bootfs会卸载掉
 用户空间的文件系统是rootfs,包含/dev、/proc、/bin等
 base镜像只需要提供rootfs即可,底层使用宿主机的kernel
 
 不同发行版的主要区别就是rootfs
 
-2.2 镜像分层结构
-
-2.3 可写的容器层
+- 镜像分层结构
+》可写的容器层
 只有当需要修改时才复制一份数据，这种特性被称作 Copy-on-Write
 
-3. 构建镜像
+- 构建镜像
 docker commit 容器名 镜像名
 
 Dockerfile 构建文件:
 docker build -t 镜像名 .  #Dockerfile文件目录执行
 docker history #会显示镜像的构建历史
 
-4. 镜像的缓存特性
+- 镜像的缓存特性
 Docker 会缓存已有镜像的镜像层，构建新镜像时，如果某镜像层已经存在，就直接使用，无需重新创建
 在构建镜像时不使用缓存，可以在 docker build 命令中加上 --no-cache 参数。
 Dockerfile 中每一个指令都会创建一个镜像层，上层是依赖于下层的
 
-
-5. Dockerfile常用的命令
+2. Dockerfile常用的命令
 - FROM
 指定base镜像
 
@@ -68,7 +66,7 @@ COPY ["src", "dst"]
 设置容器启动时运行的命令
 CMD或docker run之后的参数当作参数传递给ENTRYPOINT
 
-5.1 例子
+- 例子
 FROM busybox
 MAINTAINER nobody
 WORKDIR /testdir
@@ -76,24 +74,24 @@ RUN touch file01
 COPY ['bunch.tar.gz', '.']
 ENV WELCOME "welcome be here."
 
-5.3 RUN/CMD/ENTRYPOINT命令的对比
-
-- RUN执行命令并创建新的镜像层,RUN常用于安装软件,
+- RUN/CMD/ENTRYPOINT命令的对比
+》RUN执行命令并创建新的镜像层,RUN常用于安装软件,
 RUN apt-get update && apt-get install -y \  
 bzr \
 git
 
 注意：apt-get update 和 apt-get install 被放在一个 RUN 指令中执行，这样能够保证每次安装的是最新的包
 
-- CMD设置容器启动后默认执行的命令,CMD会被docker run后面的命令行参数替换
+》CMD设置容器启动后默认执行的命令,CMD会被docker run后面的命令行参数替换
 CMD命令的三种格式:
 1、exec格式 CMD ['excutable',"para1","para2"],推荐
 2、CMD ["para1","para2"]为ENTRYPOINT指定额外参数,ENTRYPOINT必须使用exec格式
 3、shell格式，CMD command para1 para2
 
-- ENTRYPOINT配置容器启动时运行的命令，让容器以应用程序或者服务的形式运行
+》ENTRYPOINT配置容器启动时运行的命令，让容器以应用程序或者服务的形式运行
 ENTRYPOINT不会被忽略,一定会执行
-ENTRYPOINT的两种格式:
+
+> ENTRYPOINT的两种格式:
 1、exec格式：ENTRYPOINT ['excutable',"para1","para2"],推荐
 ENTRYPOINT 中的参数始终会被使用，而 CMD 的额外参数可以在容器启动时动态替换掉。
 比如下面的 Dockerfile 片段：
@@ -109,14 +107,13 @@ Hello CloudMan
 2、shell格式：ENTRYPOINT command para1 para2
 此格式会忽略任何CMD或者docker run的参数
 
-
-- 最佳实践
+》最佳实践
 1、RUN命令安装应用和软件包,构建镜像
 2、镜像用途是运行服务则优先使用exec模式的ENTRYPOINT指令,CMD可为ENTRYPOINT提供额外参数
 docker run可以指定替换默认参数
 3、为容器设置默认的启动命令可使用CMD
 
-- Shell模式和Exec模式：
+> Shell模式和Exec模式：
 ENV VAR=123
 CMD echo $VAR  #会调用/bin/sh -c,变量会被shell解析
 
@@ -125,12 +122,12 @@ CMD ["/bin/echo","hello $VAR"] #exec模式下变量不会被shell解析, 希望�
 
 CMD 和 ENTRYPOINT 推荐使用 Exec 格式，因为指令可读性更强，更容易理解。RUN 则两种格式都可以
 
-6. 镜像的命名实践
+3. 镜像的命名实践
 如ubuntu-with-vi
 
 - tag的使用
 
-7. 使用公共registry
+4. 使用公共registry
 - Docker Hub注册
 - Docker Host上运行 docker login -u jinmeng260
 - docker tag httpd jinmeng260/httpd:v1
@@ -138,7 +135,7 @@ CMD 和 ENTRYPOINT 推荐使用 Exec 格式，因为指令可读性更强，更�
 
 - docker pull jinmeng260/httpd:v1
 
-8. 创建本地registry
+5. 创建本地registry
 - 启动registry
 mkdir /myregistry
 docker run -d -p 5000:5000 -v /myregistry:/var/lib/registry registry:2
@@ -153,9 +150,7 @@ docker push registry_host:5000/jinmeng260/httpd:v1
 docker pull registry_host:5000/jinmeng260/httpd:v1
 
 
-
 小结:
 镜像的分层结构
 docker rmi 删除本地镜像
 docker search 搜索docker hub上的镜像
-
