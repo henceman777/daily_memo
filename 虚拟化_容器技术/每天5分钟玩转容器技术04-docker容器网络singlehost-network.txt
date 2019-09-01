@@ -30,9 +30,9 @@ eth0@if34  是和上面的vethxxx一对veth pair,veth pair是成对出现的特�
 docker inspect bridge  #查看bridge网络的配置信息
 bridge网络配置的subnet是172.17.0.0/16，网关是172.17.0.1也就是 docker0桥
 
-- 用户也可以创建user-defined网络
 
 2. 自定义网络
+用户也可以创建user-defined网络
 docker的三种用户自定义网络驱动: bridge、overlay、macvlan
 overlay和macvlan用于跨主机的网络
 
@@ -53,13 +53,10 @@ docker network connect my_net2 container_id
 
 ### 容器间通信的三种方式
 1. IP通信
-具体做法是:
-容器创建时--network指定网络，或者
-docker network connect将现有的容器加入到指定的网络
+容器创建时--network指定网络，或者 docker network connect将现有的容器加入到指定的网络
 
 2. docker DNS server
 docker 1.10以后docker daemon实现了内嵌的DNS server,使容器可以通过容器名通信
-
 docker run -it --network=my_net2 --name=bbox1 busybox
 docker run -it --network=my_net2 --name=bbox2 busybox 
 
@@ -84,8 +81,7 @@ joined容器的适用场合:
 iptables -t nat -S
 
 在NAT 表中，有这么一条规则：
--A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE 
-含义是：
+-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE   #含义是：
 来自 172.17.0.0/16 网段的包，目标地址是外网（! -o docker0），就把它交给 MASQUERADE 处理
 
 tcpdump -i docker0 -n icmp #抓包分析
