@@ -1,89 +1,79 @@
-Kubernetes
-
-一。Kubernetes简介
+### Kubernetes简介
 1. k8s的历史
-k8s
-Mesos
-Docker Swarm
-
+k8s Vs Mesos Vs Docker Swarm
 Rancher、CoreOS、IBM、Oracle等厂商也研发基于k8s的CaaS和Paas产品
 
 基于容器的微服务架构会逐渐成为开发应用的主流,k8s是运行微服务的理想平台
+最初Google的Borg系统(现称为Omega)来调度庞大数量的容器和工作负载，然后重写后开源就叫k8s
 
-最初Google的Borg系统(现称为Omega)来调度庞大数量的容器和工作负载
-然后重写后开源就叫k8s
-
-
-
-2. 创建一个k8s集群
+### 创建一个k8s集群
 https://kubernetes.io/docs/tutorials/kubernetes-basics/
 minikube start
 kubectl get nodes
 kubectl cluster-info
 
-#部署应用
+### k8s核心功能
+1. 部署应用
 kubectl run kubernetes-bootcamp \
       --image=docker.io/jocatalin/kubernetes-bootcamp:v1 \
       --port=8080
 	  
-pod是容器的集合,同一个pod的所有容器共享IP和Port空间(在相同的network namespace)
-pod是k8s调度的最小单位
-kubectl get nodes
+pod是容器的集合,同一个pod的所有容器共享IP和Port空间(在相同的network namespace),pod是k8s调度的最小单位
 
 deployment是k8s的术语,理解为应用
 
+2. 访问应用
 kubectl expose deployment/kubernetes-bootcamp \
       --type="NodePort" \
-      --port 8080  #映射端口
+      --port 8080
 	  
 kubectl get services
 curl host01:32140
 
-#Scale应用
+3. Scale应用
 kubectl get deployments  #查看副本数
 kubectl scale deployment/kubernetes-bootcamp --replicas=3
-kubectl get pods #pod增加到3个
-curl host01:32140  #可以发现每次请求发送到不同的pod,实现了负载均衡
+kubectl get pods    #pod增加到3个
+curl host01:32140   #可以发现每次请求发送到不同的pod,实现了负载均衡
 kubectl scale deployments/kubernetes-bootcamp --replicas=2  #scale down到2个
 
-#滚动更新
+4. 滚动更新
 kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2  #升级到v2
 kubectl get pods
 kubectl rollout undo deployments/kubernetes-bootcamp #回滚
 curl host01:32140  #可以验证版本
 
-#k8s的几个重要概念
-- Cluster是计算、存储和网络资源的集合
-- Master是Cluster的大脑,主要负责调度决定应用放在哪儿运行
-- Node的职责是运行容器应用,由master管理,Node负责监控并汇报容器的状态,并根据Master要求来管理容器的生命周期
+### k8s的几个重要概念
+1. Cluster是计算、存储和网络资源的集合
+2. Master是Cluster的大脑,主要负责调度决定应用放在哪儿运行
+3. Node的职责是运行容器应用,由master管理,Node负责监控并汇报容器的状态,并根据Master要求来管理容器的生命周期
 - Pod是k8s的最小单元,每个pod包含一个或多个容器,pod中的容器会作为一个整体被master调度到一个Node上运行
 pod最为比容器更高层次的抽象,封装部署到一个部署单元中;pod中的容器共享一个网络namespace
 pod的两种使用方式:
-one-container-per-pod单个容器简单封装成pod
-运行多个容器
+one-container-per-pod单个容器简单封装成pod、运行多个容器
 
-- Controller用来管理pod,k8s通常不会直接创建pod,controller包括:
-  - Deployment是常见的controller
-  - ReplicaSet实现了Pod的多副本管理
-  - DaemonSet用于每个Node最多运行一个Pod副本的场景
-  - StatefuleSet保证pod的每个副本整个生命周期名称是不变的
-  - Job用于运行结束就删除的应用
+4. Controller用来管理pod,k8s通常不会直接创建pod,controller包括:
+- Deployment是常见的controller
+- ReplicaSet实现了Pod的多副本管理
+- DaemonSet用于每个Node最多运行一个Pod副本的场景
+- StatefuleSet保证pod的每个副本整个生命周期名称是不变的
+- Job用于运行结束就删除的应用
  
-- Service定义了外界访问一组特定的Pod方式,Service有自己的IP和Port,service为pod提供负载均衡
+5. Service定义了外界访问一组特定的Pod方式,Service有自己的IP和Port,service为pod提供负载均衡
 controller负责运行pod;service负责访问容器pod
 
-- Namespace可以将一个物理Cluster逻辑上划分成多个虚拟的Cluster,每个cluster是一个namespace
+6. Namespace可以将一个物理Cluster逻辑上划分成多个虚拟的Cluster,每个cluster是一个namespace
 k8s默认创建两个nanmespace: default和kube-system存放k8s自己创建的系统资源
 
 
-3. 自己部署k8s集群
-k8s-master,k8s-node1,k8s-node2
+### 部署k8s集群
+k8s-master、k8s-node1、k8s-node2
 https://kubernetes.io/docs/setup/independent/install-kubeadm/
 
-- 安装Docker
+1. 安装Docker
 apt-get update && apt-get install docker.io
 
-#所有节点上安装kubectl,kubeadm,kubectl
+2. 所有节点上安装kubectl,kubeadm,kubectl
 kubelet运行在cluster的所有节点上,负责启动pod和容器
 kubeadm用于初始化Cluster
 kubectl是k8s的命令行工具,可以部署和管理应用,查看创建删除等
@@ -97,6 +87,7 @@ apt-get updateapt-get install -y kubelet kubeadm kubectl
 
 - kubeadm创建cluster
 https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
+
 - 初始化Master
 kubeadm init --apiserver-advertise-address 192.168.56.105 \#指明master的interface和cluster其他节点通信
 --pod-network-cidr=10.244.0.0/16  #指定pod网络的范围
@@ -118,21 +109,27 @@ kubeadm join --token d38a01.13653e584ccc1980 192.168.56.105:6443  #分别在node
 kubectl get pod --all-namespaces  #查看pod状态
 kubectl describe pod kube-flannel-ds-v0p3x --namespace=kube-system  #查看pod具体状态
 
+### Kubernete架构
+1. Master节点下运行的组件:
+- API server：
+提供HTTP/HTTPS RESTful API是k8s cluster的前端接口,各种客户端工具CLI等可以通过它管理各种资源
+- Scheduler：
+负责决定将pod放在哪个node上运行,调度时会考虑cluster的拓扑结构
+- controller manager：
+负责管理cluster各种资源,保证资源处于预期的状态
+- etcd：
+负责保存k8s cluster的配置信息和各种资源的状态信息
+- pod网络,flanned是可选方案
 
-- Master节点下运行的组件:
-  - API server,提供HTTP/HTTPS RESTful API是k8s cluster的前端接口,各种客户端工具CLI等可以通过它管理各种资源
-  - Scheduler 负责决定将pod放在哪个node上运行,调度时会考虑cluster的拓扑结构
-  - controller manager负责管理cluster各种资源,保证资源处于预期的状态
-  - etcd 负责保存k8s cluster的配置信息和各种资源的状态信息
-  - pod网络,flanned是可选方案
+2. Node是Pod运行的地方,k8s支持docker/rkt等容器runtime
+Node上运行的组件有：kubelet、kube-proxy和Pod网络flannel
 
-
-- Node是Pod运行的地方,k8s支持docker/rkt等容器runtime
-Node上运行的组件有,kubelet、kube-proxy和Pod网络flannel
-kubelet是Node的agent,当Scheduler确定某个Node上运行Pod后,会将具体配置信息发给该节点的kubelet
+kubelet：
+Node的agent,当Scheduler确定某个Node上运行Pod后,会将具体配置信息发给该节点的kubelet
 kubelet根据这些信息创建和运行容器,并向Master报告运行状态,
 
-kube-proxy, service逻辑上代表了后端的多个Pod,外界通过service访问Pod由kube-proxy完成
+kube-proxy：
+service逻辑上代表了后端的多个Pod,外界通过service访问Pod由kube-proxy完成
 kube-proxy负责将service的TCP/UDP数据流转发到后端的容器,多个副本时会实现负载均衡
 
 pod网络,实现pod间的通信
@@ -141,38 +138,32 @@ kubectl get pod --all-namespaces -o wide
 k8s的系统组件都放在kube-system的namespace中,kub-dns等
 kubelet是唯一没有以容器形式运行的k8s组件,通过systemd运行
 
-3. k8s的组件如何运行
+### k8s的组件如何运行
 kubectl run httpd-app --image=httpd --replicas=2  #部署deployment httpd-app，两个副本Pod，分别运行在k8s-node1和k8s-node2
-kubelet get deployment
-kubelet get pod -o wide
+kubectl get deployment
+kubectl get pod -o wide
 
-① kubectl 发送部署请求到 API Server。
-② API Server 通知 Controller Manager 创建一个 deployment 资源。
-③ Scheduler 执行调度任务，将两个副本 Pod 分发到 k8s-node1 和 k8s-node2。
-④ k8s-node1 和 k8s-node2 上的 kubelet 在各自的节点上创建并运行 Pod。 
+kubectl发送部署请求给API Server
+-->API Server通知Controller Manager创建一个deployment资源-->Scheduler执行调度任务，将两个副本 Pod 分发到各节点
+-->节点上kubelet在节点上创建并运行Pod 
 
-4. k8s特性深入学习
-- Deployment属于Controller来管理pod的生命周期
-kubectl run nginx-deployment --image=nginx:1.7.9 --replicas=2  #两个副本的Deployment nginx-deployment，容器image为nginx:1.7.9
-
+### k8s特性深入学习
+1. Deployment属于Controller manager,用来管理pod的生命周期
+kubectl run nginx-deployment --image=nginx:1.7.9 --replicas=2
 kubectl get deployment nginx-deployment
 kubectl describe deployment
 kubectl describe replicatset 
 kubectl get pod
-
 kubelet describe pod
 
-#过程描述
-用户通过kubectl创建deployment
-deployment创建replicaSet
-replicaSet创建Pod
+用户通过kubectl创建deployment->deployment创建replicaSet->replicaSet创建Pod
 
-- 命令和配置文件
-kubectl run nginx-deployment --image=nginx:1.7.9 --replicas=2
-kubectl apply -f nginx.yml  #通过配置文件创建
+### Kubernetes的两种创建资源的方式
+1. 命令和配置文件：
+- kubectl run nginx-deployment --image=nginx:1.7.9 --replicas=2
+- kubectl apply -f nginx.yml  #通过配置文件创建
 
-- Deployment的YAML文件
-配置格式:
+Deployment的YAML文件，配置格式:
 apiVersion: extensions/v1beta1  #当前配置格式的版本
 kind: Deployment  #创建的资源类型
 metadata:  #该资源的元数据
@@ -188,6 +179,10 @@ spec:  #deployment的规格
 				- name: nginx
 				  image: nginx:1.7.9
 
+2. yaml配置文件的方式的优点
+- 确定了期望状态
+- 提供了创建资源的模板,可以重复部署
+- 可以像管理代码一样管理部署
 
 kubectl apply -f nginx.yml
 kubectl get deployment
@@ -197,34 +192,43 @@ kubectl get pod -o wide
 kubelet delete deployment nginx-deployment
 kubectl delete -f nginx.yml  #删除这些资源
 
-- 伸缩Scale UP/DOWN指的是在线增加和减少Pod副本数
+### 伸缩Scale UP/DOWN
+指的是在线增加和减少Pod副本数
 kubectl apply -f nginx.yml #修改yml文件的replicas数量后执行
-kubectl taint node k8s-master node-role.kubernetes.io/master-  #将k8s-master也当作Node使用
 
-kubectl taint node k8s-master node-role.kubernetes.io/master="":NoSchedule #恢复master only
+1. 将k8s-master也当作Node使用
+kubectl taint node k8s-master node-role.kubernetes.io/master-  
+kubectl taint node k8s-master node-role.kubernetes.io/master="":NoSchedule 
 
-- Failover
+### k8s的故障恢复
+Failover自动恢复
 
-5. 用label控制pod的位置
+### 用label控制pod的位置
 默认下,Scheduler会将Pod调度到所有可用的Node
 
-label是key-value对,各种资源都可以设置label,灵活添加各种自定义属性
+1. label是key-value对,各种资源都可以设置label,灵活添加各种自定义属性
 kubectl label node k8s-node1 disktype=ssd  #标注了node1配置了ssd
 kubectl get node --show-labels #查看节点的label
 
 yaml文件中通过nodeSelector指定将Pod部署到具有label disktype=ssd的Node上
-kubectl label node k8s-node1 disktype-  #-即是删除
 
-6. DaemonSet的典型应用, 每个node上只能运行一个副本
-存储gluster、ceph/日志收集flunentd或logstash/监控prometheus或collectd等daemon
+kubectl label node k8s-node1 disktype-  #-即是删除,删除node的lebel
+
+### DaemonSet的典型应用
+1. DaemonSet在每个node上只能运行一个副本
+- 存储gluster、ceph
+- 日志收集flunentd或logstash
+- 监控prometheus或collectd等daemon
 
 kubectl get daemonset --namespace=kube-system
 
 - kube-flanned-ds属于DaemonSet
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
 - kube-proxy
 kubectl edit daemonset kube-proxy --namespace=kube-system
 
-7. 运行自己的DaemonSet
+2. 运行自己的DaemonSet
 Node Exporter是prometheus的agent
 
 docker run -d \
@@ -238,9 +242,10 @@ docker run -d \
 
 kubectl apply -f node_exporter.yml
 
+### k8s运行一次性服务
+- Deployment、ReplicaSet、DaemonSet都用于管理管理服务类的容器
+- Job用于工作类容器
 
-8. k8s运行一次性服务
-Job用于工作类容器
 vi myjob.yml
 apiVersion: batch/v1
 kind: Job
@@ -260,22 +265,91 @@ spec:
 kubectl apply -f myjob.yml
 
 kubectl get job  #查看job
-
 kubectl get pod --show-all
 kubectl logs myjob-xyz  #查看pod的标准输出
 
-- 提高job的效率
-同时执行多个pod,parallelism设置
+1. job失败的方法
+kubectl delete -f myjob.yml
+将restartPolicy设置为OnFailure
+
+2. 提高job的效率
+并行执行job,同时执行多个pod,parallelism设置
 completions设置job成功完成的pod总数
 
-- 定时job
+3. 定时job
 k8s的cronjob提供类似cron的定时任务
 
 systemctl restart kubelet.service
 kubectl api-versions
 kubectl get cronjob
 
-9. 通过service访问pod
+### 通过service访问pod
 - 创建service
-逻辑上代表一组Pod,具体哪些pod由label挑选,service有自己的IP
+逻辑上代表一组Pod,具体哪些pod由label挑选,service有自己的IP,无论后端 Pod 如何变化，对客户端不会有任何影响
 
+1. ClUSTER-IP是service的VIP,由iptables规则管理
+iptables-save打印当前的iptables规则
+iptables将访问的service流量转发给后端pod,类似轮循负载
+
+Endpoints指的是后端的pod
+
+2. DNS访问service
+kubeadm部署时会默认安装kube-dns，kube-dns 是一个 DNS 服务器
+每当有新的 Service 被创建，kube-dns 会添加该 Service 的 DNS 记录
+Cluster 中的 Pod 可以通过 <SERVICE_NAME>.<NAMESPACE_NAME> 访问 Service
+DNS 服务器是 kube-dns.kube-system.svc.cluster.local
+
+Kubernetes 集群内部可以通过 Cluster IP 和 DNS 访问 Service
+
+2. 外网访问service
+Kubernetes 提供了多种类型的 Service，默认是 ClusterIP
+- ClusterIP:
+service通过cluster内部的IP对外提供服务,只有cluster内的节点和pod可以访问
+
+- NodePort：
+通过Cluster节点的静态端口对外服务,cluster外部可以通过NodeIP:NodePort访问service
+
+- LoadBlancer：
+Cloud provider提供load balancer对外服务,cloud provider 负责将 load balancer 的流量导向 Service
+
+### Rolling update滚动更新
+1. 滚动更新是一次只更新一小部分副本，成功后，再更新更多的副本，最终完成所有副本的更新
+零停机时间，保证服务业务的连续性
+
+修改image的版本既可以kubectl apply -f ...
+
+2. 回滚
+每次更新都会记录下当前的配置,保存为一个revision记录
+可以在 Deployment 配置文件中通过 revisionHistoryLimit 属性增加 revision 数量
+kubectl apply -f http.v1.yml --record #记录当前命令道revison中
+kubectl rollout history deployment httpd #查看revison 历史记录
+kubectl rollout undo deployment httpd --to-revision=1 #回滚道指定版本
+
+### 自愈能力health check
+1. 自愈
+默认实现方式是自动重启发生故障的容器,用户还可以利用liveness和readiness探机制设置更精细的健康检查
+- 零停机部署
+- 避免部署的无效镜像
+- 更加安全的滚动升级
+
+2. 默认的监控检查
+每个容器启动时都会执行一个进程，此进程由 Dockerfile 的 CMD 或 ENTRYPOINT 指定
+如果进程退出时返回码非零，则认为容器发生故障，Kubernetes 就会根据 restartPolicy 重启容器
+
+ 默认的restartPolicy是Always
+
+ 如访问 Web 服务器时显示 500 内部错误，可能是系统超载，也可能是资源死锁，此时 httpd 进程并没有异常退出
+ 在这种情况下重启容器可能是最直接最有效的解决方案
+
+3. Liveness探测
+livenessProde
+
+4. readiness探测
+Liveness 探测可以告诉 Kubernetes 什么时候通过重启容器实现自愈；
+Readiness 探测则是告诉 Kubernetes 什么时候可以将容器加入到 Service 负载均衡池中，对外提供服务
+
+用 Liveness 探测判断容器是否需要重启以实现自愈；
+用 Readiness 探测判断容器是否已经准备好对外提供服务
+
+### 数据管理
+ 
