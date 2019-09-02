@@ -352,4 +352,278 @@ Readiness 探测则是告诉 Kubernetes 什么时候可以将容器加入到 Ser
 用 Readiness 探测判断容器是否已经准备好对外提供服务
 
 ### 数据管理
- 
+1. volume
+为了持久化容器的数据,可以使用kubernetes volume
+volume的生命周期独立于容器,pod中的容器可能会被销毁和重建,volume会保留
+kubernets volume本质上是一个目录,和docker volume类似,当volume挂载到pod,pod中的所有容器都可以访问这个volume
+kubernetes volume支持多种backend类型,包括emptyDir、hostPath、GCE Persisitent Disk、NFS、Ceph等
+volume提供对各种backend的抽象
+
+- emptyDir
+是最基础的Volume类型，是一个host上的空目录
+emptyDir volume对容器来说是持久的,对pod则不是,emptyDir Volume的生命周期和pod一致
+
+emptyDir 是 Host 上创建的临时目录，其优点是能够方便地为 Pod 中的容器提供共享存储，不需要额外的配置。
+但它不具备持久性，如果 Pod 不存在了，emptyDir 也就没有了，适合 Pod 中的容器需要临时共享存储空间的场景，如生产者消费者用例
+
+- hostPath
+hostPath volume的作用是将Docker host文件系统中已经存在的目录mount给pod容器
+hostPath 的持久性比 emptyDir 强
+需要访问 Kubernetes 或 Docker 内部数据（配置文件和二进制库）的应用则需要使用 hostPath
+
+kubectl edit --namespace=kube-system pod/kube-apiserver-192-168-40-144
+
+- kubernetes在AWS、GCE、Azure云上,可直接使用云硬盘作为volume
+AWS Elastic Block Store
+
+也可以使用主流的分布式存储: Ceph、GlusterFs等
+
+相对于 emptyDir 和 hostPath，这些 Volume 类型的最大特点就是不依赖 Kubernetes
+Volume 的底层基础设施由独立的存储系统管理，与 Kubernetes 集群是分离的
+数据被持久化后，即使整个 Kubernetes 崩溃也不会受损
+
+2. PV和PVC
+volume的管理型不足
+- PersistentVolume(PV)：
+是外部存储系统中的一块存储空间，由管理员创建和维护，PV 具有持久性，生命周期独立于 Pod
+
+- PersistentVolumeClaim(PVC)：
+是对PV的申请(Claim)。PVC通常由普通用户创建和维护,需要为 Pod 分配存储资源时，用户可以创建一个 PVC，指明存储资源的容量大小和访问模式（比如只读）等信息，Kubernetes 会查找并提供满足条件的 PV。 
+
+- NFS PV
+》节点上搭建NFS服务,目录是/nfsdata,shouwmount -e
+》创建一个PV：mypv1
+cat << nfs-pv1.yml| kubectl apply -f -
+apiVersion: v1
+kind: PersisitentVolume
+metadata:
+  name: mypv1
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  PersisitentVolumeReclaimPolicy: Recycle
+  storageClassName: nfs
+  nfs:
+    path: /nfsdata/pv1
+	server: 192.168.44.144
+EOF
+
+kubectl apply -f nfs-pv1.yml
+kubectl get pv #STATUS 为 Available，表示 mypv1 就绪，可以被 PVC 申请
+
+》创建PVC： mypvc1 
+cat << nfs-pvc1.yml | kubectl apply -f -
+kind: PersisitentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mypvc1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+	  storage: 1Gi
+	storageClassName: nfs
+EOF
+
+kubectl get pv
+
+》在pod中使用存储,
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod1
+spec:
+  container:
+    - name: mypod1
+	  image: busybox
+	  args:
+	  - /bin/sh
+	  - -c
+	  - sleep 30000
+	  volumeMounts:
+	  - mountPath: "/mydata"
+	    name: mydata
+  volumes:
+    - name: mydata
+	  PersisitentVolumeClaim:
+	    claimName: mypvc1
+
+kubectl apply -f
+
+- 回收PV
+删除PVC可以回收PV
+kubectl delete pvc mypvc1
+
+因为 PV 的回收策略设置为 Recycle，所以数据会被清除，但这可能不是我们想要的结果
+如果希望保留数据，可以将策略设置为 Retain
+
+- PV的动态供给
+创建了 PV，然后通过 PVC 申请 PV 并在 Pod 中使用，这种方式叫做静态供给（Static Provision）
+动态供给（Dynamical Provision），即如果没有满足 PVC 条件的 PV，会动态创建 PV
+
+- MySQL使用PV和PVC演示
+》部署PV和PVC
+》部署MySQL
+》向MySQL添加数据
+》模拟节点宕机，kubernetes将MySQL自动迁移到其他节点
+》验证数据一致性
+
+
+### K8s管理机密信息
+1. Kubernetes 提供的解决方案是 Secret
+secret会以密文方式存储数据,避免直接在配置文件中保存敏感信息,secret会以volume形式被mount到pod,容器以文件方式使用secret的数据
+容器还可以环境变量方式使用这些数据
+
+- 创建secret
+》通过--from-literal:
+kubectl create secret generic mysecret --from-literal=username=admin --from-literal=password=123456
+
+》通过 --from-file:
+echo -n admin > ./username
+echo -n 123456 > ./password
+kubectl create secret generic mysecret --from-file=./username --from-file=./password
+
+》通过--from-env-file:
+cat << EOF > env.txt
+username=admin
+password=123456
+EOF
+kubectl create secret generic mysecret --from-env-file=env.txt
+
+》通过yaml文件
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+data:
+  username: YWRtaW4=   #echo -n admin |base64
+  password: MTIzNDU2  #echo -n 123456| base64
+
+kubectl apply 创建 Secret
+
+2. 查看secret
+kubectl get secret/mysecret
+kubectl describe secret/mysecret
+kubectl edit secret/mysecret
+
+- base64可以反编码
+echo -n YWRtaW4= |base64 --decode
+echo -n MTIzNDU2 |base64 --decode
+
+3. 使用secret
+- 通过volume使用secret
+》
+
+- 通过环境变量使用secret
+
+### ConfigMap管理配置
+Secret可以为pod提供密码、token、私钥等敏感信息
+ConfigMap可以用来管理应用的配置
+
+1. Configmap的创建
+- 通过--from-literal
+kubectl create configmap myconfigmap --from-literal=config1=xxx --from-literal=config2=yyy
+
+- 通过--from-file
+echo -n xxx > ./config1
+echo -n yyy > ./config2
+kubectl create configmap myconfigmap --from-file=./config1 --from-file=./config2
+
+- 通过--from-env-file
+cat << EOF > env.txt
+config1=xxx
+config2=yyy
+EOF
+
+kubectl create configmap myconfigmap --from-env-file=env.txt
+文件 env.txt 中每行 Key=Value 对应一个信息条目
+
+- yaml文件配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigmap
+data:
+  config1: xxx
+  config2: yyy
+
+2. configMap的使用
+- 通过volume使用
+
+- 通过环境变量
+
+Secret 和 ConfigMap 支持四种定义方法
+Pod 在使用它们时，可以选择 Volume 方式或环境变量方式，不过只有 Volume 方式支持动态更新
+
+### k8s的包管理器helm
+1. helm解决应用打包问题
+helm帮助kubernetes成为微服务架构的理想部署平台
+
+2. helm架构
+- chart
+是创建一个应用的信息集合，包含各种kubernetes对象的配置模板、参数定义、依赖关系、文档等
+chart是应用部署的自包含逻辑单元，chart可类比为apt、yum中的软件安装包
+
+- release
+是chart的运行实例，代表一个正在运行的应用. 当chart被安装到kubernetes集群,就生成一个release
+
+- helm的包管理的包就指的是chart
+helm的两个组件: helm的客户端和Tiller服务器
+
+helm客户端是终端用户使用的命令行工具, 用户可以:
+》在本地开发chart
+》管理chart仓库
+》Tiller服务器交互
+》在远程kubernetes集群上安装chart
+》查看release信息
+》升级或卸载已有的release
+
+Tiller 服务器运行在 Kubernetes 集群中，它会处理 Helm 客户端的请求，与 Kubernetes API Server 交互
+Tiller服务器负责：
+》监听来自helm客户端的请求
+》通过chart构建release
+》在kubernetes中安装chart，并跟踪release的状态
+》通过API Server升级或卸载已有的release
+
+简单讲：Helm客户端负责管理chart、Tiller服务器负责管理release
+
+3. 部署Helm
+- Helm客户端
+Helm客户端安装在kubectl的节点上
+curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+helm version
+
+helm completion bash > ~/.helmrc
+echo "source ~/.helmrc" >> ~/.bashrc
+
+- Tiller服务器
+helm init
+Tiller 本身也是作为容器化应用运行在 Kubernetes Cluster 中的
+
+kubectl get -n kube-system svc tiller-deploy
+kubectl get -n kube-system deployment tiller-deploy
+kubectl get -n kube-system pod tiller-deploy-.....
+
+4. 使用helm
+helm search #查看当前可安装的 chart
+helm repo list
+
+helm repo add 添加更多的仓库，如企业的私有仓库，仓库的管理和维护方法请参考官网文档https://docs.helm.sh
+
+helm search mysql
+
+执行如下命名添加权限：
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+helm install stable/mysql
+
+helm list #显示已部署的release
+helm delete fun-zorse  #删除release
+
+
+
+
