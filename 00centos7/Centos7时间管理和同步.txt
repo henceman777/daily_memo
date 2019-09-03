@@ -1,0 +1,50 @@
+CST: Central Standard Time， 中国标准时间
+UTC: Coordinated Universal Time，协调世界时间
+RTC: Real-time Clock，硬件时钟（hardware clock）
+NTP: Network Time Protocol，网络时钟协议
+
+
+timedatectl list-timezones
+timedatectl set-timezone Asia/Shanghai
+
+#有两种ntp daemon：
+- chronyd
+yum install -y chrony
+systemctl start chronyd
+vi /etc/chrony.conf
+
+server 0.centos.pool.ntp.org iburst
+server 1.centos.pool.ntp.org iburst
+server 2.centos.pool.ntp.org iburst
+server 3.centos.pool.ntp.org iburst
+
+systemctl start chronyd
+
+- ntpd
+yum install -y ntp ntpdate
+systemctl start ntpd
+vi /etc/ntp.conf
+
+server 0.centos.pool.ntp.org iburst
+server 1.centos.pool.ntp.org iburst
+server 2.centos.pool.ntp.org iburst
+server 3.centos.pool.ntp.org iburst
+
+
+systemctl restart ntpd
+systemctl enable ntpd
+
+ntpdate -u -s 0.centos.pool.ntp.org 1.centos.pool.ntp.org 2.centos.pool.ntp.org
+
+timedatectl
+hwclock -w 
+
+ntpq -p  #监视NTP->只有启动NTP服务才能监视NTP
+date -R
+
+No association ID's returned
+
+hwclock --hctosys      # 硬件时钟同步系统时钟（与硬件时钟为基准）
+hwclock -w 或hwclock --systohc     #系统时钟同步硬件时钟（与系统时钟为基准）
+
+

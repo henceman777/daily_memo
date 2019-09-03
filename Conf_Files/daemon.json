@@ -1,4 +1,0 @@
-{
-    "registry-mirrors": ["http://0d236e3f.m.daocloud.io"],
-    "exec-opts": ["native.cgroupdriver=cgroupfs"]
-}

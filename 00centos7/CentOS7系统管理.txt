@@ -1,0 +1,258 @@
+## CentOS7系统管理
+
+### 1.用户管理
+1.1 添加用户
+useradd cent #添加用户cent
+
+1.2 修改密码
+- 法1
+passwd cent
+
+- 法2
+echo "cent:123456" | chpasswd  #非交互式修改用户密码 
+chpasswd < chpass.txt
+
+openssl passwd -1  #生成口令
+openssl passwd -1 -salt "centos" 123456 >chpass.txt
+chpasswd -e < chpass.txt
+
+- 法3
+echo "123456" | passwd --stdin cent
+
+- 法4
+(echo "123456";sleep 1;echo "123456") | passwd cent
+
+- 法5
+#!/bin/sh
+# \
+exec expect -f "$0" "$@"
+if { $argc != 2 } {
+    puts "Usage: $argv0 <username> <passwd>"
+    exit 1
+}
+set password [lindex $argv 1]
+spawn passwd [lindex $argv 0]
+sleep 1
+expect "assword:"
+send "$password\r"
+expect "assword:"
+send "$password\r"
+expect eof
+
+./change-pwd-expect.sh cent 1234
+...
+passwd: all authentication tokens updated successfully.
+
+1.3 加组
+usermod -G wheel cent  #设置cent可以切换root
+
+### 防火墙和selinux
+
+systemctl status firewalld
+systemctl disable firewalld
+yum -y install iptables-services
+
+getenforce
+vi /etc/selinux/config
+
+### 配置网络
+hostnamectl set-hostname jinmax.com.cn  #修改主机名
+
+nmcli d #列出设备
+nmcli c modify eth0 ipv4.addresses 10.0.0.30/24 # 设置eth0网卡的IPv4地址，根据自己网络情况设置
+nmcli c modify eth0 ipv4.gateway 10.0.0.1 # 设置默认网关，根据自己网络情况设置
+nmcli c modify eth0 ipv4.dns 10.0.0.1 # 设置DNS，根据自己网络情况设置
+nmcli c modify eth0 ipv4.method manual # 手动设置“manual”,DHCP设置“auto”
+nmcli c down eth0; nmcli c up eth0 # 重启接口以加载设置
+nmcli d show eth0 # 显示设置
+
+ip addr show #显示网卡状态
+ll /proc/sys/net/ipv4/conf/  #查看接口名称
+vi /etc/sysconfig/network-scripts/ifcfg-接口名称
+
+vi /etc/sysconfig/network-scripts/route-接口名称  #添加静态路由
+10.0.0.0/24 via 10.0.0.2 dev eth0
+
+习惯网络接口名称像ethX类的格式则:
+vi /etc/default/grub
+GRUB_CMDLINE_LINUX=一行加入net.ifnames=0
+再运行grub2-mkconfig -o /boot/grub2/grub.cfg应用修改然后重启系统生效
+
+- 禁用ipv6
+vi /etc/default/grub
+GRUB_CMDLINE_LINUX=一行加入ipv6.disable=1
+再运行grub2-mkconfig -o /boot/grub2/grub.cfg应用修改然后重启系统生效
+
+### 配置服务
+systemctl -t service  #列出运行的服务
+systemctl list-unit-files -t service #列出所有服务
+systemctl stop postfix 		#停止stop（如postfix）
+systemctl disable postfix 	#禁止开机启动disable
+
+rm /etc/systemd/system/multi-user.target.wants/postfix.service
+
+- 结束进程
+kill -l PID
+kill -TERM PPID  #给发进程发送TERM信号
+killall httpd  #杀死同一进程组内的所有进程
+kill -HUP PID  #重启进程
+kill -9 PID  #终止进程
+
+### 系统更新
+yum -y update
+yum -y update --exclude=kernel* #或者
+vi /etc/yum.conf  #生产环境不建议升级内核
+[main]
+...
+exclude=kernel*
+exclude=centos-release*
+
+yum clean all
+
+
+### 软件仓库
+wget http://mirrors.163.com/.help/CentOS7-Base-163.repo
+cp CentOS7-Base-163.repo /etc/yum.repos.d/
+cd /etc/yum.repos.d
+mv CentOS-Base.repo CentOS-Base.repo.bak
+mv CentOS7-Base-163.repo CentOS-Base.repo
+yum clean all
+yum makecache
+yum update
+
+yum -y install yum-plugin-priorities  #优先级插件
+sed -i -e "s/\]$/\]\npriority=1/g" /etc/yum.repos.d/CentOS-Base.repo
+
+- epel仓库
+yum -y install epel-release
+sed -i -e "s/\]$/\]\npriority=5/g" /etc/yum.repos.d/epel.repo # 设置优先级为5
+
+sed -i -e "s/enabled=1/enabled=0/g" /etc/yum.repos.d/epel.repo # 将enabled值设置为0
+[enabled=0]时使用epel库,需添加--enablerepo=epel
+yum --enablerepo=epel install [Package]
+
+- 添加SCLo仓库：
+yum -y install centos-release-scl-rh centos-release-scl
+sed -i -e "s/\]$/\]\npriority=10/g" /etc/yum.repos.d/CentOS-SCLo-scl.repo # 设置优先级为10
+sed -i -e "s/\]$/\]\npriority=10/g" /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
+
+以下为另一种设置方式：
+sed -i -e "s/enabled=1/enabled=0/g" /etc/yum.repos.d/CentOS-SCLo-scl.repo
+sed -i -e "s/enabled=1/enabled=0/g" /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
+yum --enablerepo=centos-sclo-rh install [Package]
+yum --enablerepo=centos-sclo-sclo install [Package]
+
+- 添加Remi仓库：
+yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+sed -i -e "s/\]$/\]\npriority=10/g" /etc/yum.repos.d/remi-safe.repo # 设置优先级为10
+
+以下为另一种设置方式：
+sed -i -e "s/enabled=1/enabled=0/g" /etc/yum.repos.d/remi-safe.repo
+yum --enablerepo=remi-safe install [Package]
+
+- 安装FFMPEG：先安装epel，然后运行：
+rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+sed -i -e "s/\]$/\]\npriority=10/g" /etc/yum.repos.d/nux-dextop.repo
+yum -y install ffmpeg ffmpeg-devel
+
+yum -y groupinstall "Development tools"  #安装开发组件
+yum -y install net-tools wget unzip
+
+
+### 配置vim
+yum -y install vim-enhanced
+echo alias vi='vim' >> /etc/profile
+source /etc/profile
+
+### 配置时间
+- 修改时区:
+法1.
+hwclock  #查看硬件时间
+timedatectl list-timezones| grep Shanghai
+timedatectl set-timezone Asia/Shanghai
+timedatectl set-local-rtc 1 #将硬件时钟调整为与本地时钟一致, 0 为设置为 UTC 时间
+
+法2.
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime这 
+
+修改时间:
+yum install ntpdate -y
+ntpdate cn.pool.ntp.org
+hwclock --systohc  #系统时间写入硬件
+
+date -s 2018-12-21 10:07
+
+vi /etc/ntp.conf
+restrict 10.0.0.0 mask 255.255.255.0 nomodify notrap
+
+server 0.cn.pool.ntp.org iburst
+server 1.cn.pool.ntp.org iburst
+server 2.cn.pool.ntp.org iburst
+server 3.cn.pool.ntp.org iburst
+
+systemctl start ntpd
+systemctl enable ntpd
+
+firewall-cmd --add-service=ntp --permanent
+firewall-cmd --reload
+
+ntpq -p
+
+- chrony和ntpd选择一个
+yum -y install chrony
+vi /etc/chrony.conf
+server 0.cn.pool.ntp.org iburst
+server 1.cn.pool.ntp.org iburst
+server 2.cn.pool.ntp.org iburst
+server 3.cn.pool.ntp.org iburst
+
+allow 10.0.0.0/24
+
+systemctl start chronyd
+systemctl enable chronyd
+chronyc sources
+
+- 配置ntp客户端
+yum -y install ntpdate
+ntpdate cn.pool.ntp.org  # 系统时间与网络同步
+hwclock --systohc  # 将时间写入硬件
+systemctl start ntpdate
+systemctl enable ntpdate
+
+timedatectl  # 查看系统时间
+timedatectl list-timezones  # 列出可用时区
+timedatectl set-timezone Asia/Shanghai  # 设置时区（上海）
+timedatectl set-ntp yes  # 同步系统时间
+
+### 配置ssh
+vi /etc/ssh/sshd_config
+PermitRootLogin no  #禁止root远程登录
+PermitEmptyPasswords no  #禁止空密码：
+PasswordAuthentication yes #使用密码验证登录
+
+systemctl restart sshd
+
+- 密钥验证登录
+ssh-keygen -t rsa
+mv ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+ssh-copy -i 
+
+
+- 配置ssh客户端
+yum -y install openssh-clients
+
+- X11转发
+SSH X11转发在本地客户端显示和使用远程服务器上的GUI应用程序
+vi /etc/ssh/sshd_config文件：
+#取消注释
+X11Forwarding yes
+X11DisplayOffset 10
+
+### DNS服务和DHCP
+yum -y install bind bind-utils
+
+- 配置BIND
+vi /etc/named.conf

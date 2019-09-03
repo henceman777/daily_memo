@@ -1,0 +1,284 @@
+gitlab-CI和gitlab-Runner
+
+持续集成CI是软件开发的实践,自动化构建集成(编译-发布-自动化测试等)
+
+- Gitlab-CI
+是一套Gitlab的CI系统,仓库的根目录创建gitlab-ci.yml文件,自定义pipeline
+一次pipeline相当于一次构建任务,包括安装依赖-运行测试-编译-部署测试服务器-部署生产服务器等
+任何提交或Merge Request的合并都可以触发Pipeline
+
+Gitlab-CI的缺点,执行构建时会占用很多系统资源,Gitlab的性能会受的影响
+Gitlab-CI最大作用是管理各个项目的构建状态,运行构建任务交给Gitlab Runner
+Gitlab Runner运行在不同的机器上,所以构建任务期间不会影响Gitlab的性能
+
+- Gitlab Runner
+是配合Gitlab CI进行使用的,Gitlab里的每个工程都会定义一个属于这个工程的软件集成脚本,用来自动化完成集成工作
+仓库代码发生变化时,Gitlab会通知Gitlab CI,Gitlab CI会找出与这个工程相关联的Runner,并通知他们将代码更新到本地
+执行预定义的执行脚本
+
+Gitlab Runner就是用来执行软件集成脚本的,Runner是工人,Gitlab CI是工人的管理中心
+
+Runner的类型:
+1.本地runner
+2.服务器上的runner
+3.基于docker的runner
+
+- 编写gitlab-ci.yml文件
+gitlab-ci.yml+配置了gitlab-runner--每次提交代码或merge request--就会触发CI Pipeline
+stages:
+  - deploy
+deploy:
+    stage: deploy
+    script:
+      - echo "start deploy....."
+      - deploy
+    only:
+      - master
+    tags:
+      - shell
+	  
+#其中deploy是编写的shell脚本,将要发布的内容自动部署到发布目录下
+#!/bin/bash
+deploy_path="xxx"
+project_path="xxx;
+judge_path = "$deploy_path/$project_path"
+
+if [ ! -d "$judge_path" ]
+then
+   project_url="xxx.git"
+   git clone $project_path $deploy_path
+else
+   cd $deploy_path
+   git pull
+fi
+
+
+- Gitlab Webhoods
+Webhooks允许第三方应用监听Gitlab上特定事件，事件发生时通过http/https POST方式通知到第三方应用指定的web URL
+例如项目有新的push或是merge request有更新,webhooks方便用户实时实现自动部署,自动测试,自动打包,监控等
+因此webhooks特性可以配合jenkins实现一系列的自动化任务
+
+- Jenkins
+是一个Java开发的开源CI工具,和Git打通,监听Git的Merge,Push事件,触发执行Jenkins指定的Job
+
+实例: Jenkins、Gitlab webhooks实现开发分支自动合并
+1.Gitlab上准本一个Web工程
+2.Gitlab上配置Jenkins的webhooks地址
+3.Jenkins配置Gitlab Plugin插件
+4.Jenkins配置Gitlab的访问权限
+5.Jenkins上创建项目,对应的源码步骤1中的web工程
+6.修改web工程的源码,并提交到Gitlab上
+7.检查Jenkins的构建项目是否触发自动任务脚本
+
+dev分支自动合并master的示例:
+#!/bin/sh
+echo *****************Start*****************
+date
+# 获取最近一次提交的 commit id
+sha1=`git rev-parse HEAD`
+# 获取姓名及邮箱，来配置git提交者信息
+name=`git show $sha1 | grep 'Author:' | cut -d' ' -f2`
+email=`git show $sha1 | grep 'Author:' | cut -d' ' -f3 | sed -e 's/<//g' | sed -e 's/>//g'`
+echo '当前提交人信息:'
+echo $name 
+echo $email 
+
+git config --global user.name $name
+git config --global user.email $email
+echo '***************** git checkout develop & git pull:'
+git checkout develop
+git pull
+
+# develop合并master
+echo '***************** git merge origin/master:'
+conflict=`git merge origin/master`
+echo $conflict | grep 'CONFLICT'
+if [ $? -ne 0 ]; then
+    echo '***************** git push origin HEAD:'
+    git push origin HEAD
+    echo '***************** git status:'
+    git status
+else
+    git status
+    echo 'Automatic merge failed...'
+    echo 'Please fix conflicts and then commit the result...'
+    exit 1
+fi
+echo *****************End*****************
+=====================================================================================================
+- Jenkins配合Gitlab实现分支份额自动合并、自动构建创建tag
+gitflow工作流优化:
+1.hotfix和release的结果都要合并到master和develop中
+2.当线上项目需要版本回滚,或者需要简单记录迭代版本时,常在master上打tag
+3.master分支代码更新后,自动将代码合并到develop,并且在master分支提交上打tag
+
+- Jenkins自动任务Job创建
+创建Job：
+1.创建一个任务选择(构建一个自由风格的软件项目)
+2.General上填写项目名称和描述,Label Expression是在Jenkins admin中配置的节点(container/node)
+一个Label是一组docker
+3.源码管理,在Repo URL中填写Gitlab的项目地址,Branch to build
+4.构建触发器,仅当Push Event且目标分支为master时触发此Job
+5.构建环境&构建：勾选第一项“构建开始前先清空工作目录”,构建中的Excute shell command可以配置自动化脚本
+6.构建后的操作：
+
+- Jenkins Job如何和Git关联
+Gitlab项目的settings中找到Integrations,勾选Active,指定push或Merge Request创建/更新/合并时触发指定的Jenkins URL
+Project name是Jenkins中配置的Job名称,Jenkins的用户名/密码
+
+- 整个不走的梳理
+1.Gitlab上准本一个项目工程
+2.安装Jenkins以及相关的Gitlab插件
+3.Jenkins配置Gitlab访问权限
+4.Jenkins上创建Job,对应Gitlab上准备的项目
+5.Gitlab上配置jenkins
+6.修改项目工程的源码,并提交到Gitlab
+7.检查jenkins的构建任务是否会触发配置的脚本
+
+=====================================================================================================
+- Gitflow工作流
+gitflow通过功能开发、发布准备和项目维护分配独立的分支,让开发迭代更流程
+master
+develop
+feature
+release
+hotfix
+
+=====================================================================================================
+
+CentOS7部署Gitlab+Jenkins的CI环境
+
+1.搭建Jenkins
+- 首先安装jdk
+http://www.oracle.com/technetwork/java/javase/downloads/
+tar xf jdk-8u181-linux-x64.tar.gz -C /usr/local/
+mv /usr/local/jdk1.8.0_181 /usr/local/java
+vim /etc/profile
+# 在末尾添加
+JAVA_HOME=/usr/local/java/
+JAVA_BIN=/usr/local/java/bin
+JRE_HOME=/usr/local/java/jre
+PATH=$PATH:/usr/local/java/bin:/usr/local/java/jre/bin
+CLASSPATH=/usr/local/java/lib:/usr/local/java/jre/lib/charsets/jar
+
+source /etc/profile
+java -version
+
+- 添加yum源,安装Jenkins
+wget -O /etc/yum.repos.d/jenkins.repo  http://pkg.jenkins.io/redhat/jenkins.repo
+rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key 
+yum -y install jenkins
+
+vim  /etc/sysconfig/jenkins   #修改Jenkins的默认端口8080为329
+#修改25行 用户为root
+JENKINS_USER="root"
+#修改56行 端口329
+
+systemctl start jenkins #启动jenkins
+which java
+ln -sv /usr/local/java/bin/* /usr/bin/
+systemctl start jenkins
+
+访问IP:329测试
+
+解锁：cat /var/lib/jenkins/secrets/initialAdminPassword粘贴到管理员密码
+选择默认的"安装推荐的插件"
+
+创建第一个管理员用户
+
+实例配置：http://IP:port/
+完成就绪
+
+也可以本地上传安装下载好的插件
+
+- 安装Gitlab Hook Plugin插件
+系统管理→管理插件→可选插件
+安装两个插件gitlab-plugin和gitlab hook-plugin如果找不到,安装gitlab gitlab hook即可
+
+- 开始创建一个新任务
+输入任务名称(构建一个自由风格的软件项目)
+general-描述-Repo URL填写Gitlab中的项目地址,添加认证
+在Gitlab上添加一个公钥,Jenkins添加私钥
+cat ~/.ssh/id_rsa
+
+- 接下来开始构建
+立即构建
+查看jenkins目录下有没有文件构建成功
+ll /var/lib/jenkins/workspace/
+
+
+2. 部署Gitlab
+Gitlab是Ruby开发的开源应用程序,自托管的Git仓库
+
+- 搭建Gitlab平台
+最少4G内存,
+cat /etc/centos-release
+free -h
+
+yum -y install curl policycoreutils openssh-server openssh-clients postfix
+systemctl enable postfix 
+systemctl start postfix 
+iptables -F 
+systemctl stop firewalld 
+systemctl disable firewalld 
+systemctl disable NetworkManager
+
+#wget http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm
+#rpm -ivh epel-release-latest-7.noarch.rpm 
+#wget –O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo 
+#sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+#grep SELINUX=disabled /etc/selinux/config
+#setenforce 0
+
+
+
+#安装Gitlab-ce版
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh |bash 
+yum -y install gitlab-ce
+#wget https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-10.0.2-ce.0.el7.x86_64
+#rpm -ivh gitlab-ce-10.0.2-ce.0.el7.x86_64
+#grep -n "^[a-Z]" /etc/gitlab/gitlab.rb
+
+vim /etc/gitlab/gitlab.rb #更改域名
+# 13行 external_url 'http://gitlab.example.com' 改为 http://IP
+
+gitlab-ctl reconfigure 
+gitlab-ctl status 
+
+netstat -antup | grep :80 
+
+#登录gitlab 
+gitlab主配置文件：/etc/gitlab/gitlab.rb    # 可以自定义一些邮件服务等
+日志目录：/var/log/gitlab/                 # 对应各服务
+服务目录：/var/opt/gitlab/                 # 对应各服务的主目录
+仓库目录：/var/opt/gitlab/git-data         # 记录项目仓库等提交信息
+重启服务：gitlab-ctl stop/start/restart    # 启动命令 
+
+http://ip/users/sign_in 开始注册
+- #汉化
+git clone https://gitlab.com/xhang/gitlab.git -b v11.2.1-zh
+gtilab-ctl stop
+/usr/bin/cp -rvf /root/gitlab/* /opt/gitlab/embedded/service/gitlab-rails/
+gitlab-ctl restart
+
+3.Gitlab的使用
+- 新建项目
+先创建组,New Group-New Project-
+
+- 创建用户
+- 重置用户密码
+- 删除用户
+
+初次使用Git前:
+git config --global user.name "zhangsan"
+git config --global user.email "zhangsan@gmail.com"
+cat ~/.gitconfig
+cat ./.git/config
+git config --global --list
+
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -P ""
+cat ~/.ssh/id_rsa.pub  #在gitlab上add key
+
+
+
+

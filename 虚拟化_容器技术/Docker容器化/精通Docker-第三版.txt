@@ -1,0 +1,616 @@
+https://alanhou.org/docker-overview/
+
+第一章 Docker概览
+
+1. 了解Docker
+- 主机、虚拟机和Docker之间的区别
+Docker是容器管理系统,以轻松和统一的方式管理Linux容器LXC
+虚拟机采用运行在宿主机操作系统上的Typervisor
+Docker依赖于宿主机操作系统和内核
+
+2. 安装Docker
+curl -sSL https://get.docker.com/ | sh  #ubuntu
+sudo apt install docker.io
+sudo systemctl start docker
+sudo usermod -aG docker docker_user
+docker version
+
+#安装docker machine
+MACHINEVERSION=0.15.0
+curl -L https://github.com/docker/machine/releases/download/v$MACHINEVERSION/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine
+chmod +x /tmp/docker-machine
+sudo mv /tmp/docker-machine /usr/local/bin/docker-machine
+
+#安装docker compose
+COMPOSEVERSION=1.22.0
+curl -L https://github.com/docker/compose/releases/download/$COMPOSEVERSION/docker-compose-`uname -s`-`uname -m` >/tmp/docker-compose
+chmod +x /tmp/docker-compose
+sudo mv /tmp/docker-compose /usr/local/bin/docker-compose
+
+docker-machine version
+docker-compose version
+
+3. Docker命令行客户端
+docker help #帮助
+docker <CMD> --help
+docker container run hello-world
+docker image pull nginx  #下载镜像
+docker container run -d --name nginx-test -p 8080:80 nginx  #运行容器
+docker container stop nginx-test #停止运行
+docker container rm nginx-test #删除容器
+
+4. Docker和容器生态
+- 开源项目:
+Moby项目(Docker Engine就基于此项目)
+Runc用于创建和配置容器的命令行接口,
+Containerd易于嵌入的容器运行时
+LibNetwork为容器提供网络服务的Go语言库
+
+- Docker CE和Docker EE：
+社区版和商业版
+Docker Compose允许定义和分享容器
+Docker Machine用于在多个平台上启动Docker主机的工具
+Docker Hub是Docker的容器仓库
+Docker Swarm是一个可识别多主机的编排工具
+
+- Docker,Inc. #公司
+
+第二章 创建容器镜像
+
+1. Dockerfile简介
+Dockerfile是包含一组用户指令的文本文件
+Alpine Linux,因其大小及足够强大,成为了Docker官方提供的容器镜像的默认基础镜像
+
+#nginx.conf
+user nginx;
+worker_processes 1;
+ 
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+ 
+events {
+    worker_connections 1024;
+}
+ 
+http {
+     include /etc/nginx/mime.types;
+     default_type application/octet-stream;
+     log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+        '$status $body_bytes_sent "$http_referer" '
+        '"$http_user_agent" "$http_x_forwarded_for"';
+     access_log /var/log/nginx/access.log main;
+     sendfile off;
+     keepalive_timeout 65;
+     include /etc/nginx/conf.d/*.conf;
+}
+
+#default.conf
+server {
+     location / {
+        root /usr/share/nginx/html;
+     }
+}
+
+#指定镜像基础
+FROM alpine:latest  
+#额外信息
+LABEL maintainer="Russ McKendrick <russ@mckendrick.io>"  
+LABEL description="This example Dockerfile installs NGINX."
+
+#与镜像交互来安装软件及运行脚本等
+RUN apk add --update nginx && \  
+ rm -rf /var/cache/apk/* && \
+ mkdir -p /tmp/nginx/
+#拷贝文件
+COPY files/nginx.conf /etc/nginx/nginx.conf 
+COPY files/default.conf /etc/nginx/conf.d/default.conf
+
+#ADD会自动上传和解压指定路径的文件到目标路径
+ADD files/html.tar.gz /usr/share/nginx/  
+
+#运行时暴露定义的端口和协议
+EXPOSE 80/tcp
+
+#CMD之上使用ENTRYPOINT,添加命令解析的参数
+ENTRYPOINT ["nginx"]
+#等价于nginx -g daemon off;
+CMD ["-g", "daemon off;"]
+
+USER指令可以指定以哪个用户运行
+WORKDIR指令可对USER指令设置工作目录
+#ONBUILD可以存储一系列想要的命令,ONBUILD指令可以与ADD和RUN指令一起使用
+ONBUILD RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
+ENV  #ENV在构建以及执行时在镜像内设置环境变量
+
+2. Dockerfile的最佳实践
+- 习惯使用.dockerignore文件
+- 一个文件夹仅有一个Dockerfile
+- Git来管理Dockerfile
+- 镜像尽可能最小化包的数量
+- 确保每个容器仅有一个应用进程
+- 保持简洁
+- 使用Docker Hub
+
+
+3. 构建容器镜像
+docker image build --help
+- Dockerfile构建容器镜像
+FROM alpine:latest
+LABEL maintainer="Russ McKendrick <russ@mckendrick.io>"
+LABEL description="This example Dockerfile installs NGINX."
+RUN apk add --update nginx && \
+    rm -rf /var/cache/apk/* && \
+    mkdir -p /tmp/nginx/
+ 
+COPY files/nginx.conf /etc/nginx/nginx.conf
+COPY files/default.conf /etc/nginx/conf.d/default.conf
+#DD files/html.tar.gz /usr/share/nginx/
+EXPOSE 80/tcp
+ 
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]
+
+
+docker image build --tag local:dockerfile-example .
+docker container run -d --name dockerfile-example -p 8080:80 local:dockerfile-example
+http://localhost:8080/
+docker container run --name nginx-version local:dockerfile-example -v
+
+docker image inspect -f {{.Config.Labels}} local:dockerfile-example #查看标签
+
+
+4. 使用已有的容器
+docker image pull alpine:latest
+docker container run -it --name alpine-test alpine /bin/sh
+
+docker container commit alpine-test local:broken-container #保存一个容器为一个image
+docker image save -o broken-container.tar local:broken-container #保存镜像
+
+5. 从零开始创建容器镜像
+#Dockerfile
+FROM scratch
+ADD http://dl-cdn.alpinelinux.org/alpine/v3.9/releases/x86_64/alpine-minirootfs-3.9.4-x86_64.tar.gz /
+CMD ["/bin/sh"]
+ENV username=admin database=wd tb=wp
+
+docker image build --tag local:fromscratch .
+docker image ls|egrep "local|alpine"
+docker container run -it --name alpine-test local:fromscratch /bin/sh
+
+
+#例子
+FROM alpine:latest
+LABEL maintainer="Russ McKendrick <russ@mckendrick.io>"
+LABEL description="This example Dockerfile installs Apache & PHP."
+ENV PHPVERSION 7
+ 
+RUN apk add --update apache2 php${PHPVERSION}-apache2 php${PHPVERSION} && \
+        rm -rf /var/cache/apk/* && \
+        # mkdir /run/apache2/ && \
+        rm -rf /var/www/localhost/htdocs/index.html && \
+        echo "<?php phpinfo(); ?>" > /var/www/localhost/htdocs/index.php && \
+        chmod 755 /var/www/localhost/htdocs/index.php
+ 
+EXPOSE 80/tcp
+ 
+ENTRYPOINT ["httpd"]
+CMD ["-D", "FOREGROUND"]
+
+
+
+docker build --tag local/apache-php:7 .
+docker container run -d -p 8080:80 --name apache-php7 local/apache-php:7
+
+docker image build --tag local/apache-php:5 .
+docker container run -d -p 9090:80 --name apache-php5 local/apache-php:5
+
+
+- 多阶段构建
+FROM golang:latest as builder
+WORKDIR /go-http-hello-world/
+RUN go get -d -v golang.org/x/net/html 
+ADD https://raw.githubusercontent.com/geetarista/go-http-hello-world/master/hello_world/hello_world.go ./hello_world.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+ 
+FROM scratch 
+COPY --from=builder /go-http-hello-world/app .
+CMD ["./app"]
+
+
+docker image build --tag local:go-hello-world .
+docker container run -d -p 8000:80 --name go-hello-world local:go-hello-world
+
+
+
+第三章 存储和发布镜像
+1. Docker Hub
+创建一个自动化构建
+- 设置代码
+https://github.com/jinmeng260/mastering-docker
+
+- 设置docker hub和github关联
+- build setting
+新建docker hub repo
+dockerfile-example
+public
+#build rule:
+master
+Dockerfile
+latest
+/Chapter02/dockerfile-example/
+- build 成功后就可以
+docker image pull jinmeng260/dockerfile-example
+docker image ls
+
+docker container run -d -p 8080:80 --name example jinmeng260/dockerfile-example
+
+2. 推送image到Docker Hub
+docker login
+#cat /root/.docker/config.json
+{
+        "auths": {
+                "https://index.docker.io/v1/": {
+                        "auth": "amlubWVuZzI2MDpNYXhtZW5nQDUyNQ=="
+                }
+        },
+        "HttpHeaders": {
+                "User-Agent": "Docker-Client/18.09.4 (linux)"
+        }
+		
+git clone https://github.com/jinmeng260/mastering-docker.git		
+cd /root/mastering-docker/Chapter02/scratch-example
+docker build --tag jinmeng260/scratch-example:latest . #构建镜像
+docker image push jinmeng260/scratch-example:latest    #推送到Docker Hub
+ 
+ 
+3. Docker仓库
+- 部署自己的仓库
+docker image pull registry:2 #Docker仓库作为Docker Hub的一个镜像进行发布
+docker container run -d -p 5000:5000 --name registry registry:2
+
+docker image pull alpine
+docker image tag alpine localhost:5000/localalpine #打tag
+docker image push localhost:5000/localalpine #将image推送到registry本地仓库
+docker image rm alpine localhost:5000/localalpine #从本地Docker仓库中重新拉取该镜像之前
+docker image pull localhost:5000/localalpine #从本地拉取
+
+- Docker仓库支持存储选项:
+文件系统,默认为/var/lib/registry
+Azure/GCS(谷歌云存储)/S3(亚马逊)/Swift(Openstack)
+
+- Docker认证仓库
+- 第三方仓库
+
+- Microbadger
+针对分发容器或镜像的一个强大工具,会深入到具体Docker镜像的每一层并输出每一层在实际大小或所占用
+磁盘量的权重
+https://microbadger.com/
+
+第四章 管理容器
+
+1. Docker容器命令
+docker container run hello-world
+
+
+docker container run -d --name nginx-test -p 8080:80 nginx  #后台运行
+docker container run --name nginx-foreground -p 9090:80 nginx #前台运行,Ctrl + C来传递退出指令
+
+- 和容器交互
+docker container attach nginx-test
+docker container attach --sig-proxy=false nginx-test  #退出时不会终止nginx进程
+
+docker container exec -i -t nginx-test /bin/bash #打开一个伪终端并交互
+
+- 日志和进程信息
+docker container logs --tail 5 nignx-test
+docker container logs -f nginx-test  #查看实时日志
+docker container logs --since 2019-05-11T15:13 nginx-test
+
+docker container logs --since 2018-08-25T17:17 -t nginx-test
+
+docker container top nginx-test
+
+docker container stats nginx-test 
+
+- 资源限制
+docker container run -d --name nginx-test --cpu-shares 512 --memory 128M -p 8081:80 nginx
+docker container update --cpu-shares 512 --memory 128M nginx-test #更新已经运行的容器
+docker container inspect nginx-test| grep -i memory
+
+docker container update --cpu-shares 512 --memory 128M --memory-swap 256M nginx-test
+
+- 容器状态和命令
+docker container ls -a
+for i in {1...5};do docker container run -d --name nginx$(printf "$i") nginx; done
+
+docker container pause nginx1 #暂停容器
+docker container unpause nginx1  #恢复暂定的容器
+docker container stop -t 60 nginx3 #发送SIGKILL前等待60秒
+docker container kill nignx5 #直接kill
+docker container prune #删除退出状态的容器
+docker container rm nginx4
+docker container stop nginx3 && docker container rm nginx3
+
+docker container create --name nginx-test -p 8083:80 nginx #创建不启动容器
+docker container port nginx-test #显示端口和容器映射的端口
+docker container diff nginx-test #查看原始镜像和运行中的容器的不同
+
+2. Docker的网络和数据卷
+- docker网络
+docker image pull redis-alpine
+docker image pull russmckendrick/moby-counter
+docker network create moby-counter
+
+docker container run -d --name redis --network moby-counter redis:alpine
+docker container run -d --name moby-counter --network moby-counter -p 8088:80 russmckendrick/moby-counter
+#访问localhost:8088
+
+docker container exec moby-counter ping -c 3 redis  #从moby-counter容器ping redis容器
+
+docker container exec moby-counter cat /etc/hosts
+docker container exec moby-counter cat /etc/resolv.conf
+docker container exec moby-counter nslookup redis 127.0.0.11
+
+docker network create moby-counter2 #创建一个网络
+docker run -itd --name moby-counter2 --network moby-counter2 -p 9090:80 russmckendrick/moby-counter
+docker container exec moby-counter2 ping -c 3 redis  #ping不通redis
+
+docker container run -d --name redis2 --network moby-counter2 --network-alias redis redis:alpine
+
+docker network ls
+docker network inspect moby-counter
+
+docker container stop moby-counter2 redis2
+docker container prune
+
+3. Docker数据卷
+docker volume ls   #查看数据卷
+docker container run -d --name redis -v d51662e4a1b9ec0059abddf7df49a8e96d5d2ec601ce5d83e0a03b4ef92d371a:/data --network moby-counter redis:alpine
+
+docker container exec redis ls -lhat /data
+docker volume create redis_data
+docker container run -d --name redis -v redis_data:/data --network moby-counter redis:alpine
+
+
+第五章 Docker Compose
+Fig -> Docker Compose
+compose的定位是“定义和运行多个Docker容器的应用Defining and running multi-container Docker app”
+通过yaml文件定义一组关联应用容器为一个项目project
+
+- 重要的概念
+service：一个应用容器实际上可包含若干容器实例
+project：一组关联应用容器组成的业务单元
+
+curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-`uname -s`-`uname -m` \
+> /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+pip install -U docker-compose
+curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completion/bash/docker-compose \
+> /etc/bash_completion.d/docker-compose  #命令补全
+
+curl -L https://github.com/docker/compose/releases/download/1.8.0/run.sh > \
+/usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+1. 第一个docker compose
+使用YAML文件来定义多容器应用,形式如下
+version: "3"
+ 
+services:   #定义容器
+   redis:
+     image: redis:alpine
+     volumes:
+       - redis_data:/data
+     restart: always
+   mobycounter:
+     depends_on:  #用于帮助构建一些逻辑上组织容器启动顺序
+       - redis
+     image: russmckendrick/moby-counter
+     ports:
+       - "8080:80"
+     restart: always
+ 
+volumes:
+    redis_data:
+	
+只需进入docker-compose.yaml文件的目录,并运行一下命令
+docker-compose up  #就启动了两个容器redis_1和moby-counter_1
+
+2. Docker Compose YAML文件
+YAML(YAML Ain't Markup Language)
+
+
+3. docker compose命令
+docker container ls -a
+选择一个Docker Compose应用并进入包含docker-compose.yml文件的目录
+- docker-compose up -d #非连接方式启动之前的应用
+- docker-compose ps  #查看运行中的容器,只能知道docker-compose.yml文件的services区的容器
+- docker-compose config  #验证yml文件
+- docker-compose config -q  #只检查错误
+- docker-compose pull  #读取yaml文件并拉取读取的镜像
+- docker-compose build #用于在原始构建镜像的Dockerfile有更新时触发新的构建
+- docker-compose create  #创建但不启动容器,exited状态
+- docker-compose start/stop/restart/pause/unpause
+docker-compose pause db  #暂停db服务
+
+- docker-compose top  #显示各容器运行的进程情况
+- docker-compose logs  #打印日志
+- docker-compose events
+- docker-compose exec worker ping -c 3 db
+- docker-compose run --volume data_volume:/app composer install #install命令运行composer容器并将data_volume挂载到容器中的/app
+- docker-compose scale worker=3 #接收向其传递的服务按所定义的数量进行扩充
+
+- docker-compose kill/rm/down
+docker-compose down --rmi all --volumes #删除所有
+
+4. Docker App
+处于开发阶段
+VERSION=v0.4.1
+curl -SL https://github.com/docker/app/releases/download/$VERSION/docker-app-darwin.tar.gz | tar xJ -C /usr/local/bin/
+mv /usr/local/bin/docker-app-darwin /usr/local/bin/docker-app
+chmod +x /usr/local/bin/docker-app
+
+
+
+第六章 Windows容器
+
+第七章 Docker Machine
+1. Docker Machine为多个公有云提供连续性界面
+
+2. 部署本地Docker Machine的Docker主机
+docker-machine create --driver virtualbox docker-local
+
+
+第八章 Docker Swarm
+1. Swarm简介
+Swarm是一个运行Docker主机的集合,被设置为在集群配置中相互进行交互
+
+2. Docker Swarm集群中的角色
+- Swarm manage
+是个所有Swarm主机的中央管理节点,用于发布所有命令来控制其他节点
+使用Raft共识算法来保持多个manager节点上的一致性
+
+- Swarm worker
+称之为Docker主机,运行Docker容器,由Swarm manager管理
+
+3. 创建和管理Swarm
+- 创建集群
+docker-machine create -d virtualbox swarm-manager  #运行一个主机
+docker-machine ls
+docker-machine env swarm-manager  #显示客户端和主机对话的命令
+eval $(docker-machine env swarm-manager)
+
+docker create -d virtualbox swarm-worker01
+docker create -d virtualbox swarm-worker02 #在启动两个Docker主机
+docker-machine ls
+
+- 想集群添加Swarm管理节点
+docker $(docker-machine config swarm-manager) swarm init \
+--advertise-addr $(docker-machine ip swarm-manager):2377 \
+--listen-addr $(docker-machine ip swarm-manager):2377
+#创建管理节点,保存好token
+
+- 向集群添加Swarm的worker节点
+SWARM_TOKEN=SWMTKN-1-29300vs05qz0k1mk5vzs31vpmnjelr3w8bfb2nf8jq0dg9uw3r-7fegze0zipgqz4zyr52twap2s
+
+docker $(docker-machine config swarm-worker01) swarm join \
+--token $SWARM_TOKEN $(docker-machine ip swarm-manager):2377
+
+docker $(docker-machine config swarm-worker02) swarm join \
+--token $SWARM_TOKEN $(docker-machine ip swarm-manager):2377
+
+- 列出节点
+docker-machine ls
+eval $(docker-machine env swarm-manager)  #如果没有配置为连接到manager节点
+docker node ls
+
+- 管理集群
+docker info
+docker node inspect swarm-manager --pretty
+docker node inspect swarm-worker01 --pretty
+
+docker node promote swarm-worker01  #升级为新的manager节点
+docker node demote swarm-manager  #降级为worker
+eval $(docker-machine env swarm-worker01)  #将本地客户端指向新的管理节点
+
+docker node update --availability drain swarm-manager  #清空节点
+docker node ls
+
+docker-machine ssh swarm-manager
+sudo reboot
+
+docker node update --availability active swarm-manager
+
+4. Docker Swarm服务和栈
+- 服务
+docker service create --name cluster --constraint "node.info == worker" \
+-p:80:80/tcp \
+russmckendrick/cluster  #创建一个cluster服务
+docker node ls
+docker machine ls
+docker service ls
+
+docker service inspect cluster --pretty
+docker node ps swarm-manager
+
+docker service scale cluster=6 #扩展服务为6个应用容器实例
+docker service ls
+docker node ps swarm-manager
+docker node ps swarm-worker02
+
+docker service rm cluster #删除服务
+
+- 栈stack
+在Docker-compose.yml文件中定义服务:
+version: "3"
+services:
+  cluster:
+    image: russmckendrick/cluster
+    ports:
+      - "80:80"
+    deploy:
+      replicas: 6
+      restart_policy:
+        condition: on-failure
+    placement:
+      constraints:
+        - node.role == worker
+
+docker stack deploy --compose-file=docker-compose.yml cluster #
+docker stack ls
+docker stack services cluster
+docker stack ps cluster
+
+
+5. 删除Swarm集群
+docker-machine rm swarm-manager swarm-worker01 swarm-worker02
+
+6. 负载均衡,叠加和调度
+- Ingress负载均衡
+- 覆盖网络network overlay
+- 调度
+affinity亲和性,spread的单调度schedule
+
+
+第九章 Docker和Kubernetes
+
+1. Kubernetes简介(舵手)
+起源于google的开源项目,运行自动化部署,管理和扩容容器化应用
+google2006年开始开发cgroups功能,可以隔离资源
+Let Me Contain That For You(Lmctfy)涉足容器领域,LXC的工具及和库的替代
+Borg-Seven-Kubernetes
+
+2. 概况
+88%由Go编写,
+典型的k8s集群由master和node服务器组成,master负责管理和健康监控pod
+master主机上:
+kube-apiserver/etcd/kube-scheduler/kube-controller-manager
+cloud-controller-manager/kubelet/kube-proxy/container runtime(遵循OCI)的运行时
+
+3. k8s和Docker
+容器编排的标准
+
+- 启动k8s
+docker container ls -a
+docker image ls
+docker container ls --format {{.Names}}
+
+
+- 
+kubectl version
+kubectl get nodes
+
+kubectl get namespaces
+kubectl get --namespace kube-system pods
+
+
+
+
+
+
+
+
+
+
+

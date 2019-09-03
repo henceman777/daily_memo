@@ -1,0 +1,548 @@
+CH29162  - OK for WI
+CH29595  - OK for WI
+CH29155  - OK for WI
+CH30061  - Yannick review needed
+
+TASKS_TO-DO
+
+1. orphaned host
+18/11/20 10:45:56 Beijing (JIN Max (external)): Update
+hello Yves,
+
+I am not sure did I reach out the right one, I think only a EIT can help us.
+but we are facing a problem that we may have a right and knowlege to solve.
+you can check my previous comments below for deails,
+I did a lot searching and think it's gearman application or system related,
+could you please kindly take a look for us,
+
+really appreciate for any support you could provide,
+Max
+___________________________________________________________________
+18/11/09 15:10:54 Beijing (JIN Max (external)): Update
+the full message was like :"(host check orphaned, is the mod-gearman worker on queue hostgroup_area_eu_dmz-toa running?)"
+and the amount of last 30days is 1908(854 notifications to ominibus ) ,
+
+-------------
+below are my investigation and search on internet:
+Having orphaned checks is usually a sign that some check jobs are processed by wrong workers or not sent back the correct gearman server.
+>> so we should look into the mod-gearman setting on both Job server and workers
+nagios.conf  #master
+/etc/gearman/mod_gearman_worker.conf  #worker server, Queues handling the checks and  defined on hostgroups/servicegroups ,.etc
+
+-----debug------------------
+gearman_top
+grep orphaned /var/log/nagios/nagios.log
+
+ulimit -a
+
+references:
+https://labs.consol.de/nagios/mod-gearman/
+https://support.nagios.com/kb/article.php?id=484
+https://support.nagios.com/kb/article.php?id=19
+
+I'll keep investigating on this issue.
+Max
+___________________________________________________________________
+07/11/18 16:22:35 Europe/Middle (FRANK Michael): Update
+Hi Max,
+
+Can you have a look on it. I see that the check is orphaned on the worker, so probably something wrong with the host check logic .
+___________________________________________________________________
+
+
+
+########################################################################################################################
+2. gg .*_DOMAIN.*CORP   #CORP account searching
+https://euedcmon0100.dc.ege.ds/redmine/issues/139
+
+
+
+
+
+
+########################################################################################################################
+3. provide a list hosts/services 
+Can you provide us a list of Hosts and services where the app part is empty or where a inco0rrect template is used.
+We want to find out all hosts/services with no work instruction..
+
+
+
+
+
+########################################################################################################################
+4. check_hub_validaty service issue
+
+https://euedcmon0100.dc.ege.ds/redmine/issues/105
+
+### Exchange_HUB:  check Max message count in a queue
+
+there is servicedependency out there.
+it's father service of Exchange_HUB_XML_Validity,
+so here is the way it supposed to be:
+before the child service checking , it will check his father service's check result
+when the father "Exchange_HUB" detects a invaild xml, the service "Exchange_HUB_XML_Validity" will stop working,
+
+I checked the configuration, didn't find a problem , but It seems service alerting doesn't conform to the logic
+trying to investigate furthermore 
+
+
+services/app/exchange/xml/hub.cfg
+```
+ $ ./app/exchange/2010/check_exchange_hub.py -H euedcapp0104.dc.ege.ds -p 80 -P /xml/HUB/EUDRPHBT3011.xml -w 100 -c 200
+OK - All queues are normal. | 'EUDRPHBT3011\1928623'=0msg;100;200;0; 'EUDRPHBT3011\1940816'=0msg;100;200;0; 'EUDRPHBT3011\1941006'=4msg;100;200;0; 'EUDRPHBT3011\1941225'=0msg;100;200;0; 'EUDRPHBT3011\1941228'=0msg;100;200;0; 'EUDRPHBT3011\1941238'=0msg;100;200;0; 'EUDRPHBT3011\1941389'=0msg;100;200;0; 'EUDRPHBT3011\1941407'=16msg;100;200;0; 'EUDRPHBT3011\1941599'=0msg;100;200;0; 'EUDRPHBT3011\1941627'=0msg;100;200;0; 'EUDRPHBT3011\1941716'=0msg;100;200;0; 'EUDRPHBT3011\1941751'=0msg;100;200;0; 'EUDRPHBT3011\1941760'=0msg;100;200;0; 'EUDRPHBT3011\1941768'=0msg;100;200;0; 'EUDRPHBT3011\1941795'=0msg;100;200;0; 'EUDRPHBT3011\1941812'=0msg;100;200;0; 'EUDRPHBT3011\1941831'=0msg;100;200;0; 'EUDRPHBT3011\1941876'=0msg;100;200;0; 'EUDRPHBT3011\1941878'=0msg;100;200;0; 'EUDRPHBT3011\1941901'=0msg;100;200;0; 'EUDRPHBT3011\1941903'=0msg;100;200;0; 'EUDRPHBT3011\1941915'=0msg;100;200;0; 'EUDRPHBT3011\1941918'=0msg;100;200;0; 'EUDRPHBT3011\1941941'=0msg;100;200;0; 'EUDRPHBT3011\1941945'=0msg;100;200;0; 'EUDRPHBT3011\1941946'=0msg;100;200;0; 'EUDRPHBT3011\1941947'=0msg;100;200;0; 'EUDRPHBT3011\1941951'=0msg;100;200;0; 'EUDRPHBT3011\1941952'=0msg;100;200;0; 'EUDRPHBT3011\1941958'=0msg;100;200;0; 'EUDRPHBT3011\1941959'=0msg;100;200;0; 'EUDRPHBT3011\1941963'=0msg;100;200;0; 'EUDRPHBT3011\1941967'=0msg;100;200;0; 'EUDRPHBT3011\1941970'=0msg;100;200;0; 'EUDRPHBT3011\1941971'=0msg;100;200;0; 'EUDRPHBT3011\1941973'=0msg;100;200;0; 'EUDRPHBT3011\1941976'=0msg;100;200;0; 'EUDRPHBT3011\1941977'=0msg;100;200;0; 'EUDRPHBT3011\1941978'=0msg;100;200;0; 'EUDRPHBT3011\1941979'=0msg;100;200;0; 'EUDRPHBT3011\1941980'=0msg;100;200;0; 'EUDRPHBT3011\1941981'=0msg;100;200;0; 'EUDRPHBT3011\1941982'=0msg;100;200;0; 'EUDRPHBT3011\1941983'=0msg;100;200;0; 'EUDRPHBT3011\1941984'=0msg;100;200;0; 'EUDRPHBT3011\1941985'=0msg;100;200;0; 'EUDRPHBT3011\1941986'=0msg;100;200;0; 'EUDRPHBT3011\Submission'=0msg;100;200;0;
+
+
+----
+(usjsimon0001) - UNKNOWN - XML format is not valid ! 
+```
+
+### Exchange_HUB_XML_Validity:  
+Check that XML for Exchange 2010 is up-to-date and Valid.
+Maximum age before alert of the XML data in minutes.
+
+```
+#   OK          :   If XML file is valid and age < _AGE
+#   CRITICAL    :   If XML file age > _AGE or If XML file is not valid
+```
+I found this before: ** CRITICAL    :   If XML file age > _AGE or If XML file is not valid ** \n
+not sure 
+
+services/app/exchange/xml/age-hub.cfg
+./app/exchange/2010/check_exchange_xml.py -H usjsiapp0002.jsi.us.jv -p 80 -P /xml/HUB/USJSIMFE1000.xml --age 120 
+
+
+########################################################################################################################
+5. UNKNOWN alert report each week
+
+ if u'obj' in tag.name and tag.attrs.keys() == ['refid']:
+            if u'objs' not in tag.parent.name:
+                if u'Microsoft.PowerShell.Commands.Internal.Format.' \
+                        not in tag.tostring.string:
+                    print "---------------"
+                    print "tag name :" + tag.name
+                    print "tag parent name : " + tag.parent.name
+                    print "tag tostring : " + tag.tostring.string
+                    print tag.attrs.keys()
+                    print "serialized status : True"
+                    return True
+        print "----------------------------"
+        print "tag parent name : " + tag.parent.name
+        print "tag name : " + tag.name
+        print tag.attrs.keys()
+        if u's' in tag.name and tag.has_attr('n'):
+            if tag.attrs['n'] == "Type":
+                print "queue type : "+ str(tag)
+        if tag.tostring:
+            print "tag tostring : " + str(tag.tostring.string)
+        else:
+            print "tag tostring : empty"
+		print "serialized status : false"
+		return False
+
+		
+/usr/lib/faurecia/plugins/app/exchange/jinmax/check_exchange_hub.py -H euedcapp0104.dc.ege.ds -p 80 -P /xml/HUB/EUEDCHBT2001.xml -w 100 -c 200
+
+
+
+
+def _xml_content_is_ok():
+	strings_lst = [] 154         
+	bool_lst = [] 155         
+	key_tags = ['tostring','s','g','i32']
+	key_strings = ['Undefined', 'Submission','00000000-0000-0000-0000-000000000000', '0'] 
+	
+	for key_tag in key_tags:
+		strings_lst.append([str(i.text) for i in self.xml.find_all(key_tag)]) 
+	
+	for r in range(4):
+		bool_lst.append(key_strings[r] in strings_lst[r])
+		
+	if all(bool_lst):
+		print "Beautiful...."
+		return True
+	else:
+		print "shit<<<<<<"
+
+
+CH29355
+
+
+Hello Team,
+
+could you please help to update the change to all the nagios worker servers,
+
+repo: Exchange 2010 application plugins
+branch: u/jinmax/Issue_#105
+
+thanks in advance!  
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+CH25903 - VIMPORT
+CH28903 - done
+CH28941 - needs WIs- DONE
+CH28987 - needs fix NOK services - DONE
+CH29080/CH29081/CH29082 - needs confirmed by requester
+CH29083 - done
+
+CH29136 - issue to be fixed.- next week
+CH29137 - done
+
+CH29162 - next week
+CH29293 - done
+CH29361 - done
+CH29362 - done
+
+CH29080|CH29081|CH29082 next week
+CH29483 - user to complete task
+
+
+CH29155
+Basic KIT)  LDAP_Availability_EGE_12890
+Account to be used for check below:
+Username: CN=9DCDIRSERVERpxycheck,OU=Services,OU=DIRSERVER,OU=Application,DC=dc,DC=ege,DC=ds
+Passwd: in separate email  
+
+Here are the informations :
+Account to be used for check below: 
+ 
+Username: CN=9DCDIRSERVERpxycheck,OU=Services,OU=DIRSERVER,OU=Application,DC=dc,DC=ege,DC=ds
+Passwd: Pxy43523_adf2432_adsafxcvcx.a342
+
+
+/usr/lib/faurecia/plugins/app/exchange/2010/check_exchange_xml.py -H euedcapp0104.dc.ege.ds -p 80 -P /xml/HUB/EUDRPHBT3013.xml --age 120
+
+
+CH29686 done
+CH29595 need WIs
+CH29636 Candy need to validate
+
+CH29572  401 needs Rawia's fix
+URL_ASPERA_EU= http://wwgrpapp0011.dc.ege.ds/aspera/user/
+URL_ASPERA_US= http://nandcunil0029.dc.ege.ds/aspera/user/
+URL_ASPERA_AS= http://asadcapp0120.dc.ege.ds/aspera/user/
+
+
+./check_http -H wwgrpapp0011.dc.ege.ds -p 80 -u "/aspera/user/" -a reposync:QiFzvBcSUveOTEi6XitN
+
+
+Exchange plugin replacement.
+
+oids = {
+    'sensor_types': '1.3.6.1.4.1.9.9.91.1.1.1.1.1',     # From CISCO-ENTITY-SENSOR-MIB
+    'sensor_values': '1.3.6.1.4.1.9.9.91.1.1.1.1.4',     # From CISCO-ENTITY-SENSOR-MIB
+    'entity_names': '1.3.6.1.2.1.47.1.1.1.1.7',         # From ENTITY-MIB
+}
+
+
+
+======================================
+CH30150
+CH30177
+
+
+The command runs successfully only 1 time. The second time we run the command it doesn't show 
+any errors or warnings as in principle check_logfiles scans a log file until the end-of-file is reached. 
+The offset will then be saved in a so-called seekfile. 
+The next time check_logfiles runs this offset will be used as the starting position inside the log file.
+
+check_logfiles is used to scan the lines of a file for regular expressions.
+The plugin check_logfiles was designed to operate in mission critical environments where missing log lines after a logfile rotation could not be tolerated. 
+When such a logfile rotation takes place, check_logfiles detects this and analyses the lines of the archived logfile, even if it's compressed. 
+It normally scans only the lines of a logfile which were added since the last run of the plugin. 
+The main features are: 
+ - multiple regular expressions can be given 
+ - expressions can be categorized as warning or critical 
+ - it can handle any logfile rotation strategy 
+ - hook scripts (either external scripts or a piece of perl-code in the configuration file) are possible, taking actions when a line matches a pattern. 
+ (for example, whenever a critical pattern is found, a nsca message is sent to the nagios server) 
+ - it is written in Perl, but also distributed as a Windows .exe 
+ 
+ 
+request/99911  - WMI
+
+
+request/30796_01
+
+- EVENT_IJCORE_FUNCTION_DATABASE_INSERTION:
+inc_app_ijcore_function_specific_database_insertion_brazil_goiana
+inc_app_ijcore_function_specific_database_insertion_brazil_curitiba_fas
+
+services/app/ijcore/function/specific_database_insertion_brazil_goiana.cfg
+
+- EVENT_IJCORE_FUNCTION_UNKNOWN_REFERENCE:
+inc_app_ijcore_function_unknown_reference_brazil_goiana
+inc_app_ijcore_function_unknown_reference_brazil_curitiba_fas
+inc_app_ijcore_function_unknown_reference_brazil_saobernardo
+
+- IJCORE_FUNCTION_SEQUENCE_JUMP:
+inc_app_ijcore_function_sequence_jump_brazil_goiana
+
+inc_app_ijcore_function_no_edi_message_reception_brazil_goiana
+
+ 
+DL-BR-PTR-IT@ege.faurecia.com
+
+inc_app_ijcore_function_specific_database_insertion_brazil_ptr,\
+inc_app_ijcore_function_unknown_reference_brazil_ptr,\
+inc_app_ijcore_function_sequence_jump_brazil_ptr,\
+inc_app_ijcore_function_no_edi_message_reception_brazil_ptr
+
+
+NAGIOSENV=$USER12$ $USER1$/app/mssql/check_mssql_ijcore_by_dataparam.py -H 10.112.187.11 -n BRQSBIJC0011 -u dbIJCReadMonitor -p Motivo16 -f 3 -s "try to reprocess the callof%" -S EVENT_IJCORE_FUNCTION_DATABASE_INSERTION 
+
+NAGIOSENV=$USER12$ $USER1$/app/mssql/check_mssql_ijcore_by_dataparam.py -H 10.113.169.17 -n BRPTRIJC1001 -u dbIJCReadMonitor -p Motivo16 -f 3 -s "try to reprocess the callof%" -S EVENT_IJCORE_FUNCTION_DATABASE_INSERTION
+
+NAGIOSENV=$USER12$ $USER1$/app/mssql/check_mssql_ijcore_by_dataparam.py -H 10.59.203.138 -n FRMONIJC0003 -u dbIJCReadMonitor -p Motivo16 -f 3 -s "try to reprocess the callof%" -S EVENT_IJCORE_FUNCTION_DATABASE_INSERTION
+
+NAGIOSENV=$USER12$ $USER1$/app/mssql/check_ijcore_by_configurationLogCode.py -H 10.113.58.28 -n BRCURIJC0028 -u dbIJCReadMonitor -p Motivo16 -c "EDI_MESSAGE_NO_RECEPTION_SINCE" -S EVENT_IJCORE_FUNCTION_NO_EDI_MESSAGE_RECEPTION
+
+NAGIOSENV=$USER12$ $USER1$/app/mssql/check_ijcore_by_configurationLogCode.py -H 10.113.169.17 -n BRPTRIJC1001 -u dbIJCReadMonitor -p Motivo16 -c "EDI_MESSAGE_NO_RECEPTION_SINCE" -S EVENT_IJCORE_FUNCTION_NO_EDI_MESSAGE_RECEPTION
+
+
+
+===============================
+USCHAESX0003
+USCHAESX0004
+EUEDCVCR0002   #asked to be removed
+
+echo -e "GET services\nColumns: host_name check_command_expanded\nOutputFormat: json" | netcat  monsat-master.edc.eu.corp 6557 > ./lql_extract/lql_result.csv
+
+
+unset https_proxy && $USER1$/negate -s -u OK -t 60 $USER1$/sys/vmware/check_vmware_api.pl -D asadcvcr0001.dc.ege.ds -H 10.167.0.181 -u dc\\9DCNagiosESX_Mon -p DIuGBIgjf2fVsXRf3Q -t 60 -l runtime -s con 
+
+=============================================================
+NANDCWWW0018
+FRMOPWTS0004
+FRMOPWTS0005
+FRMOPWTS0006
+FRMOPWTS5002
+FXW-AS1_DRP
+ANXCHRYSLERDR
+GBFDYSEQ0002
+WWGRPDXM4101
+NANDCDSH0002
+LOAD_BALANCER_Citrix_WebPortal
+EUEDCNFS0061
+EUEDCAPP0054
+EUEDCAPP0052
+EUEDCAPP0053
+EUEDCAPP0051
+CNDGGADSLS01
+APPLICATION_HELIOS_FAE
+EUDRPAPP0183
+EUEDCORA0033
+EUEDCORA0032
+EUEDCORA0031
+WWHELAPP0011
+WWHELFLS0011
+WWHELAPP0012
+CLUSTER_SAP_FC4
+WWHELAPP0901
+WWHELFLS0111
+WWHELAPP0111
+WWHELAPP0112
+USSMVIJC0004
+USSHEIJC0004
+USSMVIJC0003
+NANDCAPP0001
+USCUOADSLS01
+FRSELIND0010
+USAUHIJC0011
+WWEASSWT0010
+MXPBLIJC0012
+DEHANIJC4002
+FRMOPAS4P202
+TRGOLIJC0004
+CLUSTER_SAP_FJ2
+ESTARIJC0003
+FRMONIJC0003
+CNCDDADSLS01
+WWTOASQL0004
+
+
+--FAST--
+EUDRPWTS0013 10.223.16.21    
+
+--PSNEXT--
+EUDRPWTS0011    10.223.8.158
+======================================================
+
+DOWNTIMED services with NOK status duration longer than 30days(till 05/16/2019)
+
+
+Olivier MILHEM 
+
+
+hello ,
+
+this is a remingding that there are longtime scheduled downtime service with MOK status needs to be fixed or 
+if no needs to keep it in Nagios Monitoring , then we remove it from  the system(14 days s without response will be treated as OK for removal),
+And please privde a MOSAIC if you wanted to remove them,
+
+Deatil &LINK:
+WWGRPCTM4001	10.223.9.161	Network_Load	UNKNOWN
+WWGRPCTM4002	10.223.9.162	Network_Load	UNKNOWN
+
+
+
+CH32288  test OK
+
+
+Net_Interface_QLogic_BCM57810_52 change to Net_Interface_QLogic_BCM57810
+
+Net_Interface_QLogic_BCM57810_53 change to Net_Interface_QLogic_BCM57810_2 
+
+
+
+-- a/hosts/EUDRPAPP0183.cfg
+++ /dev/null
+@ -1,10 +0,0 @@
+define host {
+    use          ohtpl_env_prod,\
+                 ohtpl_area_eu_drp,\
+                 htpl_app_robotfinance_win-appserver
+    host_name    EUDRPAPP0183
+    address      10.223.9.201
+    hostgroups   +inc_win_srvc_Scheduler_Server,\
+                 inc_app_robo_url_robotfin-sdbx,\
+                 app_robotfinance
+}
+
+deleted: hosts/ANXCHRYSLERDR.cfg
+ deleted: hosts/APPLICATION_HELIOS_FAE.cfg
+ deleted: hosts/CLUSTER_SAP_FJ2.cfg
+ deleted: hosts/CNCDDADSLS01.cfg
+ deleted: hosts/CNDGGADSLS01.cfg
+ deleted: hosts/DEHANIJC4002.cfg
+ deleted: hosts/ESTARIJC0003.cfg
+ deleted: hosts/EUDRPAPP0183.cfg
+ deleted: hosts/EUEDCAPP0051.cfg
+ deleted: hosts/EUEDCAPP0052.cfg
+ deleted: hosts/EUEDCAPP0053.cfg
+ deleted: hosts/EUEDCAPP0054.cfg
+ deleted: hosts/EUEDCNFS0061.cfg
+ deleted: hosts/FRMONIJC0003.cfg
+ deleted: hosts/FRMOPAS4P202.cfg
+ deleted: hosts/FRMOPWTS0004.cfg
+ deleted: hosts/FRMOPWTS0005.cfg
+ deleted: hosts/FRMOPWTS0006.cfg
+ deleted: hosts/FRMOPWTS5002.cfg
+ deleted: hosts/FRSELIND0010.cfg
+ deleted: hosts/FXW-AS1_DRP.cfg
+ deleted: hosts/GBFDYSEQ0002.cfg
+ deleted: hosts/MXPBLIJC0012.cfg
+ deleted: hosts/NANDCDSH0002.cfg
+ deleted: hosts/NANDCWWW0018.cfg
+ deleted: hosts/TRGOLIJC0004.cfg
+ deleted: hosts/USAUHIJC0011.cfg
+ deleted: hosts/USSHEIJC0004.cfg
+ deleted: hosts/USSMVIJC0003.cfg
+ deleted: hosts/USSMVIJC0004.cfg
+ deleted: hosts/WWGRPDXM4101.cfg
+ deleted: hosts/WWHELAPP0011.cfg
+ deleted: hosts/WWHELFLS0011.cfg
+
+ 
+ 
+ hello,
+
+these are host(s) with very long time down state need to be fixed or removed,
+if you want to remove please submit a MOSAIC, 
+14days wihtout responses willl be treated as hosts are not needed in monitoring system.
+
+thanks very much
+
+
+Hostname	    | IP	        |Status	| Downtime	|Last Check	           |Duration				|Stratos_No. |Responses
+	-			|-				|-		|-			|-						|-						|-           |-
+WWEASAPP0621	| 10.20.178.227	|DOWN	|No	        |2018-02-17 19:14:12	|936d 14h 59m 56s		|IM03102257  |
+USTUSSQL0011	| 10.129.109.200|DOWN	|No	        |2018-12-12 11:33:37	|726d 12h 37m 7s		|IM03102269  |
+EUEDCGWM1002	| 192.168.65.118|DOWN	|No	        |2019-05-08 09:02:10	|722d 21h 48m 9s		|IM03102286  |
+USTULAPPSEQ0003	| 10.132.210.15	|DOWN	|No	        |2018-12-12 11:37:09	|703d 19h 9m 53s		|IM03102275  |
+USTULAPPSEQ0001	| 10.132.210.13	|DOWN	|No	        |2018-12-12 11:37:15	|703d 19h 9m 12s		|IM03102275  |
+WWEASSAN0004	| 10.20.177.65	|DOWN	|No	        |2018-12-12 11:40:31	|698d 20h 27m 23s		|IM03102291  |
+GBWTPJIT0002	| 10.176.193.92	|DOWN	|No	        |2018-02-17 19:14:12	|680d 0h 23m 6s			|IM03102297  |
+GBWTPJIT0001	| 10.176.193.91	|DOWN	|No	        |2018-02-17 19:14:12	|676d 1h 20m 56s		|IM03102297  |
+USXFQAPPSEQ04	| 10.132.82.122	|DOWN	|No	        |2018-12-12 11:36:38	|627d 14h 4m 43s		|IM03102297  |
+USXFQAPPSEQ03	| 10.132.82.121	|DOWN	|No	        |2018-12-12 11:37:09	|627d 14h 3m 52s		|IM03102297  |
+EUDRPAPP0023	| 10.223.8.23	|DOWN	|No	        |2018-03-24 20:23:41	|578d 13h 58m 55s		|IM03102305  |
+WWGRPAPP0044	| 10.20.105.224	|DOWN	|Yes        |2019-07-03 10:23:16	|392d 18h 54m 26s		|IM03102305  |
+WWGRPWTS0077	| 10.20.106.192	|DOWN	|No	        |2018-07-05 10:59:57	|362d 23h 27m 41s		|IM03102305  |
+EUEDCAPP0230	| 10.20.108.219	|DOWN	|Yes        |2019-07-03 10:22:31	|230d 19h 45m 23s		|IM03102317  |
+ANXCHRYSLERPROD	| 151.171.225.24|DOWN	|No	        |2018-11-20 17:54:00	|224d 15h 45m 4s		|IM03102324  |
+THPDGMES0002	| 10.174.98.42	|DOWN	|No	        |2018-11-22 01:50:44	|223d 7h 40m 13s		|IM03102337  |
+THPDNTCO0001	| 10.174.98.41	|DOWN	|No	        |2018-11-22 01:57:21	|223d 7h 30m 25s		|IM03102337  |
+ESMADADSLS01	| 10.67.130.91	|DOWN	|Yes        |2019-05-07 13:04:54	|162d 22h 54m 27s		|IM03102337  |
+RUKLFSEQ0001	| 10.208.105.205|DOWN	|No	        |2019-02-09 12:13:22	|143d 21h 14m 19s		|IM03102337  |
+ASADCBKP0001	| 10.167.0.231	|DOWN	|No	        |2019-07-03 10:25:01	|139d 1h 28m 58s		|IM03102337  |
+EUEDCORA0048	| 192.168.57.92	|DOWN	|Yes        |2019-03-26 23:08:33	|98d 10h 19m 7s			|IM03102345  |
+ANXCOVISINT	206.| 18.241.63	    |DOWN	|No	        |2019-04-03 15:43:02	|90d 18h 45m 41s		|IM03102324  |
+ARMALADSLS01	| 10.96.98.91	|DOWN	|Yes	    |2019-07-03 10:22:21	|69d 14h 10m 41s		|IM03102337  |
+ARMALADSLS02	| 10.96.98.92	|DOWN	|Yes		|2019-07-03 10:23:47	|68d 22h 37m 7s			|IM03102337  |
+CNCDUADSLS01	| 10.166.146.91	|DOWN	|No			|2019-07-03 10:22:48	|66d 4h 2m 2s			|IM03102337  |
+
+
+
+
+
+9nagios:'PassNAD9@!@'
+
+Env	Server name	OS	Service to monitor	OK Status	Warning	Critical
+
+
+######CH33603
+
+env_prod：
+wwgrpapp0156.dc.ege.ds	Windows	
+		Basic Kit			
+		Drive_D_used_Space			
+		Drive_E_used_Space			
+		Process_TM1	At least 	1 process matching tm1sd			N/A	Critical if not OK
+		Service_Netlogon		1 service matching "Netlogon"		N/A	Critical if not OK
+		Service_TM1Admin_Server	1 service matching "IBM Cognos TM1 Admin Server"	N/A	Critical if not OK
+		Service_TM1_FAS			1 service matching "fas bp tool"	N/A	Critical if not OK
+		Service_TM1_FECT		1 service matching "fect bp tool"	N/A	Critical if not OK
+		Service_TM1_FIS			1 service matching "fis bp tool"	N/A	Critical if not OK
+		
+wwgrpwww0011.dc.ege.ds	Windows	
+		Basic Kit			
+		Port_BI_TM1_Web	Check TCP 80 port (http://wwgrpwww0011.dc.ege.ds)	N/A	Critical if not OK
+		Process_IIS	At least 1 process matching "inetinfo"					N/A	Critical if not OK
+		Service_IBM_Cognos	1 service matching "IBM Cognos"					N/A	Critical if not OK
+		Service_TM1_Application_Server	1 service matching "IBM Cognos TM1"	N/A	Critical if not OK
+		URL_BI	"http://wwgrpwww0011.dc.ege.ds:9300/bi/						Search for string: 'cognos'"	N/A	Critical if not OK
+		URL_TM1	"http://wwgrpwww0011.dc.ege.ds:9510/tm1web/					Search for string: 'tm1web'"	N/A	Critical if not OK
+
+wwgrpwww0012.dc.ege.ds	Windows	
+		Basic Kit			
+		Port_BI_TM1_Web	Check TCP 80 port (http://wwgrpwww0011.dc.ege.ds)	N/A	Critical if not OK
+		Process_IIS	At least 1 process matching "inetinfo"					N/A	Critical if not OK
+		Service_IBM_Cognos	1 service matching "IBM Cognos"					N/A	Critical if not OK
+		Service_TM1_Application_Server	1 service matching "IBM Cognos TM1 Application Server"	N/A	Critical if not OK
+		URL_BI	"http://wwgrpwww0012.dc.ege.ds:9300/bi/						Search for string: 'cognos'"	N/A	Critical if not OK
+		URL_TM1	"http://wwgrpwww0012.dc.ege.ds:9510/tm1web/					Search for string: 'tm1web'"	N/A	Critical if not OK
+
+euedcapp0196.dc.ege.ds	Linux	
+		Basic Kit			
+		URL_WorkSpace	"http://euedcapp0196.dc.ege.ds/  Search for string: 'cognos'"	N/A	Critical if not OK
+
+env_preprod	wwgrpwts0134.dc.ege.ds	Windows	Basic Kit			
+			wwgrpapp0153.dc.ege.ds	Windows	Basic Kit			
+			wwgrpwww0013.dc.ege.ds	Windows	Basic Kit			
+			wwgrpwww0014.dc.ege.ds	Windows	Basic Kit			
+			eudrpapp0025.dc.ege.ds	Linux	Basic Kit			
+env_test	EUDRPAPP0160.dc.ege.ds	Windows	Basic Kit			
+			eudrpapp0021.dc.ege.ds	Linux	Basic Kit			
+
+
+
+
+IM03125585
+
+CH33570
+CH33571
+
+33570_1
+99905
+33941
+
+

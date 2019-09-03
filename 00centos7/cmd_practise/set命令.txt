@@ -1,0 +1,57 @@
+set   #显示所有的环境变量和shell函数
+
+1. 处理变量不存在的情况
+set -u   #遇到变量不存在的情况就会报错,停止运行 
+等价于set -o nounset
+
+2. 运行结果之前先输出执行的命令
+set -x
+等价于set -o xtrace
+
+3. 错误处理
+command || exit 1  #非零返回值时就停止
+
+# 写法一
+command || { echo "command failed"; exit 1; }
+# 写法二
+if ! command; then echo "command failed"; exit 1; fi
+# 写法三
+command
+if [ "$?" -ne 0 ]; then echo "command failed"; exit 1; fi
+
+或者:
+command1 && command2
+
+以上方法有些麻烦:
+set -e  #只要脚本执行中发生错误就终止
+
+- 1：
+set +e  #关闭-e选项
+cmd1
+cmd2
+set -e  #重新打开-e选项
+
+- 2：
+cmd || true  #命令失败也不会终止执行
+set -e
+foo || true
+echo bar
+
+set -e 等价于set -o errexit
+
+
+set -o pipefail #用于管道命令
+
+#set -euxo pipefail 等价于
+set -eux
+set -o pipefail
+建议放在bash脚本头部
+或者执行时:
+bash -euxo pipefail script.sh
+
+
+echo -e "\033[1;32m OK \033[0m"
+echo -e "\033[1;31m NOK \033[0m"
+
+
+

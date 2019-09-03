@@ -1,0 +1,32 @@
+VSCode使用
+
+ctrl+shift+E   #file explorer
+ctrl+shift+F   #search across files 
+ctrl+shift+G   #source code management
+ctrl+shift+D   #launch and debug
+ctrl+shift+X   #manage extansions
+ctrl+shift+Y   #debug console
+ctrl+shift+U   #output
+ctrl+shift+P   #show all commands
+ctrl+shift+M   #view errors and warnings
+ctrl+shift+O   #open folder
+
+ctrl+O   #open file
+ctrl+`   #terminal
+ctrl+=   #zoom in
+ctrl+-   #zoom out
+
+
+
+
+SOA  service oriented architecture
+
+SOAP: Simple Object Access Protocol
+REST: Representational State Transfer
+
+- Google geocoding API
+
+http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=Shanghai%2c+MI
+
+
+- Twitter API

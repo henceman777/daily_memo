@@ -1,0 +1,109 @@
+Docker和k8s
+
+1. 2010年成立的dotCloud公司
+LXC容器技术,被dotCloud成为Docker
+
+2013年Docker开源之后火爆,之后dotCloud改名为Docker Inc.,
+虚拟技术代表是VMWare和Openstack
+
+- 容器和虚拟机对比
+容器技术相对更轻,占用资源少
+隔离策略不同:Hypervisor vs Cgroups
+启动： 分钟 vs 秒
+镜像： Gb vs Kb-Mb
+
+Docker不是容器而是创建容器的工具(应用容器引擎),
+Build Ship & Run
+Build once, Run anywhere
+
+2. K8s
+k8s使得容器的编排、管理和调度方便起来
+
+### k8s的功能:
+k8s是基于容器的集群管理平台,前身是google的Borg
+提供应用部署、维护、扩展机制等
+- 使用Docker对应用打包package、实例化instantiate、运行run
+- 以集群方式运行、管理跨机器容器
+- 解决Docker跨机器容器间的通信
+- k8s自我修复机制
+
+
+k8s架构, 一个k8s系统称为k8s集群,包括Master节点和Node节点
+Master：master是负责管理和控制集群的中心,
+master上的服务有：
+- API server对外的接口供客户端和其他组件调用(营业厅)、
+- Scheduler负责对集群内部的资源调度(调度室)、
+- Controller Manager负责维护集群状态的管理控制器(管家)、
+- etcd存储
+
+
+Node: Node负责工作负载(具体的容器),提供CPU内存和存储资源的节点
+- Docker: 用于创建容器
+- kubelet: 负责监视指派到所在Node上的Pod,创建/修改/监控/删除等
+- kube-proxy：负责为pod对象提供代理,实现集群网络服务
+- Fluentd：负责日志收集、存储和查询
+- kube-dns(可选)
+- Pod: 是k8s的基本单元,一个pod代表一个进程,内部封装了一个和多个容器
+可以看作是一个统一管理单元,共享volumes和network namespace/IP等
+
+- Service概念,一个service看作是一组提供相同服务的pod对外的接口
+
+------------------------------------------------------------------------------
+最佳实践
+
+- Docker镜像标准化：约定分层,
+第一层操作系统用层,CentOS/Alpine
+第二层中间件层,根据应用程序安装运行需要使用的中间件和依赖软件nginx、tomcat等
+第三层应用层,仅包含打包好的应用程序代码
+
+- 怎样让镜像尽量小
+dockerfile构建时,软件安装尽量使用包管理工具,部署成功后清除无用的rpm包
+Java应用的jdk部署在宿主机上,运行容器时挂载volume的方式
+构建镜像时,仅会对代码出现变化的应用层
+
+
+- 容器编排管理,编排工具
+1. Swarm
+
+2. Mesos
+3. kubernetes
+支持自建网络模式,Etcd高可用,有故障转移功能,kube-proxy实现负载均衡
+社区活跃,平台兼容
+
+4. Rancher
+Rancher图形化管理界面,部署简单、方便,
+可以与AD、LDAP、GITHUB集成,基于用户或用户组进行访问控制,快速将系统的编排工具升级至kubernetes或者swarm,
+同时有专业的技术团队进行支持,降低容器技术入门的难度
+
+- 容器网络模型：
+Host,Docker原生的共享宿主机网络,性能好简单;但是端口易冲突
+Bridge,Docker原生的,性能好,使用宿主机虚拟网卡;IP容易冲突
+Overlay,Docker原生的,基于vxlan实现,容器需要指定子网;多子网隔离问题
+Flannel,基于vxlan实现,容器有独立IP,不支持跨子网;性能损耗大,与外部通信问题
+Calico,三层路由实现;网络开启BGP组网复杂
+
+- 持续集成和持续部署
+检测代码提交状态,进行持续集成,集成过程中执行单元测试,Sonar和安全工具进行静态扫描
+将结果通知给开发同学同时部署集成环境,部署成功后触发自动化测试
+
+
+=====================================================================================
+Dockerfile指令含义:
+
+FROM 		第一条指令必须是FROM,用于指定基础镜像
+MAINTAINER 	该指令会告诉docker作者的信息
+RUN 	在容器中运行指定命令,每一个RUN指令都会创建一个镜像层,执行成功后,会将此镜像层提交,然后继续执行下一条指令
+EXPOSE 	该指令用于向外部公开端口,可以指定多个端口
+ENV 	指定容器中的环境变量
+CMD 	用于指定一个容器启动时要运行的命令,可被docker run命令覆盖
+ENTRYPOINT 	与CMD指令类似,可接受docker run命令传递的参数,但不会被覆盖
+WORKDIR 	在容器内部设置一个工作目录,ENTRYPOINT/CMD将在此目录下执行
+USER 	指定该镜像会以什么用户运行
+VOLUME 	为基于此镜像创建的容器创建一个指定的挂载点
+ADD 	将构建环境下的文件和目录复制到镜像中可以使用url作为文件源,可将归档(压缩)文件作为源文件,并在容器中自动解开
+COPY 	类似于ADD指令COPY指令只关心在构建上下文中(当前目录下)复制本地文件,而不会做文件提取和解压工作
+LABEL 	用于为Docker镜像添加元数据元数据以键值对(字典)的形式展现可以在每条指令中指定一个或多个元数据,不同元数据之间用空格分离
+ARG 	用于定义可以在docker build命令运行时传递给构建运行时的变量在构建时使用–build-arg指定参数即可用户只能在构建时指定在Dockerfile中定义过的参数预定义(默认)ARG变量: HTTP_PROXY http_proxy HTTPS_PROXY https_proxy FTP_PROXY ftp_proxy NO_PROXY no_proxy使用格式：docker build --build-arg =
+STOPSIGNAL 	用于设置停止容器时发送系统调用信号给容器这个信号必须是内核系统调用表中合法的数,如9或者DIGNAME格式的信号名称,如SIGKILL
+ONBUILD 	为镜像添加触发器当一个镜像被用作其他镜像的基础镜像时,触发器才会被执行触发器会在构建过程中插入新指令,可以认为这些指令是紧跟在FROM之后指定的
+

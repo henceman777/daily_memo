@@ -1,0 +1,211 @@
+Gitlab CI + Jenkins实践
+
+
+1. 使用gitlab CI
+- 开启CI
+vi .gitlab-ci.yml文件, https://gitlab.com/gitlab-examples
+
+```
+# 设置docker环境,只要https://hub.docker.com有的都可以下载
+image: chenhuarong/green-link-frontend:test
+
+# 设置缓存 path 为文件相对路径 必须是数组
+cache:
+  paths:
+  - node_modules/
+
+# 定义变量NODE_MODULES => 使用 $NODE_MODULES
+variables:
+  NODE_MODULES: "node_modules/"
+
+# 阶段
+stages:
+  - dev
+  - test
+  - staging
+  - master
+
+# 运行前的脚本(配置自定义环境)
+before_script:
+  - npm install @fow/fow-view --registry=http://greenlink-jenkins.fowtest.com:7001
+  - yarn install
+
+
+################################  ci测试  ###########################################
+# 测试
+# 以下为每个独立测试
+# stage 的值必须在之前的申明里面
+# only  设置什么分之才会触发 该测试 (数组)
+# script 测试运行的脚本
+staging_build:
+  stage: staging
+  only:
+    - staging
+  script:
+    - npm run build-test
+
+# 开发
+dev_build:
+  stage: dev
+  only:
+    - dev
+  script:
+    - npm run build-dev
+
+# master
+master_build:
+  stage: master
+  only:
+    - master
+  script:
+    - npm run build-prod
+```
+添加gitlab-ci.yml文件后,提交到gitlab,就可以看到Pipeline和Jobs的结果
+
+2.前端打包流程
+- 开发分支完成
+- merge到dev时触发CI进行Pipeline
+- pipeline运行测试打包时,编译成功就把资源上传
+- pipeline结束触发pipeline事件,推送到jenkins触发脚本事件
+- 运行jenkins脚本检查资源版本,移动复制版本
+- 运行jenkins脚本下载代码到本地nginx服务器对应路径
+
+==================================================================================================
+
+1.Docker安装GitLab及Jenkins
+docker pull gitlab/gitlab-ce:latest
+docker run -d \
+             --hostname HOST_NAME \
+             -p 9443:443 -p 9080:80 -p 2222:22 \
+             --name gitlab \
+             -v PATH/config:/etc/gitlab \
+             -v PATH/logs:/var/log/gitlab \
+             -v PATH/data:/var/opt/gitlab \
+             gitlab/gitlab-ce:latest
+			 
+vi PATH/config/gitlab.rb
+gitlab_rails['gitlab_shell_ssh_port'] = 2222
+
+docker stop gitlab
+docker rm gitlab
+docker run -d \
+             --hostname HOST_NAME \
+             -p 9443:443 -p 9080:80 -p 2222:22 \
+             --name gitlab \
+             -v PATH/config:/etc/gitlab \
+             -v PATH/logs:/var/log/gitlab \
+             -v PATH/data:/var/opt/gitlab \
+             gitlab/gitlab-ce:latest
+			 
+
+docker pull jenkins
+docker run -d \
+             -p 8080:8080 \
+             -p 50000:50000 \
+             -v PATH/jenkins-data:/var/jenkins_home \
+             -v /var/run/docker.sock:/var/run/docker.sock \
+             --name jenkins \
+             jenkins:latest
+			 
+			 
+- Jenkins安全设置
+1.点击“系统管理” - 进入“全局安全配置”
+2.“访问控制”-“授权策略”-“登录用户可以做任何事”中勾选上“匿名用户具有可读权限”
+3.去掉"CSRF Protection"中的"防止跨站点请求伪造"
+
+- gitlab添加jenkins服务器及git服务器SSH keys
+
+- Jenkins创建流水线任务
+- jenkins触发远程构建
+- gitlab添加jenkins钩子,settings-integrations-webhooks-勾选push event
+
+- jenkins编写流水线脚本
+# 构建流水线脚本
+#!groovy
+pipeline {
+	agent any
+	environment {
+		REPOSITORY="ssh://git@gitlab.hadeian.com:2222/hadeian/microservice.git"
+		MODULE="user-edge-service"
+		SCRIPT_PATH="~/scripts"
+	}
+	stages {
+		stage('获取代码') {
+			steps {
+				echo "start fetch from git:${REPOSITORY}"
+				deleteDir()
+				git "${REPOSITORY}"
+			}
+		}
+		stage('编译+单元测试') {
+			steps {
+				echo "start compile"
+				sh "mvn -U -pl ${MODULE} -am clean package"
+			}
+		}
+		stage('构建镜像') {
+			steps {
+				echo "start build image"
+				sh "${SCRIPT_PATH}/build-image.sh ${MODULE}"
+			}
+		}
+		stage('发布服务') {
+			steps {
+				echo "start deploy"
+				sh "${SCRIPT_PATH}/deploy.sh user-edge-service ${MODULE}"
+			}
+		}
+	}
+}
+
+# 远程执行编译脚本
+$ cat build-image.sh
+#!/bin/bash
+MODULE=$1
+TIME=`date "+%Y%m%d%H%M"`
+GIT_VERSION=`git log -1 --pretty=format:"%h"`
+IMAGE_NAME=DOCKER_REGISTRY/PRODUCT_NAME/${MODULE}:${TIME}_${GIT_VERSION}
+cd ${MODULE}
+docker build -t ${IMAGE_NAME} .
+cd -
+docker push ${IMAGE_NAME}
+echo "${IMAGE_NAME}" > IMAGE_NAME
+
+# 编写K8S更新服务脚本
+$ cat deploy.sh
+#!/bin/bash
+IMAGE=`cat IMAGE_NAME`
+DEPLOYMENT=$1
+MODULE=$2
+kubectl set image deployment/${DEPLOYMENT} ${MODULE}=${IMAGE}
+
+
+
+=================================================================================
+中间件:处在服务业务与用户应用中间的软件； 用来做业务解耦的；
+
+由于业务、机构和技术是不断变化的，因此为其服务的软件系统必须适应这样的变化。
+在合并、添加服务或扩展可用服务之后，公司可能无力负担重新创建信息系统所需的成本。
+正是在这个关键时刻，才需要集成新组件或者尽可能高效地扩展现有组件。
+要集成异类组件，最方便的方法不是将它们重新创建为同类元素，而是提供一个允许它们进行通信（不考虑它们之间的差异）的层。
+该层被称作中间件，它允许独立开发且运行于不同网络平台上的软件组件（应用程序、Enterprise Java Bean、Servlet 和其他组件）
+彼此交互。当能够进行这样的交互时，网络才成为计算机。
+
+软件开发的话，比如你可以用sql语句在终端直接操控数据库。
+也可以通过一个软件或者在线工具，或者就一个写满代码文件来链接数据库，操作数据库，而不是你直接写sql语句进行操作。
+这种工具也就是中间件
+
+MVC
+SOA
+Dubbo负责连接,RPC/NIO
+Middleware
+中间件和业务无关
+Zookeeper注册中心
+
+
+
+
+
+
+
+

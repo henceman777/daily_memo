@@ -1,0 +1,26 @@
+基于Jenkins+Gitlab+Harbor+Rancher架构的CI/CD实现
+
+1.方案大概的架构组成：
+jenkins+saltstack+svn+gitlab+harbor+rancher
+
+- Jenkins
+负责监控代码,gitlab配置文件等
+负责执行镜像的构建,上传下载
+通过Rancher插件系统构建stack/service
+发送构建结果通知
+
+- SVN/Git 提交代码
+- Gitlab
+保存项目配置文件
+nginx定制的配置文件
+Dockerfile文件
+
+- harbor
+Vmware开源的docker镜像仓库系统,方便管理维护镜像,负责构建后镜像存储
+
+- Rancher
+容器编排管理工具
+通过API负责接受Jenkins调用,自动创建,更新stack/service
+实现服务的扩容缩容
+
+- Saltstack

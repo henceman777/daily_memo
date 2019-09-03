@@ -1,0 +1,60 @@
+课程名称    下载地址
+Python Django Ansible Playbook自动化运维项目实战 https://pan.baidu.com/s/1MAz_sNypeDSySQCdLiOuDw
+顶级资深工程师深度讲解Go语言开发入门到精通 Go编程爬虫实战视频   https://pan.baidu.com/s/1nx82k7mOn8ErlPSsCdLfTw
+Zabbix监控系统深度实践  https://pan.baidu.com/s/1v3bAFqhk890KokIsmu3CMQ
+Spring Boot 企业级应用开发实战   https://pan.baidu.com/s/1SbB-auGkUN6r2i6dtv7t_w
+Ceph部署安装与性能调优实践视频课程（应用场景+优化）    https://pan.baidu.com/s/1hbmJwvNWOcGzu-7wcs7O7A
+Docker+Kubernetes(k8s)微服务容器化实践(高清版) https://pan.baidu.com/s/16Rtl8DBMFUwJkeKZRd9emw
+Docker案例实战课程视频教程    https://pan.baidu.com/s/15k84arcywARgHYmva83u6w
+MySQL DBA电商数据库设计与架构优化实战 https://pan.baidu.com/s/1wgpMSx_LI6kODjDgE-U3uQ
+JAVA大规模高并发系统架构项目实践  https://pan.baidu.com/s/1yDgyYxyIdfCFAq4axhVY_A
+从Docker到Kubernetes之最佳技术实战   https://pan.baidu.com/s/18nnAZJeQvS_wO_SGBx-vvQ
+开源Web服务器Nginx架构实践   https://pan.baidu.com/s/1fyANF0tQuIpBJ5Gz9_4QAQ
+Python Flask 快速构建高性能大型web网站项目实战视频   https://pan.baidu.com/s/1cUggNbUvptYz5vvwBhsdrg
+Python超级明星Web框架Flask高级编程    https://pan.baidu.com/s/1EAEleNOQBvpMWVQcJjAsAw
+大数据项目实战视频hadoop spark实时计算项目实战教程 https://pan.baidu.com/s/1SnaWp_ls0V3Z_CgmhGkT7Q
+MySQL零基础最佳入门到高手视频   https://pan.baidu.com/s/1sPaYPhtfgDqJXcPseS8DUA
+kafka入门详细讲解视频   https://pan.baidu.com/s/1ycyHrdW2DHdXvjetcGCLCg
+Go语言从入门到进阶实战    https://pan.baidu.com/s/1ynKMR5xpkPee8zcw7eqmNg
+Java程序员晋升产品经理从基础到全能 https://pan.baidu.com/s/1Z_bpi3sxgSOkmfVbQ0fmOQ
+Python3开发实践真正完整版 尹成大神主讲 https://pan.baidu.com/s/1lRoJYF-dgfFJqr-dDGFdyw
+Python全栈开发从入门精通到架构师 https://pan.baidu.com/s/1lTOYyar0hklD6G04NIIIWQ
+麦子学院 产品经理从基础到全能 https://pan.baidu.com/s/1vZ5YEeV1azYHB5kO-Xl3ZA
+三节课产品经理 https://pan.baidu.com/s/1XC8x3scayy-xCuW__lk_5w
+网易微专业 产品经理  https://pan.baidu.com/s/1254QSqoLjMxzBYQh9qXQcQ
+产品经理赠送材料    https://pan.baidu.com/s/1x3CJzA_UySdEHaXe32J1ig
+自动化运维利器 - SaltStacks生产实践部署最佳实战  https://pan.baidu.com/s/1RikEQnvp3iQEdqy08XXuQg
+Python3入门与进阶    https://pan.baidu.com/s/1PPWnoi9naiwMtG7lQId7Bg
+Docker k8s(kubernetes)集群搭建最佳实践视频-mp4    https://pan.baidu.com/s/1sqFUdw9KiYz38I2p_i8DCQ
+系统学习Docker 践行DevOps理念   https://pan.baidu.com/s/1IgJ5kwbSoNr9-jTY4UqHaQ
+区块链入门与去中心化应用实战  https://pan.baidu.com/s/1CLnUuVIg8GOjxGaBQGij9g
+基于Golang协程实现流量统计系统  https://pan.baidu.com/s/1PzI8ACDYeZ7Sj5OQOUDMVg
+史上最全SpringCloud微服务视频教程教程    https://pan.baidu.com/s/1W7_qTcOtCJVFTzeEiTeAiw
+区块链技术与以太坊开发框架入门到精通  https://pan.baidu.com/s/1Ir6LhMclXDPI9KT65OU2oA
+MongoDB实战视频教程 部署 集群优化 案例分析  https://pan.baidu.com/s/1Xaq0wi3XMXJLPd0RVEP8TA
+Redis从入门到高可用分布式实践   https://pan.baidu.com/s/1Fx-0KoQxxiGA_hcHFM0tSQ
+网易微专业 高级UI设计师   https://pan.baidu.com/s/1dbbFuFWgCJJXWZOFm0YGwQ
+网易微专业 UI设计师 https://pan.baidu.com/s/1JMSawECzDegZl_F5G3V6Ww
+麦子学院 UI视频教程 https://pan.baidu.com/s/1HwC5HDq5Ak3UXRjgiHHMJQ
+UI设计教程  https://pan.baidu.com/s/1DWRQY0oVhRG22ogM3vVNNA
+网易互联网运营 https://pan.baidu.com/s/1uEfh-1UahB3O5PB-9XNSZA
+最新版华为HCNP-HCIE认证 v3.0   https://pan.baidu.com/s/1WgapreqigUtPyd2ux0I4AQ
+极客学院小程序 https://pan.baidu.com/s/1bEmZAooNossmnMhm1jG43Q
+极客学院前端  https://pan.baidu.com/s/1YmKCqLUxf-CMGI9tSHoS-g
+小木课堂小程序 https://pan.baidu.com/s/1aSnzlRjdYDyzeao_KBLNGg
+C语言-物联网开发   https://pan.baidu.com/s/1bEy8n-gsGqk2k07qOwWKug
+Java springboot 仿抖音短视频小程序开发 全栈式实战项目 https://pan.baidu.com/s/1xxyDN78b2TEvgrkIaPYh7Q
+python量化交易视频教程  https://pan.baidu.com/s/1CA7NoU4TgsbyjNvJVyCUsQ
+最好的一套Oracle OCP 实战技能加强班 教学视频 学习资料   https://pan.baidu.com/s/1adeBB3yDnvW018z6yYq87w
+基于大数据人工智能的算法精解全套视频含PPT  https://pan.baidu.com/s/1rqaqHM935QvASeRpHq590A
+Docker技术高级应用实战（含KubernetesK8S）  https://pan.baidu.com/s/16CUUTIMcqT-WWisYunJlJQ
+区块链技术开发入门到精通视频教程    https://pan.baidu.com/s/1pEcA2L6EEs47KeMk3L2q9w
+ActiveMQ RabbitMQ RokcetMQ Kafka实战 消息队列中间件视频教程  https://pan.baidu.com/s/19OosqI7mgSRejdtt75KWCw
+老男孩Linux46期 https://pan.baidu.com/s/1U0JhQFaq0pdq_fhxT_ndEA
+Kubernetes企业级容器集群管理平台实战 https://pan.baidu.com/s/1l536eTKR3DACOnNy6WC_Dg
+Spark大型项目实战-电商用户行为分析大数据平台   https://pan.baidu.com/s/1d8LQJPhgwhOZAzcEfUeHbw
+AWS官方出品云计算架构师课程 https://pan.baidu.com/s/18nDX11EQFLGi9KXW_4EypQ
+传智播客P2P金融项目网络借贷平台开发实战视频 https://pan.baidu.com/s/1mM96VFlr3qiThQcx3EBjvw
+马哥最新Python自动化全栈&运维视频课程  https://pan.baidu.com/s/1ymL1soMWd-03mAEkB1oCww
+汪文君Java高并发编程三个阶段    https://pan.baidu.com/s/1NFYU5ys0PiRGhALSV3aGmQ
+黑马golang语言基础区块链编程开发项目实战全套视频教程   https://pan.baidu.com/s/1r3fDV-Z925RyKNCUaT-VHw

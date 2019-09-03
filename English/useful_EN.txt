@@ -1,0 +1,5350 @@
+======================================================
+meet our requirements
+Let me clarify
+parallel monitoring request
+parameters need to be specified
+do you have any clue?
+handle this request
+This request concern monitoring indicators
+take the lead on this topic
+take in charge
+ 
+Any support, or action needed please let me know.
+how to proceed
+I'm not aware
+As mentioned  by
+add somebody in the loop 
+hope you're well as well
+To do so
+requests must be set up
+Please find attached 
+PLEASE NOTE that
+as expected
+from my point of view
+if it is somehow possible to 
+Thank you for notifying me,
+at first glance it seems working, I keep on testing and will report here.
+
+via email
+Let us know if you get it working.
+To be honest,
+doesn't work as expected
+didn't found any clues that fix my problem
+Thanks in advance.
+
+Any idea or another effective approach.
+break the requirement up into functional parts
+clarify how to 
+censored Details
+no records found
+all work as expected from the command client
+I am new in Nagios.
+sort out the concepts
+handed back to
+This is not strictly a requirement
+
+presumably
+you might encounter 
+for instance
+As always I advocate 
+To make things a bit more
+Essentially 
+I’ll keep you informed
+
+Thank you for cascading this information to who may concern
+Effective immediately
+were obligated to 
+interact with
+The purpose of
+streamlining the process
+it appears that
+After brief investigation
+explicitly explain  #明确的解释
+
+for monitoring purposes
+It seems needed to
+It could be due
+Seems like we have a display issue  of
+Affected   #受影响的
+related to
+
+If needed
+This meeting is dedicated
+The aim is 
+As a side note  #附注一点
+avoid reinventing the wheel using a code base
+For instance
+problems encountered  #遇到问题
+As seen above  #如上所说
+All Open Requests
+External Requests
+Issues closed last 30 days
+Nagios: Weekly Integration
+Opened requests
+Pending requests
+Rejected & Duplicates
+Team tasks 
+
+flexible and powerful 
+Just to clarify
+each individual
+implement
+breakthrough
+bundled
+adapt thresholds to keep metrics and be alerted for true reason
+
+Meantime
+proceed to 
+be use for
+takes in charge
+under responsibility of
+aims for
+It has the additional advantage of being able to
+Having said that #话虽如此
+I would strongly recommend that
+to acknowledge
+In particular #尤其是
+an infernal loop
+The most crucial
+get into the habit of  #养成习惯
+To set up
+I would strongly recommend that
+In practical terms #实际上
+in a broad sense #广义上讲 
+take a closer look at
+various perspectives #多视角的
+is not considered as
+to be sure that
+easy to grasp #容易理解
+Therefore #因此,所以
+thus #因此
+
+in a similar manner  #以一个类似的方式
+if any ease
+A commonly seen issue #一个常见的问题
+it shows explicitly what #明确的显示
+some efforts are spent trying to achieve #这些努力是为了达成
+straightforward #直接的
+coupling #耦合
+in that case
+requires sth to do sth
+tailor made
+Ensure that 
+Avoid losing 
+on the other hand,
+very complicated
+It depending on
+In order to 
+sort the strenghts and weaknesses 
+phase  #这个月相，这一阶段
+intermediate #媒介的
+novice newbee nood   #新手
+Approval received 
+put Max in the loop
+leads on that topic
+
+I’ll update you as progress is made
+initially  最初 起先  开头
+Thank you for cascading this information to who may concern.
+
+Please find attached
+responsible for  是…的原由；为…负责
+in charge of  负责 主管
+governed by  受...支配
+concentrate on   专注在...
+however #然而
+moreover  #更多的
+have more latitude to  #有更多的维度去
+side effects #副作用
+take this for example #例如
+more efficient  更高效的
+A preferred solution  #一个首选的方案
+
+accidentally #偶然的
+consciously  #自觉的
+probably  #可能的
+Obviously #显然的
+generally  #一般的
+normally   #同常的
+exactly    #的确的
+definitely  #一定的
+literally   #简直是
+actually     #实际上
+finally
+necessarily   #需要的
+relatively   #相关的
+currently    #目前的
+extremely    #非常的
+recently     #最近的
+directly     #直接的
+properly     #适当的
+slightly     #轻微的
+simply       #仅仅的
+completely   #完全的
+particularly  #尤其的
+automatically  #自动的
+manually      #手动的
+fortunately   #幸运的
+specifically  #指定的
+reliably      #可靠的
+relatively    #相对的
+conversely    #相反的
+explicitly    #明确的
+likely        #可能的
+Concretely    #具体的
+recursively    #递归的
+reliably      #可靠的
+immediately   #立刻的
+typically     #典型的
+dynamically    #动态的
+precisely
+Seemingly
+Alternatively
+thoroughly
+gradually
+
+and thus
+aims to
+if I understand well 
+Nothing to do with
+Additional to that
+in order to
+As you mention
+
+in paralle   #并行的,同时的
+dozen of 
+absolutely fantastic 
+becoming really proficient with
+I attempt to 
+I'd consider myself 
+in order to optimize further
+tremendously effective 
+reveals epiphany 
+or magic if you prefer
+well worth 
+As Confucius put it: “I hear and I forget. I see and I remember. I do and I understand.”. 
+
+The main focus of
+tips and tricks 
+In addition to   #除此之外
+occasionally   #偶尔的
+
+enormous
+Broadly speaking  #广义上讲
+to ascertain      #查明，探明
+thus preferred    #所以推荐的
+is often considered to be #经常被认为是
+
+philosophy #哲学
+in grasping the concept #理解概念
+efficiency gain #效率增益
+The same goes for  #同样适用
+In summary  #概括讲
+equivalent of  #等同于
+easier to manipulate #容易操作
+
+As described below in the screenshots
+keep me informed once done 
+in case of mistake
+There are a plenty of 
+responsible for 
+sound familiar to 
+constantly   #不断的
+significant amount of   #大量的
+set of 
+to achive certain results 
+struggling to 
+that contains 
+ease of use
+case sensitive
+
+synopsis 概要
+is essential to
+The root cause
+The issue has been identified
+
+On some border cases
+it is bad practice
+straightforward  #直截了当的
+a veteran Python developer (a Pythonista)
+
+be refactored or optimized #重构和优化
+glue together #粘合
+actually occurs #实际发生的
+piont out  #指出
+come back to you once done
+is prone to #易于
+processes are spawned to 
+hence
+Please be informed that
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+#1) Respect the privacy of others.
+#2) Think before you type.
+#3) With great power comes great responsibility.
+	
+===================
+fireside chats
+bullet points
+there are no dumb questions
+geek bits
+scholar corner
+
+=====================================
+术语buzz words：
+argument
+attribute
+base class
+block
+character
+comment
+complex 
+derived class
+dictionary
+escape sequence
+exception
+field
+float
+function
+indentifier
+indentation
+indexing
+instance
+integer
+list
+comprehension
+literal constant
+logical
+method
+module
+namespace
+object
+operand   #操作数
+parameter # 参数
+pickle    #腌制
+physical
+shebang
+sequence
+slicing  #切片
+statement 
+string
+subclass
+tuple
+type
+variable
+
+======================
+# aternative words to express beautiful
+seductive
+gorgeous
+elegant
+Irresistible
+lovely
+enticing
+adorable
+captivating
+sensual
+beautiful
+hot
+exquisite
+cute
+stunning
+sexy
+ravishing
+luscious
+ravishing
+
+-----------------------
+
+Also, thanks to increased standardization of processes 
+greater information reliability efficiency. 
+Implement
+a strong driver for ...
+alignment actions
+
+essential to 
+significantly reduce costs
+=====================================================================
+here are order details, For check and other instructions see below,please note that you order will not be shipped until payment has been processed.
+to view the most up-to-date info regarding you order.click this link ,it maybe take a few hours fro the info to become available online.
+
+--------------
+you order is offically confirmed(yay!)
+you can find all the exciting details below, Once we've added the finished touches and said our goodbyes, you will get a shipmenr confirmation from us.
+
+you order below is processing and you will be notified via email when it has been shipped.
+
+=============================
+we will like to inform you that ...
+apologize for not having replied earlier.
+
+I am writing to confirm/enquire/inform you ...
+with reference to our conversation ...
+in my previous email ...
+as i mentioned earlier about ...
+as your requested /Per your requirement...
+as mentioned before ,we deem this ...
+as follow-up to the conversation yesterday, i want get back to you about the pending issue.
+i'm wondering if you can elaborate i.e. provide more details.
+please be advised/informed that 
+please note that ...
+we would like to inform you that...
+i am convinced that...
+with effect from ... to...
+Be assured that individual statistics are not disclosed...
+delighted to tell you that ...
+pleased to learn that ...
+congratulation on ...
+please join the workshop scheduled for 22-24 Nov.2017
+there are a number of issues with ...
+Due to circumstances beyond our control...
+Difficult for us to accept...
+since receiving you request ...
+we would be grateful if you could...
+i could appreciate it if you could ...
+we seek your assistance to cascade this msg to you staff.
+looking forward your reply.
+you prompt attention to this  matter will be appreciated.
+I would appreciate it very much if you would send me your reply.
+Hope this is Ok with you,If not,let me know by e-mail.
+if you wish,we would be happy to...
+on/regarding this matter, feel free to contact me at any time.
+I'm just writing to remind you of...
+I am enclosing/please find enclosed...
+attached hereto ...
+Attached please find the up-to-date info on/regarding/concerning...
+If you have any further questions...free to contact us...
+hope my clarification has been helpful.
+let me know if this is suitable.
+look forward to hearing from you soon.
+Hope this is clear and we are happy to discuss this further if necessary.
+I'll keep you posted.
+Please keep me informed on this matter.
+I apologize for the delay in ...
+sorry for any inconvenience caused.
+sorry for any inconvenience this has caused you.
+apologize for not having replied earlier.
+your understanding and coorperation is greatly/highly appreciated.
+your prompt reponse will be most appreciated.
+Please convey my thanks to all the people involved.
+
+inherited by ... 被继承
+In view of  #鉴于
+
+===========
+Dear all
+
+I hope my email find you all well
+I would like to take this time to sincerely thank you all for your support during my time here。
+
+It has been pleasure working with each and everyone of you . I decided a few weeks ago that the time had come 
+For me to move on to another chapter of my life .
+
+My decision came with lots of thought, consideration and excitement all the same time as well much appreciation for each and every one of you
+And the many experiences we shared .
+Today will be my last day here and I leave with many great memories and much appreciation to everyone who has enriched my life professionally and personally.
+
+I wish you all much continued success and happiness.
+
+---------------------
+
+May you a good health and roaring business!
+I sincerely appreciate your help and support during those days.
+
+KISS原則（Keep it short and simple）
+
+in parallel
+
+Details concerning the ...
+indicates   #表明
+retrieves  #检索
+
+simulates  #模拟
+
+This might be because of insufficient
+In this case it is not essential
+
+strongly recommend
+In order that
+must be identical  #相同的
+Unless otherwise indicated  #除非另有说明
+
+Firstly,Afterwards,finally
+not .. but rather ...
+In contrast #相反的
+One can well say that 
+
+
+It’s our pleasure to present
+In this tutorial 
+I will get back to you
+be aware that
+
+kubernetes
+you may encounter an error 
+It appears that 
+
+based on the analysis to date
+to resolved this issue promtly #迅速解决问题
+contrary to  #相反的
+
+not affected 没受影响
+
+to be clear
+indentified  
+
+partnering with
+numerous 许多
+sustainable success  可持续发展
+expedite  加速 
+
+and will be regular scheduled for next week implementation
+
+has been granted
+your request has been approved,and will be implemented shortly:
+Use the link below to see your request history 
+(please note that there may be additional information available in the request details):
+
+Thanks a lot for your support
+identify potential
+
+Have you ever been wondering about
+Have you ever identified topics that
+this will interest you!
+In order to continuously improve the quality of the service 
+ will soon be available 
+ retrospective analysis  可追溯的
+do not hesitate to
+ should or could
+
+Bonjour
+need actions to do by
+
+To access to offer follow this link:
+affected to you
+please let me take the opportunity to 
+
+Only through excellent teamwork and your full dedication and the will to succeed we were able to achieve our goals and to meet the expectations set in us
+Wishing you and your loved ones a peaceful and joyous Christmas season.
+
+
+It is with a real emotion that I
+
+after having spent almost 20 years
+I have always enjoyed working for Faurecia , facing in each
+
+ready to face the upcoming new trends of
+I am proud to 
+with a clear roadmap to
+I wish a lot of success to my successor
+I wish a lot of success to all of you
+
+Without a doubt 
+competitive advantage
+validated our strategy 
+In the meantime,
+suffered from quite some postponements 
+aims at protecting
+security is an extremely touchy matter within IT
+widely broadcasted
+
+we are facing
+
+reinforced our shields
+ Together with our competent teams 
+we laid the foundation for ...
+As you know
+we have initiated
+To bring the value expected from
+It is based on
+cost reduction and usage of collaborative
+Strengthen IT demand management and control:value based approaches and less RFC
+aimed at simplifying the expenses notes.
+Operational Excellence 
+ I want to emphasize that I am impressed by the dedication, professionalism and enthusiasm that I have witnessed. 
+ It is designed to create a real breakthrough. 
+ process has increased accordingly.
+pay greater attention and respect to 
+ 
+submitted ticket
+
+If you have any further question, feel free.
+
+The occasion gave us opportunity to 
+Even though 
+
+was put to use
+持续继承（Continuous Integration）
+持续部署（Continuous Delivery/Deployment）
+
+================
+it improves your flexibility and productivity as an engineer in both obvious and subtle ways
+Fluency on
+is a skill often neglected or considered arcane
+notes and tips
+fairly specific  相当具体的
+sophisticated  精致复杂的
+obscure 晦涩的
+
+Scope 范围
+experienced 经验丰富的
+The goals are 目标是
+concrete 具体的,有形的
+look up elsewhere 别处查阅
+essential  必要的
+significantly  显著的
+alternative 可选择的
+ interactive 交互式的
+as appropriate  酌情的
+
+With power comes responsibility 能力伴随着责任
+The fact you can do something in Bash doesn't necessarily mean you should
+
+Obscure but useful 晦涩但是有用的
+One-liners 一个精辟话
+
+mainly 主要的
+
+practical  实用的
+came across  遭遇,偶然发现
+ASCII Art
+each and every 每一个
+along with 连带着
+accidentally 意外的
+suspend 暂停,挂起
+beneficial 有利的
+purge 净化,清除
+
+This might not be of much practical use but it is definitely one of the nicest thing I came across.
+sorely underused 非常的未被利用的
+in favor of 有利于
+Amiable curmudgeon 和蔼可亲且乖戾的
+in such a scenario 这种场景下
+
+in rare cases 罕见的情况下
+fit your bill 符合你的要求
+try this out 试试
+
+collisions interactively 碰撞的交互
+recursively 递归的
+lesser known  少有人知道的
+starting out
+Swiss Army knife 瑞士军刀
+altogether 一并的
+handy 便利的
+stick with 坚持
+numeric or alphabetic 数字或字母
+wraps up 包括
+idiom 习语
+whilst  同时的
+periodically 周期的
+tons of 大量的
+constantly 时常的
+less classical and more hip and modern 时尚的
+presist
+restore
+engrain a habit of  根深蒂固的习惯
+tweeze apart from
+under the hood 底层的
+shaky  摇晃的
+per se 本身的
+exceedingly 极端的
+brief  摘要
+in comparison 对比
+properly 适当地
+intelligent 智能的
+wondering if 分不清,迟疑的
+definitely 的确的
+under appreciated 未被充分赏识的
+It comes in especially handy in  ... 尤其好用在...
+The main purpose of  主要的目的是
+though...however... 尽管...然而
+be supposed to do 应该是...
+respective 各自的
+a great amount of 大量的
+In order to 为了
+clear the mess 清除混乱
+names starting with ... 以...开始的名字
+named ... 
+with dozens of options 有很多选项
+are often known to 熟知的
+are categorized into 分类为
+with ... you could ...
+Hence it is highly suggested to  因此强烈推荐
+productively 高效多产的
+efficient 高效的
+affected  受影响的
+Scalability 扩展性
+focus on  专注于
+The problem you have encountered 遇到的问题
+recurring/persistent problem 重复出现的问题
+please refer to  参考
+for further assistance  更多的协助
+An error has been encountered 一个错误被发现
+be mainly for 主要是为
+Prior to 在那之前
+diverse  不同的
+leading-edge 尖端的
+is equivalent for  等价于
+relevant to  根据...
+tend to 趋向于...
+accurately  准确的
+is composed of 由...组成
+is flagged as  标记为
+As you may appreciate 你可能会喜欢的
+quite a number of 许多
+left out of 不计入的,忽视的
+categories ... in 2 areas 把...分成2类
+to run certain actions 来运行这些动作
+differ with 不同意见的
+depending on 取决于
+be considered insecure  被认为不安全的
+considerably 相当
+This however makes... 然而这却使...
+old phrase 老话讲
+sequentially 持续的
+synchronous 同步的
+If and only if  如果且仅
+You can achieve that by 从...获得
+lengthy 冗长的
+a neat utility 一个干净的工具
+in practice 在实践上
+to get the job done
+
+distraction 分散注意的
+Anything unrelated to coding is regarded as noise and will be purged.任何无关的被当作垃圾并剔除
+vague 模糊的
+seldom  罕见的少用的
+The key point is 关键是...
+The emphasis is  重点是...
+in terms of 根据
+In some cases 某些情况下..
+restricts 约束了
+Be familiar with 熟悉...
+are convenient ways to 方便的方法...
+It is remarkably helpful 明显的帮助
+In particular 尤其是
+tedious  冗长乏味的
+with regards to 关于...
+regularly 定期的
+put it off 搁置推迟
+similarly 同样的
+point out   指出
+reasonably  合理地；相当地；适度地
+ambiguous, vague, incomplete, overly broad, or rhetorical
+模棱两可的，模糊的，不完整的，过于宽泛的，或过度修辞的
+historical significance 历史意义
+it is not considered a good, on-topic question  不是一个好的切题的问题
+equivalent 等价的
+I prefer to 更愿意
+Similar things you can do 类似的你还可以做
+in lieu of  代替
+in a conveniently readable format 方便读的方式
+In a similar vein 同样的
+
+It is (arguably) ... but most certainly
+extremely 
+
+prefix 前缀的
+suffix 后缀的
+
+shuffle 洗牌 搅乱
+handy trick 技巧
+maximum 最大的
+regarding 关于...
+constantly 不断地；时常地
+Depending on 取决于...
+tiny orgasm  小高潮
+productivity improve 生产力的提高
+wildcard 通配符
+Profundity 深刻的 奥义
+opposite 相反地 对立的
+Tune in 收听
+
+I've been busting my head off trying to find what's wrong with 试图找到问题
+
+
+self-documenting
+effects relative to ...和...相比
+flaw 缺点
+cencerning affects 有关效力的...
+circular 循环的
+
+seemingly advises that  看似建议是...
+submit 提交
+odd hehavior 奇怪的行为
+I was having this same problem
+prudent  谨慎的
+Grumble  喃喃自语 嘟囔 抱怨
+exceeding the heat limits   超越限制
+misleading information  误导的信息 
+
+In case of inconsistency  以防不一致
+preliminary 预备 准备 初步的
+Detailed instructions to be performed for solving the issue.  具体的指南解决问题
+consecutive  连贯的
+
+
+please consider to 请考虑去...
+preferred for you  你的首选
+Concerning .... 介于...
+seems to be functioning   看似工作着
+Do not hesitate to contact us.
+
+See you tomorrow. Until then, peace.
+The point is that 
+In this case 既然这样
+have the ability to 可以去...
+for demo purposes  用来测试
+let me put it this way. 我这样说吧...
+everything is going extremely well.
+
+preliminary findings indicate  初步的发现
+say, 如果,倘若
+
+another thing just occurred to me. 突然想到另外的事
+occupied 占用的,没空的,正在使用中的
+affirmative  肯定的,赞成的
+
+jeopardize 危害,使受困的
+precaution 预防措施,警惕的
+serve on 担任...职位, 担当
+
+be entitled to ... 有资格...有权的...
+ought to ... 应该
+montage  蒙太奇
+
+quitting time 下班时间
+
+##### 口语日常 #########################################
+
+I gotta go 我要走了
+jk: just kinding 开玩笑
+
+I'm going to grab some more coffee  去喝咖啡
+Let me rephrase  让我重新表达
+my first goal is
+ 
+be trying to 试图
+keep trying to 不断尝试...
+
+try to do 试图 努力
+try doing 尝试
+really tried doing 尽力了
+predict 预测
+cross it off 划去
+
+pertaining to  属于的 关于的
+inquiry 调查
+
+squad 小队 五人组
+seems like 似乎
+
+genuinely 真诚的
+a rather curious  相当奇怪的
+relative to 
+
+handy 方便的
+
+due to its innovative and advancing spirit as well as outstanding contribution to 
+insightful  深刻的 有洞见的
+sarcastically 讽刺的 挖苦的
+indicate 指出
+ 
+------------------------------------------------------
+pretty much 几乎
+handle  处理
+recurring 循环的
+For that, you hence have to  你因此需要
+There are two categories of items we handle 我们处理两类
+If you have any feedback, please tell.
+I have as a request (SR41110) to
+that belongs to
+will be integrated
+check up 核对
+resume 简历 摘要 
+cross it off 划掉
+advise with ... 和...商量
+come back to you 
+let’s preface this by saying that 事先由...说起
+a rather comprehensive 一个相当全面的...
+in this situation  这个情况下
+completion 完成 实现
+This is a topic that concerns three entities  这是涉及到三个实体的主题
+events occur 事件发生
+on our side of the fence 我们这边
+dummy example  虚拟的例子
+Say that you just created 假设你刚刚创建了...
+Let’s assume 假设
+inheritance  遗产 继承
+rightmost   最右边的
+aforementioned 上述的 前面提及的
+Same goes for  同样适用于
+AFAIK  as far as i know  据我所知
+practically used  实际使用
+IN PRACTICE 实际上 事实上
+I hope this clarified the points you had  希望这能澄清你的问题点
+As previously said 就像之前说的一样
+summarize  总结 概述
+questions related to procedure 流程相关的问题
+
+I recently notice that 我最近留意到...
+At your orders 随之接受你的指令
+glad at your service 听后吩咐 乐意效劳
+my/with pleasure 乐意效劳
+willing to 乐意 愿意
+Be greatly honoured to 极大的荣幸...
+mail the DL 不必邮件DL
+Thanks in advance.
+something related to ... 相关的
+We are aiming at  致力于
+taking into consideration ... 把...加入考虑范围 
+Within this frame 在框架内
+respective 分别的
+
+facilitate 促进 帮助 使容易
+let me rephrase 改述 重新措辞
+phase 时期 盈亏
+scope 范围 余地 
+eLearning 网上学习
+stay tune 请继续收听
+please do not hesitate to ask ...
+
+follow-up notification will be sent later on 接下来会有后续通知
+disregard  忽视 不理会
+accept our apologies for the disturbance. 为打扰而道歉
+workflow diagram 流程图
+
+a lot of
+lots of
+
+a few of 少数几个 一些
+few of 很少 几乎没有
+
+stock plunge 股市跳水 
+ to be precise  更详细的
+This approach drastically improve the performance. 这个方法极大提高性能
+if that’s the case  如果是这个情况
+suppressed 抑制的
+
+at this point 这个时候
+they might be handy in case of troubleshooting.   可能很方便在troubleshooting上
+leading to tension and escalation  导致局势紧张或升级
+ in common with 与..一样
+boost 提高 促进
+thanks for your prompt response  感谢你的及时回复
+
+
+In paralle  同时的
+organic growth
+Operating income 营业收入
+value-added sales 增值销售
+operating margin   营业毛利
+rolling  order intake 订单增加
+net cash flow 净现金流
+
+Our 2017 performance confirmed our ability to enhance value creation through profitable growth and deliver on targets whilst continuing to invest in our innovation strategy. 
+Our order intake is at a record high and our financial structure is sound. 
+We remain strongly focused on operational excellence and accelerating the transformation of Faurecia into an innovative "Tech company". 
+I would like to thank all "Faurecians" for their contribution to this excellent year.
+ 
+become very demanding in terms of complexity  在复杂度方面变得很需要
+the issue concerning sth 的问题
+The goal of ...
+evenly 平均的
+stakeholder 利益相关者
+See the Shared Documents for additional information
+strictly follow 
+This is literally how
+Once the code looked right to me, I did whatever it took to make it execute without changing the application code 
+In response to  相应...
+ideal way 理想的方法
+to achieve this goal
+as Mark Twain suggested, the difference between the lightning and the lightning bug.
+
+仁慈独裁者(Benevolent Dictator For Life) 
+invoice 发票  发货单
+be eligible for  有资格的,符合...的
+
+make this correction
+corresponding  对应的相应的
+
+Don’t hesitate to come back to me if you need further information 
+registered a record
+emphasize 强调 
+significantly outperform  显著的胜过
+in particular 尤其
+operating income 营业收入
+concretely  具体的
+relevance  关联 适当 
+
+boost your presenting skills  提高现在的技术
+effective 有效的 实际的 起作用的 
+efficient  有效率的 有能力的 生效的
+affected 受影响的,做作的,假装的
+influenced 受影响的
+affection 喜爱 感情 影响 感染
+effective approach to 有效的途径
+
+object-oriented  面向对象的
+dynamic typing 动态类型的
+
+rapid 高效的
+noteworthy 值得注意的
+glossary 术语
+whetting your appetite 开胃菜
+tedious 沉闷的 冗长的
+get the job done 
+on the other hand
+yet 还；但是；已经，然而
+it comes with 它有...
+With great power comes great responsibility .
+toolkit 工具箱
+considerable 可观的
+no compilation and linking is necessary  不需要汇编和链接
+throw-away 信口开河的；用后可扔的
+together with ...
+compactly  简洁的 细密的
+much shorter than equivalent ... 对等的比...更短小
+ indentation  段落
+bracket 括号
+grouping  分组 分类
+Once you are really hooked  一旦你上瘾了
+mundane 世俗的 平凡的
+invoking 唤起 引入
+
+sophisticated 精致的 
+elaborate  精致的
+appendix  附加的 多余的 阑尾
+analogous  类比的 类似的
+afterwards  后来 然后
+thereafter 其后 然后
+be treated as  被当作是...
+omit 忽略 省略 遗漏
+straightforward  直接了当的,坦率的,径直的
+
+ 
+More detailed information...
+For any further question or feedback contact 
+
+To avoid issues
+consider doing sth
+
+it implies 它意味着...
+
+Any specific actions from your side ?
+Do you have any clue on what could cause this ?
+that would help to understand
+
+problem still occur often
+some time to time 不时的 时常的
+
+pre-flight 飞行前的
+encourter error  遇到错误
+notation 符号 记号 注释 
+legend 传奇 说明 图例
+Unattended installation  无人值守安装
+Invoke 调用
+
+CPU Utilization  #CPU利用率
+roll-out  首次展开
+ 
+scroll up 向上滚动
+the following command
+steering 操纵 掌控 掌舵
+
+- Subject				
+Hydra steering meeting
+- Date and Location	
+Donnerstag, 8. Februar 2018 16:00 - 17:00, WebEx
+- Attendees			
+FRANK Michael; CHERROUD Mohamed; CAMARGO Volnei; SUN Bin
+- Message				
+Agenda for 8th Feb 2018:
+Olivier: Hydra Head create high CPU load on ESX host.
+QoS monitoring on Cisco Switches
+Simpana DiskLib Monitoring
+
+QOS 服务质量
+SLA 服务水平质量
+TOA  到达时间
+workshop 讲习课 研讨会
+What needs to be ... 需要什么
+bulk load  批量装载,大容量的
+PDU  机柜配电装置,配电单元,协议数据单元
+UPS  不间断电源（Uninterrupted Power Supply）
+Activating Changes  
+obsolete 废弃的,淘汰
+Distributed  分布式的
+revert to 归回 返回
+
+means that 意味着
+Pasted from  粘贴
+Booklet 小册子
+helpful hints 有用的提示
+Welcome Banner  欢迎横幅,标语
+catchline 标语
+
+Vulnerable 易受攻击的 有弱点的
+findlings 校验的结果 发现
+Brute Force Attack 暴力破解
+Encryption algorithm  加密算法
+Management Decision  管理决策
+Improper  不适当的 不合时宜的
+blowfish secret  河豚的秘密
+unwanted  不需要的 讨厌的
+plaintext 明文 cleartext
+enhance  提高 增强 加强
+Follow up on the problem  跟踪问题
+suggest the following improvements  建议如下改进
+EMEA  欧洲,中东和非洲
+NAO 
+KPI 关键业绩指标
+
+
+time syncronized 时间同步的
+We are currently facing an issue with... 正面对问题
+CEST 中欧夏令时
+The issue concern 关于...
+In the meantime 同时的
+continuous problem  持续的问题
+
+Exhaust 排气
+alerts related to  ...关于...的告警
+make reference to 提到 谈及 参考
+how to proceed  如何处理
+pertaining to  与...有关
+Feedback would be greatly appreciated. 
+perimeter  周长的
+retain 保持
+retention  保留 扣留 滞留 记忆力
+compilation  编译 编辑 合集  汇编 收集 编纂
+compile 编译
+depend upon   依赖 取决于
+estimate  估计 估价 
+
+glossary  术语 
+Prerequisites  先决条件
+fulfilled  满足的 履行 完成的
+exhaustive  详尽的 彻底的 消耗的
+go through  参加 经受 检查
+
+ISDN 综合业务数字网
+
+WI: work instruction
+prioritization   优先次序
+if needed  如果必要的话 
+delivery time  交付时间
+
+Concerning  就...而言
+be Concerning 受影响的
+impacted  受影响的
+This is regarding
+
+verify on your side
+
+will be considered to be 被认为是...
+came up with 遇到...
+came across 遇见
+despite 尽管
+used to be 曾经
+
+since you want to modify a service
+select the corresponding offering
+Please update us in any case !
+
+sum up  汇总 总结
+Attendees  与会者
+
+Sorry for any inconvenience 
+thanks for comprehension
+ 
+regarding the issue that we faced
+Please advise what can we do in this case.
+Please be informed that 
+very several 
+
+approximately 大概
+Please contact me through email with any questions
+I will respond promptly. Combined shipping is available.
+ 
+ 
+any unaythorized copying,reproduction,hiring,lending,public performance and broadcasting is strictly prohibited
+
+dedicated to 致力于
+Afterwards   然后
+therefore 因此
+otherwise  否则
+
+This mail is here to propose to 
+
+accordingly
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these two things:
+#1) Respect the privacy of others.
+#2) Think before you type.
+		
+contact your network support team.and/or password, but could also be caused by network problems.n token.". 
+You will not be permitted access until your credentials can be verified.		
+
+
+Keep Me Updated!
+
+propose time take into account their time zone
+be responsible of
+
+The file shared during our meeting today for the ones who don’t have it. 
+Thank you to clarify opened questions asap.
+
+proposed by
+ 
+this phase  #这个阶段
+
+in order to foster communication and boost productivity
+
+is intended to
+
+
+prefix 前缀
+suffix 后缀
+
+This call to review 
+
+The file shared during our meeting today for the ones who don’t have it. 
+leveraged to upgrade and boost
+involved in
+be fully convinced
+differentiator
+to achieve a new level of performance
+increase the transparency 
+aim at 
+I‘m convinced that
+
+in a more collaborative way
+is one of our backbone and will remain
+work packages and deliverables
+Request For Comments  (RFC)
+
+__________________Confidentiality____________________
+This electronic transmission is strictly confidential and intended solely for the addressee.
+It main contain information which is covered by legal, professional or other privilege.
+If you are not intended adressee, you must not disclose, copy or take any action in reliance of this transmission.
+If you have received this transmission in error, please notify us and delete the received data as soon as possible.
+___________________________________________________________ 
+
+ credentials are granted 
+
+
+poses unique cybersecurity threats.  #面对着特殊的网络安全威胁
+vulnerable  易受攻击的
+on a variety of   各种的
+
+take as example 
+let me know if you have any questions
+
+Have an easily-reproduced segfault here.
+I could live with it
+dig into it
+
+make any progress
+I’m not opposed to digging in to take a look
+
+just roll up my sleeves and dig into the source?
+Pending your feedback,
+
+it didn't show up
+from two perspectives 
+In the vast majority of cases  #绝大多数情况下
+remedy  救治
+responsible for
+I hope I've answered your question but do let me know if I can help you further in any way.
+
+as appropriate 酌情的 视情况而定的
+terminates them after a while of being idle
+
+E,x： 例如
+voluntarily 自动的
+Although I'm not sure regarding .... 尽管我不确定...
+wouldn't be transparent to the user  用户透明的
+got hit by 遭遇
+applicable  可用的
+I let you know in case of errors
+It wouldn't hurt to ...
+diagnostics information   诊断
+as per my comment   #依照我的评论
+I suspect  我猜测
+I am facing 
+
+I'm pretty certain that... 很确定
+Meaning that... 意味着...
+invoke 引用
+Not exactly 不尽然...
+the coresponding messages 相应的信息
+HTH #hope this helps
+we've run into a segmentation fault  #陷入困境
+the command below illustrates the issue #插图阐明...
+Any ideas on a fix or work-around?  #有变通或解决的方法么
+Expected 预期的 actual  实际上
+I feel like a noob for ...  感觉自己像个新手
+superficial look  表面的
+it contains a fix (or rather a workaround)
+I also wondered this and looked at this for a while. 
+various   各种各样的...
+tempting initially  引诱的
+we might as well  也许也要  
+encountered the error
+It doesn't really matter too much 不重要
+in the most common case  在大多数情况下
+in the vast majority of cases
+Any additional
+exposition  战士,说明
+I did something dumb  做傻事
+is willing to  愿意
+verify that it works
+At this point 这个事情上...
+considering the seriousness of the issue  考虑到这个问题的严重性
+on different scenarios  不同的场景
+even more 甚至
+Any help is welcome 
+from scratch
+being able to
+ an uncountable number of times   无数次
+somehow  decided not to work anymore 一抹种方式,莫名其妙
+for no apparent reason   #没有明显的原因
+The firewall is set, my IP is in the whitelist
+keep getting this error when attempting to 
+Alternatively  作为一种选择
+This is likely due to  很可能是因为...
+mandatory requirement  强制需要条件
+To be able to do so  要这么做的话
+It indeed worked with ...
+Big thanks to
+to make this happen
+To my knowledge  据我所知
+elsewhere  在别处
+We've done our best to
+please email with details
+fear not  没用担心
+we will kick it back into shape 
+(at least for the time being). 至少是暂时
+
+as opposed to  和...对照
+trace down 追踪 
+I hope I've answered your question but do let me know if I can help you further in any way.
+
+Find out what is causing
+
+come at the problem from two perspectives.  两方面解决问题
+A deadlock occurs when
+permanently  永久的
+The following graph presents a high level view of... 如图所示
+indicated by the arrow  箭头所示
+a variety of  各种的
+
+All of the resources listed 
+is performed by ... 由...执行
+periodically  定期的
+The following points describe
+
+has just been detected
+Minimizing  最小化
+following certain coding conventions  这些代码习惯...
+minimize the chance of   减少机会...
+vice versa  反之亦然
+As a crappy workaround  #蹩脚的妥协方法
+
+
+dynamic   动态的
+leverage  利用 杠杆作用的
+Save the hassle associated with
+algorithm  算法
+
+deviations from 偏差
+be adaptive to   适应的
+To take a spin  兜兜风
+we would love to hear your feedback, keep it coming at ...
+
+three parts consisting of  三个组成部分
+Once an appropriate resource is chosen ....
+
+the data appearing in the chart 表中的数据
+To reduce alert noise  减少,,,
+violation  犯规
+We'd love to hear your thoughts
+
+How's everything going?
+
+as far as it be concerned
+a thing just occurred to me.
+jeopardize
+
+It’s well known that
+asynchronous  异步的
+To achieve this ...
+drawback  退税 缺点
+
+DRY #don't repeat yourself 
+
+the more useful approach    #更有效的方法
+is most commonly used as ...
+
+drastically   彻底的 刺激的
+Link to this post you can find 
+
+Key findings on 
+
+You're the best thing that's ever happened to me.
+
+newbie
+wayfarer  #旅人
+adventunrer
+scout  侦查员
+Navigator  领航员
+pioneer
+
+technical constraints  #技术的限制
+I thank you for your quick and efficient actions on this topic.
+
+just for sanity because obviously
+for your convenience
+
+identical   完全相同的事物, 同一的；完全相同的
+understand exactly what you mean 
+
+
+we are on the same page
+roll in   #蜂拥而来；有大量的（钱财等）；就寝；到达
+mandatory   #强制的
+Just came across 
+
+Stay tuned  保持联系
+initiative  倡议
+
+precious feedbacks   宝贵的反馈
+sensitive   敏感的
+If you need help don't hesitate
+evaluate to  评估
+assess  评估
+acquire 并购 获得
+acquisition 
+
+to perform Azure activities 
+from a DevOps perspective   从...角度
+
+Let me know if you would like to see something which is missing. 
+Any ideas are more than welcome !
+
+A quick guide on how 
+everything is detailed by  ...
+can be quite simple as 
+It's saying to ...
+
+but the point is ...
+
+to improve your website experience
+
+By clicking "allow" or navigating this site
+placement
+
+Really Simple Syndication (RSS)
+so that  以便 所以
+
+Common Feed List (CFL) 
+
+to take the lead   带头...
+essential component  主要部件
+pre-requisite   必要条件
+
+
+- Centralized Version Control System (CVCS) like CVS, Subversion...
+- Distributed Version Control System (DVCS) like Git, Mercurial...
+- CI / CD (Continuous Integration / Continuous Deployment) 
+
+
+flexibility, security, performance...  灵活,安全,高性能
+In parallel of   并行的,同时做的
+
+Target is to define standard solution for:
+•Setup a matrix of requirements for each identified departments  #各部门做个需求矩阵
+•Propose different solutions   计划不同的方案
+
+estimated cost  预估成本
+
+be taken into account 被考虑
+
+opt  选择
+Issue tracking  问题跟踪
+backlog  积压的工作/任务
+
+Check out how to ...
+In the coming days  #在接下来的日子里
+
+NOTE for Juju  #护符
+also known as ...
+
+RDP: Xorg/Xvnc
+with courtesy of 
+
+
+Precise in 
+be responsiable to ...
+
+naming conventions  #命名规则
+candidates  候选人
+SPOC: Single Person of Contact 
+
+Before to dig further
+go deeper into the details of
+criteria 标准
+latency expectations  延迟的期望
+bandwidth consumption  带宽的消耗
+on-premise   预置的
+
+neutral comparison  中立的比较
+
+I am very excited to announce that ...
+finalize  完成结束
+
+something in-between
+Beyond that  ... 此外
+embrace   拥抱
+
+I’m extremely proud of what sb... have accomplished over the last 2 years.
+can't wait to see what lies ahead
+ I’m thrilled to be joining force with ...
+ 
+numerous 许多的
+most importantly
+
+Collaboration, after all, is at the heart of everything we do
+accessible   易接近的；可进入的；可理解的
+spend more time focusing on 
+
+vision for the future closely matches ....
+we’ve gotten to know ...
+be obsessed with 
+productive
+effectively
+
+The era of the intelligent cloud and intelligent edge is upon us.
+is becoming embedded in ...
+being transformed by digital technology
+
+being impacted by 
+will increasingly be determined by ...  
+
+most pressing challenges
+In all walks of life  各行各业
+are committed to being stewards of 
+
+retain  保持
+ethos  精神  气质
+consider using ...
+veteran  老兵 经验丰富的
+
+Together we will continue to advance ...
+Going forward  向前的
+accelerate   加速
+Given all of this  鉴于这一些
+We have been on a journey with ...
+vibrant  充满生气的
+dedicated to   投身于 致力于
+For additional assistance  额外的帮助
+explicit support   明确的支持
+consent  同意
+be committed to doing  致力于... 以...为己任
+
+We want you to experience the full power of Forbes.com, but we need your consent to continue
+At Forbes, we are committed to protecting the personal data of our audience.
+In light of the General Data Protection Regulation, we are asking our audience in Europe to consent to the use of cookies by Forbes and its partners to continue to our site. 
+These cookies are used to personalize your user experience (content and ads) and support and improve the site. 
+Please click “I Agree, Continue to Site” below to consent to the use of this technology and continue to Forbes.com. 
+Visit our Privacy Statement to learn more. 
+
+consolidate  加固 巩固
+straight up
+
+SCQOR:
+Situation-Complication-Question-Obstacle-Resolution
+
+------------------------
+# 针对不同性格的人的不同字词和短语
+
+调解者 						乐观主义者 					生产者 					信息收集者
+help 						fun 						get it done 			data
+need support 				wacky 						hurry up 				analysis
+feedback 					offbeat 					stop complaining 		facts
+share 						kind of on the wild side 	solve the problem 		detail
+work together 				just take a sec’ 			bottom line 			think about
+smooth out the rough edges 	chill out 					reach the goal 			consider
+collaborate 				brainstorm 					work 					evaluate
+build consensus 			innovate 					do it now 				review
+improve morale 				create 						profit 					outline
+teamwork 					pick your brain 			curious
+family 						It'll be painless 			a surprise
+let’s talk about it 															interesting
+														research 	 
+ 
+---------------------
+FURY 原则:
+familar: sponsorship 比aegis好
+unique
+rich: pizzazz比good好
+Your favorite: 
+
+连接从句的词:but/or/and/yet/so/for/nor
+
+-------------------------------------
+
+•Docker? Kubernetes? Containers? Wait a minute… O_o
+•The Cirrus initiative and objectives  
+•Rancher comes to the rescue  
+•System requirements for launching Cirrus
+•Available sources of support (UPDATES: include Rancher Labs support price list)
+•Demo and resources (UPDATES: now includes demo of containerized apps and sources !)
+•Questions and Answers(NEW)
+
+ 
+We have the GO to continue further investigations by deploying a stable TEST environment 
+that will help to build production-grade K8S clusters in the future.
+In parallel, we will open a Sandbox K8S cluster to have a self-learning and a playground 
+where to test your container workload. You will get details on this very soon ;-)
+
+Please note that we are still missing some elements for a production environment 
+(to host production workload). See Questions and Answers slide.
+
+
+
+Your diligence on this is much appreciated.
+Has anyone got any ideas about what may be causing this?
+Once this happens, I can't continue working until ...
+The reason of this problem vary on different situations. 
+
+I get this from time to time
+After some investigating...
+Right now I am trying to  ...
+would it be possible to get ...
+Would be good to know if  ...
+I can tell you that I wasn't able to ...
+within a few seconds or so  大概
+holds a reference to
+
+I am facing this problem of ...
+The server also appear to ...
+has a lot of relevant information.
+this has definitely something to do with
+Apparently this is an issue that is related to...
+There is one other gotcha:
+
+I'm also having the same issue with ...
+Solution there is not applicable here.  不可用的
+Hoping for your kind advice.
+periodically 
+for RedHat based distributions   红帽发行版的
+
+Check how to avoid
+A significant time to process MySQL queries also could be a reason
+
+magnificent  
+spectacular
+splendid
+tremendous
+
+legit reasons  合法的原因
+Symptoms 症状
+Casue  原因
+Resolution  解决方法
+Additional Information  其他
+Archive
+More Insights  见解 洞察
+performance tuning
+
+the corresponding file  相应的
+accordingly
+Applicable to  适应于
+should be adjusted according the server capabilities and load
+In some cases  某些情况下
+A similar to the below error message is shown
+
+the process fails with the following error message
+refer to link on how to ...
+
+It’s strongly recommended to 
+Details are explained 
+During this operation websites will be unavailable for a short period of time. 
+Immediately afterwards
+The repair worked out
+got hit with this
+
+Such behavior occurs
+simultaneously   同时的
+As a temporary workaround,   变通的方法
+If the issue persists
+In such cases the best practice is to 
+
+is not capable to
+
+terminating into a time out
+restricted to   局限于
+holds a reference to
+Nothing at all happens, and after some delay...
+I've spent hours and hours searching the web trying to ...
+Any pointers and check list welcome.  #欢迎指点
+Feel free to ask for any missing details you may feel to be relevant or worth checking.
+
+
+As a remainder
+elsewhere  别处
+invariably   一成不变的
+This makes me feel something may be wrong with the ...
+stick to 
+By clicking the link,you will ...
+is subject to  忠于,受支配的...
+wanted to 
+What's weird, is that 
+
+oauth  开放授权
+be having trouble with  
+respect the rule
+Apart from ... 远离，除…之外；且不说；缺少
+navigate into  导航到...
+Let’s be clear 
+rich helping community
+a breeze  轻而易举的事请
+setup wizard  安装向导
+In terms of   依据；按照；在…方面；以…措词
+In addition to that
+
+grants users more possibilities
+This is a learning phase 
+let’s see how this works
+
+there is ... in place 在恰当的地方
+ 
+intact 不受损伤的
+Just keep in mind to 
+It started out as 
+in spare time
+directives  指令
+Persistent Connection  持久连接
+network traffic
+
+every now and then few times a day  不时地 常常的
+appears to be  看上去
+Hopefully this helps someone else
+snippets of config  配置片段
+I'm all for it  完全同意
+
+There are various ways to prevent it from happening
+be prone to ... 倾向...
+collaborative learning   协作学习
+In short,...
+Where am I going wrong?
+reveals the underlying issue  揭示潜在的问题
+hybrid problem  混合问题
+off-topic  离题的
+have a clue  有线索 知道
+multi-faceted  多面的  
+to track the bug   跟踪bug
+give everyone a better perspective of what you're seeing
+Admittedly  不可否认的
+open-ended  无限制的 开放的
+I completely agree to the intent of 同意...意图
+What is the best way to bootstrap 
+
+Is there a way to deplace  ...
+It turns out that  ... 原来是…
+cohesive  凝聚的；有结合力的；紧密结合的；有粘着力的
+imo  In my opinion
+facilitate  促进
+supposedly 恐怕是
+Just a thought  只是个想法
+nearly   差不多的
+Ditto for   类似的
+
+Proposals with insufficient activity are subject to removal  不充分的提议
+I don't see a need to  不认为有必要...
+On the contrary  正相反的
+objectively  客观的
+subjectively  主观的
+democratically 民主的
+a bunch of 
+It's likely that   很可能是...
+
+roughly 粗糙的 大概的
+in the footer of   在页脚
+I bet that you are ... 我推测...
+run into ... issues  陷入 遇到 撞见...
+being set to   被设置为
+it is already set up to do this
+It is possible that   可能是...
+
+And the show must go on 
+
+It sounds like  听起来像...
+you'll need to make sure that...
+would you please be a bit more specific on
+look into 观察 调查
+fairly  相当的
+
+a fair number of   相当多数量的
+a very large number of 非常多的
+a lot of
+lots of
+plenty of
+a great deal of 
+a huge amount of 
+a vast amount of
+
+
+It indicates that   显示出...
+it most likely indicates   最可能是...
+in which case   这种情况下
+will eventually make 
+
+affect performance
+
+inadvertently impact  无意的冲击
+redundant  冗余的
+readiness   敏捷 迅速 
+accumulate  积攒
+appears to be   看上去,似乎是...
+hurry-up   匆忙的 紧急的
+What's interesting is that   有趣的是...
+I'm not a black-belt ... 不擅长 不是黑带
+when it comes to  就...而论, 提及到...
+config seems sane  配置看起来是正常的
+since these values are default   因为...
+per  每；经；按照；每一
+my research shows that 
+I'm not seeing anything odd there. 没发现任何异常
+
+explicitly  明确的 明白的
+with the appropriate privileges and capabilities 
+by doing the following 
+Glossary   术语
+
+Is there a way to ...
+good practice  好的做法
+It reveals that 揭示了...
+
+(TCP) is designed to be a bidirectional, ordered, and reliable data transmission protocol 
+
+In this context   关于这点；由此而论；由于这个原因；在这个背景下
+ought to  应当
+severely  严重的
+is failing to  没能...
+work around it  变通
+a relatively long length of time  相当长的时间
+for all intents and purposes   总而言之
+subsequent   随后的 后来的
+Whilst  同时；时时，有时；当…的时候
+
+be suited to   适合于
+It effectively allows  有效的允许...
+in most cases   多数情况下
+then performs a database query  执行一个查询
+
+Any help will be appreciated
+
+prerequisite  先决条件  必要条件
+component   n. 成分；组件；[电子] 元件  adj. 组成的，构成的
+For complex reasons  基于复杂原因
+There are ways to deal with that
+
+beforehand 事先的  预先的
+AFAIK  as far as I know
+forcibly   强制的  有说服力的
+I‘m here due to ...
+This goes same for 
+
+either one  任意一个
+
+
+both peers  两端
+it adheres to  坚持
+theoretically 理论上的
+To answer the question verbatim  逐字的回答
+stick to  坚持
+Practically speaking  实际上来说
+be too drastic to be solution  太猛烈的
+It merely  只是
+Incidentally  偶然的 顺便的 附带的
+it seems to assume   看起来认为...
+save ... from...
+
+
+buggy  多bug的
+requires resorting to  需要求助于
+
+An alternative solution  另一个方案
+ephemeral   暂时的 短暂的
+Let's assume there is   假设...
+To put simply,let's say  简单的说...
+ 
+A sufficiently large number  足够大的...
+intended purpose of 预期的目的
+Findings   调查结果  发现的情况
+
+will possibly lead to  可能会引起
+Crucially  关键的 至关重要的
+In my scenario  我的情况
+run a 'netstat -a' from a command prompt
+
+turns out you are right  证明你是对的
+address your question  解决你的问题
+Messing with it   扰乱了它
+
+altogether 整个的 完全的 总而言之的
+concurrent   并发的 同时的
+what tweaking I need to do/required  做什么调整
+Thanks Hennes for the detailed reply  谢谢回答
+Thanks a bunch  多谢
+
+
+in my experiment,
+in most cases  大部分情况下
+is required to ensure that 必要的以保证...
+On the other hand  另一个方面 换句话讲
+nonetheless  尽管
+
+point somebody to
+
+count on 指望...
+aesthetics  美感
+as if  似乎 仿佛
+Given that  只要是，考虑到；假定，已知
+
+hint 线索 暗示
+expound  解释 阐述 详细解释
+it is permitted to   允许的...
+written from scratch   从头编写
+fully-fledged  成熟的 丰满的 健全的
+lingering 拖延的 徘徊不去的
+Lots of the time  很多时候
+It's also worth to mention that   值得一提的是...
+This has to do with ... 和...有关...
+That number fluctuates from ... to... 波动
+Anything at all would be appreciated, really!
+
+correspond to  相当于…，符合于…
+approximately match  大致匹配
+a malicious reasons  恶意的,刻意的
+The fact that you appear to be  事实上你看起来像是...
+It is a mandatory part of   强制性的...
+for reasons of ... 因为...
+
+As a sidenote  旁注...
+is composed of 被组成...
+for respectively 分别的
+
+
+consisting of  包含...
+keep an air of mystery   保持神秘的气氛 
+ambiguous  歧义的 模糊不清的
+vague  模糊的
+overly broad  宽泛的
+rhetorical   修辞的 夸张的
+Moderator   版主  仲裁人
+
+don't immediately jump to this conclusion  不要马上就结论
+creeping me out  害怕..
+changing rapidly  快速变化
+
+permanently  永久的
+temporarily  暂时的
+keep track of   保持联系
+
+is a symptom   一种症状
+Per default  按照默认
+In order to solve this issue  为了解决这个问题
+opt out of  决定不参加
+animated   有生气的 鲜活的
+
+Enthusiastic 热情的
+robust   强健的
+as intended  正如预期的
+in a bind   处于困境
+very problematic  有问题的
+
+I encountered a issue  遇到问题
+How do I correctly tweak the number of 怎么调整数量
+ in an absolute sense 绝对意义上...
+simultaneously  同时的
+constraints  约束条件
+Most likely  最可能的
+presumably  大概 推测是 可能是...
+overly generous  过于慷慨了
+overly generous, risking resource exhaustion 
+overly parsimonious, risking application bottlenecks 吝啬...
+guesstimate  瞎猜的 估测的
+We've been hitting the max open files limit   达到限制
+in place  在适当的地方
+browse thorugh   浏览
+Can anyone tell me why ...
+spawned from the shell  #从shell衍生出
+ 
+The proper way of doing this is that  最好的方法是...
+
+talking about your problem  说的你的问题
+would rather   宁可 
+I suspected that  怀疑...
+whereas  然而 鉴于 但是
+
+Revised  改进
+
+Nonetheless  尽管如此
+Conversely  相反的
+amateur  业余爱好者
+The problem is almost certainly that  几乎可以肯定的是...
+legitimate   正当的 合法的原因
+kept out of circulation 循环的
+dumping  
+Thanks for pointing out  指出...
+
+adversely affect 不利的影响
+mechanisms  机制
+depicted  描述
+
+in practice  实际上来说
+is an estimate rather than a guarantee  是预估而不是保证
+Under most conditions  大多数情况下
+drain   消耗 排尽
+Intuitively  直观的 直觉的
+Whenever I restart it.  不论何时
+Is there any solution that ...
+instance  实例, 以...为例
+help you out  帮你排忧解难,脱离困境
+According to ... as well as ... 鉴于...和...
+cover the problem 
+for the time being  暂时的,眼下的
+
+occurrences  发生；出现；事件；发现
+neglected  忽视的 忽略的
+draw your attention to
+consent 同意
+ticking 
+work  as intended  如预期的工作
+be obsoleted  被废弃
+
+Otoh  - on the other hand  另一方面
+RFC793 TCP协议的定义
+torn down  撤下
+relinquish  放弃
+further investigation  进一步的调查
+
+Any help is greatly appreciated.
+
+abuse the position to 
+penalize 处罚
+has strong negative feelings toward 
+it solicits opinion 征求意见 
+contradict  反驳
+rah-rah  好啊好啊
+suppress  镇压 抑制 废止
+
+buzzword  流行词
+philosophical   冷静的 哲学的
+enthusiast 狂热者，热心家 爱好者
+book worm  爱读书的人
+noob question  新手的问题
+newbie /noob 新手
+newcomer  新来者
+bother doing  费事做, 不屑做, 麻烦做某事
+itchy trigger finger 手痒的 渴望的
+soil  弄脏 玷污
+
+unable worm 没用的蠕虫 
+
+extract  摘录 摘取
+
+square brakets  方括号
+constructive  建设性的
+Marvelous 了不起的 非凡的
+stubbornly stick with their initial thought 固执的坚持最初的想法
+a certain amount of  一定数量的
+toxicity  毒性的
+
+I consider myself an ...
+objectively   客观的
+Quite often   常常 很常
+berate  严责  责问
+in this scenario  在这个场景下
+don't get me wrong. 不要误解我的意思
+Amusingly  有趣的 可笑的
+code snippets  代码片段
+condescending  居高临下的
+obscure  朦胧 晦涩 不清楚的
+peer 封为贵族；与…同等 ,凝视，盯着看；窥视, 贵族；同等的人；同龄人
+
+so strict compared to 相比来太严苛
+inevitably 必然的 不可避免的
+deprecated 不赞成的 弃用的 不适用的
+dunno  - dont know 不知道
+pulling my hair out  努力的
+genuinely awesome 真的很棒的
+tyrannic   暴君的 专制的
+ 
+
+From my experience  根据我的经验
+botnet 僵尸网络
+malware 恶意软件
+latency 延迟
+deluge  泛滥
+subject to   服从 受管制
+
+
+Available mythologies : 
+	- Nordic/norse (not so much known outside the classics like Odin, Thor, Yggdrasil)
+	- Greek mythology (same thing)
+	- Asian legends (uuh how to lose Europe in one clean sweep)?
+	
+Hydra is a creature/monster.
+
+Idea is good because it illustrates perfectly the relation to a distributed system where heads can regrow. 
+It's conceptually very close to what it describes.
+
+Central Monitoring is more about a global vision : 
+HYPERION / Jupiter , greek Titan (so it's more dignity than Hydra), father of Helios, Selene, Eos (all important). 
+Maybe link to Helios is a conceptual problem ?
+
+-> hyperion is "above all"
+Atlas => Monitoring has the weight of all the systems to monitor. Also a Faurecia name ??
+I'm sick of people stealing all the good mythology names => get better at mythology.
+
+Heimdall : nice but maybe too connected to pop-culture (MCU) ? 
+Also, not so obvious because it's also the floor manager.
+ 
+ 
+timeslot
+adaptable  合适的 可适应的
+drill down
+torn down
+notation  符号
+
+IMHO - In My Humble Opinion 以我看来
+tends to  趋向于
+as far as I'm concerned 就我而言
+I'd like to suggest another approach to 乐意推荐另一个方法
+
+assuming that   假设
+HTH - hope this hopes
+
+Effective immediately  即刻生效
+be appointed  被任命为...
+Interior
+
+previously 
+Deputy 副
+insight into   深刻了解 洞察
+it looks to me like ... 在我看来像是
+Like I said  正如我所说的...
+at this point
+constantly   不断的 时常的
+spawn thread
+Couple of questions
+
+Things you can do include:
+would certainly be   必定...
+aside from 除...之外...
+spikes in traffic  流量的峰值
+run into problems   遭遇 撞上 问题
+the underlying cause of  潜在原因...
+What symptoms are jumping out at you?  有什么症状?
+caveat  告警
+will wait indefinitely until all remaining requests have been fully served  无限等待直到剩下的requests被服务了
+be surrounded in square brackets  中括号包起来
+no tuning is needed or desired
+
+point towards 指向
+The biggest piece of evidence here is that
+ pile up  堆积
+be obligated to  有责任的...
+robust  强健的
+imminent 即将来临的
+recession  衰退的
+subsequently  随后的
+moreover 
+sufficient   充足的
+idoms 成语 惯用语slang 俚语,黑话
+
+要求 ask for -> request
+建立 set up -> establish
+发现 find out -> discover
+处理 deal with -> handle
+欺骗 take in -> deceive
+调查 check up on -> investigated
+容忍 put up with -> tolerated
+理解 catch on -> understand
+弥补 make up for -> compensated
+发烧 go down with -> contracted
+上升 go up -> contracted/rise/increased
+回来 come back -> return
+减少 cut down -> reduce
+
+help -> assistant
+buy -> purchase
+need -> require
+get -> obtain
+next/later -> subsequently
+also/plus -> moreover
+whole -> entire
+enough -> sufficient
+
+ 
+
+braces   花括号
+brackets 方括号
+controls  控件
+refer to 引用
+
+Thanks for any hint
+
+You can see enclosed the report of all alarms.
+it appears that 
+perimeter   视野  周长的
+
+contingent  分遣队；偶然事件；分得部分；代表团
+adj. 因情况而异的；不一定的；偶然发生的；可能的；依情况而定的；偶然的；[逻]有条件的
+
+
+submission  提交
+prerequisite  必要条件 先决条件
+it’s not the case  事实并非如此
+ 
+hafta - have to 
+dunno - don't know
+doncha - don't you
+gotta - have got to 
+shouda - should have
+I'ma - I'm going to 
+sorta - sort of
+gonna - going to 
+outta - out of 
+gimme - give me
+kinda - kind of
+wanna - want to
+lotta - lots/lot of
+lemme - let me
+ain't - am + not/is + not
+hasta - has to
+
+
+
+a severe or recurring/persistent problem
+for further assistance
+An error has been encountered
+
+as seen here in image
+thereafter  其后
+underscore  强调
+complain against  控诉
+apprehend  担心理解忧虑 逮捕
+
+I'm trying to ...
+any ideals about ...?
+covers this with multiple examples
+slightly different 
+run into the same problem
+IMHO - In My humble Opinion
+
+in case you don't want to ...
+severely limit 严重的限制
+is failing to take into account ...未能考虑到
+ends up in
+for all intents and purposes  总而言之
+being discarded  被忽略
+for the time being  暂时的,目前的
+
+
+diagram  图表 
+chart   
+graph
+figure
+table
+image/picture
+
+
+It very unlikely that ... 不太可能的
+given that   只要是，考虑到；假定，已知, 给定
+straight away  立马 马上
+the golden rule is...
+ideally  理想地；观念上地
+whereby [凭借；通过…；借以；与…一致 adv. 凭此；借以
+Thanks to ... for pointing out the potential errors 
+improve the clarity and correctness
+accumulation  堆积 集聚
+keep up the good work
+berserk 狂暴的
+theoretically possible  理论上的可能
+logical conclusion  符合逻辑的
+insightful  有深刻见解的，富有洞察力的
+shed some light  带来启发的
+at this stage   adv. 眼下
+particular scenario   特定的场景
+look at current ... for guidance
+
+- other ways to say "I think":
+From my perspective 在我看来 
+to me
+in my opinion  
+in my view
+to my point of view
+my view is
+the fact is
+in my way of thinking 
+I consider
+I feel
+I believe
+As I understand it
+
+
+Demystified    揭开神秘的
+
+phenomenal  现象及的  显著的 惊人的 非凡的
+to take off  
+capture the imagination   激起想象力的  引人遐想
+authentic  真正的，真实的；可信的
+
++ ways to say "I agree"
+Yup/Yep/Yeah
+That's right
+Definitely
+Exactly
+So do I.
+No doubt about it.
+We're in accord.
+
+I agree with you.
+Absolutely
+Affirmative
+Agreed
+You got it.
+I feel that way too.
+You're so right.
+
+Our thoughs are parallel.
+That's just what I was thinking.
+I could not have said it any better.
+I think you're totally rigth about it.
+You took the words right out of my mouth.
+
+
+good - excellent
+accurate - exact
+clear - obvious
+competitive - cutthroat  竞争的；比赛的；求胜心切的 - 残酷的，激烈的
+complete - comprehensive  完整的；完全的；彻底的   - 全面的 广泛的
+creative - innovative  革新的，创新的；新颖的；有创新精神的
+detailed - meticulous  精细 详尽的 - 一丝不苟的；小心翼翼的；拘泥小节的
+expensive - costly  昂贵的 - 代价高的
+busy - swamped  繁忙的 - 陷入...
+import - crucial   重要的 关键的
+intersting - captivating  有趣的 - 着迷的，有魅力的
+necessary - essential  需要的 - 基本的；必要的；本质的；精华的
+often - frequently     
+powerful - compelling   强力的
+
+ 
+call off   取消  放弃
+
++++ How to say you're not sure
+I guess
+it seems ...
+It looks like ..
+It appears ...
+Apparently ...
+Probably ...
+Perhaps
+Well ...
+
+takes a lot of tweaking and configuring   需要很多调整和配置
+once you're done
+
+numerous   许多的
+explicitly welcome   明确的欢迎
+without further ado  不罗嗦了
+
+aimed at  旨在...
+fairly   简直 相当的
+recursion  递归的
+accompanied with   伴随着
+originated in  起源于  发起
+in most cases  大多数情况下
+do sth from scratch  从头做起
+
+
+Many thanks to
+obscure  adj. 昏暗的，朦胧的；晦涩的，不清楚的；隐蔽的；不著名的，无名的
+		 vt. 使…模糊不清，掩盖；隐藏；使难理解
+		 n. 某种模糊的或不清楚的东西
+harvest
+
+
+This might mean that
+or possibly that 
+or perhaps you 
+One possible cause
+
+You may have 
+
+neglected 忽视的
+
+omitted  省略 遗漏的
+mechanisms   机制
+tweak performance settings  调整性能设置
+under incubation   孵化中
+a quarterly basis  季度的
+
+I would like to take this opportunity to say 
+never-failing  不尽的 不绝的
+
+count on 
+
+promote  促进；提升；推销；发扬
+consistent   始终如一的
+
+inspiring   adj. 鼓舞人心的；灌输的；启发灵感的
+			v. 鼓舞；激发；使感悟（inspire的ing形式）
+
+individually 个人的
+collectively 集体的
+
+along with  沿（顺）着；连同…一起；与…一道；随同…一起 ;与 同……一道 连同 
+unceasing  不停的
+sustained   持续的  持久的
+continuously 连续不断地
+elsewhere  在别处
+summarizes  总结  摘要
+aspect  方面  方向
+per
+
+relevance n. 关联；适当；中肯
+underlying 潜在的
+on purpose to   意在...
+mainly targeted at  主要针对于...
+willing to   乐意...
+
+Maturity levels  成熟度
+substantively  实质上
+
+
+ED - Editor's Draft
+WD - Working Draft
+CR - Candidate Recommendation
+PR - Proposed Recommendation
+REC - Recommendation
+LS - Living Standard
+NOTE - 
+
+convey   传达 表达
+
+####20180911-------------------------------
+hectic  忙碌的 兴奋的 狂热的
+tideous   沉闷的；冗长乏味的
+humidity 湿度的
+thermometer 体温计
+barometer  晴雨表
+applies to  适用于
+ 
+In other words  换句话说
+badge   徽章 标记
+needs to be set in order to enable  ...
+preference   优先 偏爱的
+prefix   前缀
+For instance  比如
+partial  局部的
+hovering  悬停 徘徊的
+tooltip  文本提示框
+appears to be main focus of  看上去是主要关注的
+exploratory   探查的  勘察的
+mechanisms 机制
+optimize performace
+tune behavior
+Exploratory work  探索性研究
+address that gap  解决差距
+render  提出 释放
+
+assess  评估 估价
+normative  规范的 标准的
+Discontinued  停止 中断的
+throughout 贯穿 从始至终的
+in some cases  有时候 在某些时候
+accessibility  可达性
+vastly intact
+what is at stake    问题的症结是...
+					成败的关键是……
+					岌岌可危的是……
+
+empathy  神入；移情作用；执着  n. 感同身受；同感；共鸣
+
+significantly 显著地；相当数量地  大大的
+Among other things  除了别的以外
+To that end  为了那个目的
+satisfies a number of common needs 
+orchestration  和谐的结合
+resilient  弹性的
+Keep me posted
+Please be advised ...
+
+--------0914---------------
+track all activities  跟踪活动
+straight to 
+manipulate
+next up  接下来
+permission prompts 提示符
+be subject to  服从 受管制的
+security mechanisms  安全机制
+retrieve  取回 找回
+Anything that we want to do to the canvas is ...
+
+--------------0917------------------------------- 
+agile working methods 
+Among them,
+play a key role in 
+ensuring delivery in short cycles 
+massive  大量的 巨大的
+have one thing in common  相同点
+risk-taking   承担风险的
+adequate   充足 适当的 
+withdraw  撤销撤回	
+is intended to be  .... 倾向是...
+ 
+emphasized above all else  重要的是,,,
+
+\   backslash, Backslash Escapes
+`   backtick
+*   asterisk
+_   underscore
+{}  curly braces
+[]  square brackets
+()  parentheses
+#   hash mark
++   plus sign
+-   minus sign (hyphen)
+.   dot
+!   exclamation mark
+
+delimiter  分隔符
+receiving spam 收到垃圾邮件
+render   渲染 展示
+You can use whichever style you prefer
+the lone restriction 唯一的限制是
+For comparison  坐对比
+I tend to  我乐意...
+sort of like  有点像
+equivalent  等价的
+omit   省略 忽略
+padding  填充
+dynamically  动态的
+the vast majority of   绝大多数的
+stick to  坚持...
+eliminate 消除
+hassle  麻烦
+recipient  收件人
+polishing and tweaking
+to get things just right. 
+illustrate  阐述
+workaround  
+Nearly every post is captioned in ALL CAPS for sass and emphasis
+
+ugh  啊 呸
+Um
+ew
+
+living in the present
+open-minded
+
+according to a study  根据一项研究
+unsettling  使人不安的
+what’s the alternative?  替代的方法
+not to mention  更不用提
+claims to  声称...
+gems / bacteria 病菌
+Not to freak you out or anything, but...
+quirky contraption  古怪的  装置
+snag a new job
+You might be thinking   你可能认为...
+Lucky for you
+up for grabs  可得的 易得到的
+First things first
+it covers everything from data mining to hypothesis testing
+in-depth understanding  深度的理解
+get the chance to master 得到...掌握...机会
+At the end of   结束时
+beef up   增加 充实
+there's absolutely nothing ...
+at the peak of  高峰期
+A few moments later  
+is expected to 预计将要...
+is likely to  有可能...
+life-threatening  威胁生命的
+
+rug 地毯
+tub 浴盆
+mop 拖把
+-----------------0918------------------------------------
+toggle  开关 触发器  拴牢
+For lots more info and advanced usage, see ...
+take precedence
+impose  强加的  利用；欺骗；施加影响
+That effectively means that 
+placeholder  占位符
+setting to take effect
+
+dependable 可靠的 
+hustle to ... 急于...
+should probably ...
+basically 
+manufacturer  制造商
+wholesaler 批发商 
+upfront 预付的
+inventory  存货
+a wide variety of   各种各样的...
+As long as ... 只要...
+boost    推动 增加
+robber baron  强盗式资本家
+individually  单独的
+personalized  个性化的
+inner nerd 内心的呆子
+not just because... but because...
+bounty of 丰富的
+constantly  不断的 时常的
+magnify   放大
+findings  检查结果 调查结果
+head to   朝...去
+compatible with ... 兼容的...
+sleep deprivation  失眠的 缺觉的
+therapy  治疗
+
+----------------------0919-------------------------------
+getting proper amount of sleep ...
+distraction   心烦意乱  注意力分散
+innovative 革新的 创新的；新颖的；有创新精神的
+lull 使平静的 
+immersive  adj. 拟真的；沉浸式的；沉浸感的；增加沉浸感的
+a ton of  大量的
+adaptive  adj. 适应的，适合的
+dual  双重的
+catch some Z's  # To get some sleep
+snoring like a bulldozer  打鼾
+strap  n. 带；皮带；磨刀皮带；鞭打
+jaw   下巴
+breakups
+
+regularly  adv. 定期地；有规律地；整齐地；匀称地
+blackout  n. 灯火管制；灯火熄灭；暂时的意识丧失
+
+slightest 极少的
+resulting in   导致
+restful  安静的 给人休息的
+slumber 睡眠的 麻木的
+grab
+meditation n. 冥想；沉思，深思
+course bundle
+it's high time   该是……的时候了
+mindfulness  n. 留心，警觉
+facilitate  vt. 促进；帮助；使容易
+snooze  小睡 打盹
+tackle  n. 滑车；装备；用具；扭倒
+		vi. 扭倒；拦截抢球
+		vt. 处理；抓住；固定；与…交涉
+
+practical tips  实用的技巧
+snag  抓住机会
+it can apparently enhance ...
+eco-friendly  环保的
+it's practically required... 通常需要...
+tweezer
+
+engagement 	n. 婚约；约会；交战；诺言
+			n. 参与度（指用户点赞、转发、评论、下载文档、观看视频、咨询等交互行为）
+
+carve out   创业；开拓；雕刻
+gigantic  巨大的 庞大的
+daunting  adj. 使人畏缩的；使人气馁的；令人怯步的
+effortlessly  轻松的 毫不费力的
+on aspect of    在...方面
+stand out against ...  继续抵抗；坚决反对；在…反衬下显得醒目
+tactic 策略 战略
+affiliate	n. 联号；隶属的机构等
+			vt. 使附属；接纳；使紧密联系
+			vi. 参加，加入；发生联系
+
+Take a quick peek at  快速浏览...
+it's almost guaranteed that ... 几乎可以肯定的...
+superfluous    adj. 多余的；不必要的；奢侈的
+make a quick buck  赚快钱
+feature film  故事片 剧情片
+have nary a clue  连…的线索也没有的
+craft  工艺 手艺  vt. 精巧地制作
+
+you might consider doing ...
+in-depth 深度的
+arm you with tools  武装
+expose you to   让你
+dive deep into  深入
+along the way  沿途的
+
+go through   参加；经受；仔细检查；通过
+a variety of ... 许多的,各种各样的...
+clips and stitch  剪辑
+fast-track   快速通道
+immerse yourself in ... 沉浸于...
+thrive 茁壮成长 ,在……蓬勃发展
+pack all the goods to ... 打包...
+tuition  学费
+grip with... n. 紧握；柄；支配；握拍方式；拍柄绷带
+grasp n. 抓住；理解；控制 vi. 抓 vt. 抓住；领会
+
+get hands-on adj. 亲身实践的，亲自动手的
+refine   vt. 精炼，提纯；改善；使…文雅
+by the end of  到……结束时；到……时为止；在……之前
+full-fledged   adj. 羽毛生齐的；有充分资格的；发育完全的
+snag a high-paying gig  高薪的工作
+for a limited time  限时的
+dash cam  行车记录仪
+accessory  n. 配件；附件；[法] 从犯
+invaluable adj. 无价的；非常贵重的
+altercation  争吵
+excellent choice
+mounting bracket  固定支架
+footage  连续镜头
+cover/get/have got your back 帮助,保护...
+it's simply not enough that  不够的...
+known to be scatterbrained  浮躁的 不集中的..
+passive-aggressive  消极攻击的
+as per my last email   根据我上一个邮件
+one-stop 一站式的
+post-it 便利贴
+innumerable   无数的  数不清的
+a bird's eye view of  鸟瞰...
+corresponding  相当的 相应的
+rundown   纲要
+drag-and-drop  拖放
+nightstand   床头柜
+Odds are ... 奇怪的是...
+have resorted to   经常采用
+self-contained  独立的
+hypnotic  催眠的
+bona fide  善意的 真诚的...
+immerse somebody in ... 使陷入 沉浸于..
+start from scratch  从头开始
+dive straight into 直接进入...
+trophy  奖杯
+time-consuming  耗时的 旷日持久的
+pinpoint   精确定位 找到
+funky   蛮特别的...
+cordless  无线的 
+ergonomic   人体工程学的
+significantly   显著的 相当数量的
+commonplace  老生常谈的 司空见惯的 稀松平常的
+four-bedroom  四居室
+optimal  最佳的 理想的
+drone 无人机
+more concerned with   更关心...
+simultaneously   同时的
+Tinker with   胡乱修补的
+extremely  非常的 及其的
+a bunch of   一堆 一伙  一帮
+shout-out  欢呼
+in the mood  兴致 心情
+
+living in the present
+hysterically  歇斯底里的
+bromance
+spot 发现
+truth is ... 事实上
+zippy 嬉皮士 敏捷的 喜悦的
+a jumble of thoughts 一堆...
+concise  简明 简洁的
+grueling  惩罚的 劳累的
+persuasively  令人信服的  口才好的
+when it comes to ... 当提到；就……而论, 一提到
+it turns out ... 原来是…
+binge-watch  追剧 刷剧
+umpteenth  第无数次的
+tutor  导师 
+dedicated to doing 献身于 致力于
+on-demand  按需的
+nuts and bolts  具体细节 基本要素
+succinct  简洁的 简明的
+be bound to 一定会 必定的
+business proposals  BP商业计划书
+fine tune   调整 微调
+what's the harm in trying it out?  尝试下油有什么损失呢
+First things first
+you've got to ... 必须...
+know-how 诀窍
+extensive  大量的 广阔的
+foray  涉足 初次尝试
+ubiquitous   普遍存在的 随处可见的
+you might think ... but...
+accredited  可信的 公认的
+for the next few days  接下来的几天
+bulky  体积庞大的 笨重的
+occupy  占据 使忙碌
+outlet 插座 奥特莱斯
+chore  零碎的 讨厌的
+If any of this sounds familiar to you ... 如果有你熟悉的话
+a surprising amount of 惊人数量的...
+the gist is  重要的是 主旨是
+affordable   买得起的 实惠的
+admittedly  公认的
+vigorous   有力的 充沛的
+portable  轻便的 便携的
+retail   零售的
+problematic  问题的；有疑问的；不确定的
+immersive  拟真的 沉浸感 身临其境的
+pesky  讨厌的 麻烦的
+advocate  提倡
+discreetly  谨慎的 不显眼的
+stuff  东西 填充
+ingenious  创意的 机灵的
+indestructible  不可毁灭的 坚不可摧的
+pack up  整理  打包
+all day long  整天 全天
+has yet again  已经再次
+spanking  打屁股 显著的
+captivating  迷人的 有魅力的
+like-worthy
+accessory  配件；附件
+snugly  舒适的 隐秘的 贴身的
+look no further than ... 不二之选的
+eliminate  消除
+mess with  同…一起用膳；胡乱摆弄；干扰；与…厮混在一起
+As its name suggests  正如其名
+productivity   生产力的
+see ... in person  见到真人
+no signs of .... 没有迹象...
+pull yourself together  vi. 振奋起来，恢复镇定；控制自己
+supreme  n. 至高；霸权  adj. 最高的；至高的；最重要的
+C’mon
+Believe it or not...
+at some point ... 某一个时刻
+fluffy   adj. 蓬松的；松软的；毛茸茸的；无内容的
+to grasp onto   掌握到
+worthwhile  值得做的
+specs  规格
+literally  逐字的 正确的 简直
+miss out  错过  遗漏
+the icing on the cake  锦上添花
+contrast  对比的 对照的 对比度
+in comparison to ... 和...相比
+latter  后者的
+cinephiles   影迷
+respective   各自的 分别的
+backpacker  背包客
+globetrotter  环球旅行者
+accommodation  膳宿 
+
+comprehensive  广泛的 全面的 综合的
+a sneak peek of  一瞥
+confront and overcome 面对并战胜
+be delighted to  高兴的... 
+premium   优质的 高价的
+tedious  沉闷的 冗长的
+for years to come  在今后的纪念
+perpetually   永久的 持久的
+ear-splitting  震耳欲聋的  极响的
+drown out   淹没 压过
+ 
+--------------------------0920------------------------------
+In addition to  除...之外
+
+adhere to   依附
+in my case it turned out 
+the issue still remained
+workaround   变通方法
+be facing a problem ...
+This problem occurs ...
+when it comes to ... 当提到；就……而论
+
+irrespective   不考虑的 无关的
+you can as well ...  你也可以...
+flexible  灵活的；柔韧的；易弯曲的
+Consider the following scenario  考虑到以下情况
+pressing task 紧急的任务
+lose track of   失去联系
+keep track of 保持联系 记录
+arbitrarily  武断的 专横的
+obsolete  废弃的
+a variety of   种种；各种各样的…
+
+-------------0925-----------------------------
+drill 钻孔 训练 演习
+
+
+---------------0926-----------------------------------
+on the other end of the fence
+works like charm
+bubbles up
+look into   调查；观察；窥视；浏览；看
+meant to  打算 服务就是 
+capture the error
+I should have  
+in the first place  起先 最初
+I've been hitting the wall all over the place  到处撞墙
+hence  因此 所以 今后
+thus  adv. 因此；从而；这样；如此 conj. 因此
+be mainly to   主要是...
+Whilst   同时；时时，有时；当…的时候
+
+which is basically the goal of ...
+dynamic  动态的
+efficent
+collected  镇定的
+giving  给；赠送（give的ing形式）；付出；产生
+consent to
+laid back 闲散的
+reseted  精力充沛的
+
+------------------------------0927------------------------------
+is built to 
+significantly  显著的 数量多的
+essentially differentiates   本质上区别在
+spectator  观众 旁观者
+is mostly here to   主要是...
+Except where otherwise noted  除非另行注明
+along with   随同...一起,一道；随同…一起
+comparable to   相比较的...
+get a glance   一瞥
+particularly problematic   特别的问题
+Pre-requisites  先决条件
+Find below detailed instructions for 。。。
+also known as ...
+
+IIRC If I Remember Correctly  
+
+
+++++++++++++++++++++++++++++0928++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+depending on   取决于
+
+-----------------------------0929-----------------------------------
+(please see screenshot enclosed)  
+certain  某个  确定的
+swirling  漩涡 打旋的
+conceal   隐藏 隐秘的
+glow  发热 洋溢
+howl   嚎叫  怒号
+spiral  螺旋的 盘旋 漩涡
+fractal  不规则碎片形
+blast  爆炸
+flurry    慌张；疾风；飓风；骚动
+at your service  听候吩咐；乐意效劳
+curly  卷曲的
+stirring  活跃的 忙碌的 令人激动的
+linger on （垂危的人）拖着不死 逗留 停留 踌躇 犹豫
+paralyzed  麻痹瘫痪的 无力的 软弱的
+hold back 隐瞒 退缩 阻止
+pitch  倾斜 投掷 搭帐篷 坠落 沥青 音高 程度 树脂 球场  野营
+keep me company  依偎
+dive deep into 深入阅读
+when it comes to ...  当提到；就……而论
+cover up  掩盖 盖住
+allegedly  据说 据称
+
+mattress 床垫 褥子
+glorious  光荣的 极好的
+disused  废弃 不用的
+stroll through   漫步经过
+workhorse n. 做重活的人；驮马；重负荷机器  adj. 工作重的；吃苦耐劳的
+scramble  n. 抢夺，争夺；混乱，混乱的一团；爬行，攀登 vi. 爬行，攀登；不规则地生长；仓促行动
+haphazardly adv. 偶然地，随意地；杂乱地
+hallway
+ahem n. 呃哼声 vt. 呃哼一声把…含糊过去 int. 呃哼！ vi. 清嗓子
+cheeky  无耻的  厚脸皮的
+delightful  令人愉快的
+collapsible  可折叠的；可拆卸的
+promptly  迅速地；立即地；敏捷地
+
+We shudder to imagine  不敢想象的
+Depending on ... 取决于...
+etiquette  礼节，礼仪；规矩
+Give it a try  试一试
+Hope you doing well!
+biz comm  商务通信
+indefinite 不确定的；无限的；模糊的
+I am glad to have been helpful
+I've been wondering...
+some sort of  某些  仿佛
+any other individuals
+a certain type of
+Proofread  校对
+be rushing  急
+prestigious  有声望的
+be planning to
+ head out
+at some point 
+endeavors  事业
+Yikes  表示 惊讶
+a stint of   一段时间
+Here are things to...
+practical advice  实用的
+thoughtful  深思的 关切的
+gratitude  感激
+keep up the good work   干得好，保持下去，再接再厉
+decent  正派的；得体的；相当好的
+accumulated   累积的
+I was fumbling with... 在摸索
+right away 立刻 马上
+concise  简洁的
+I would jump at the opportunity to
+exceptionally   异常的
+in collaboration to meet goals
+thoroughly and on time  彻底的准时的
+self-sufficient
+
+proactive 前瞻的
+a better grasp of 更好的理解
+in terms of 依据 在...方面
+disposition 性情
+motivated 机动的 上进心的
+with ease  熟练的 不费力的
+I consider myself fortunate to ... 很幸运...
+to tackle any problem  解决问题
+Half the time  经常
+a prompt response
+imperative   必要的
+crafted   精心制作的
+stumped  难住的
+head out 离开
+soak  沉浸于
+thought of 考虑到以下情况
+Aside from  除…之外；且不说；缺少
+it would make sense  有道理的
+In some occasions 
+To spice up 有情趣的
+make my day  令我开心
+accuracy and comprehensiveness  精准度和全面性
+Scroll down 
+thanks for pointing it out
+will look into that 
+As far as I know
+it is common to 
+When it comes to
+incessantly  不间断的
+tend to  趋向；注意；易于；有…的倾向
+Out-of-office (OOO) 
+run the gamut  囊括所有范畴
+Once you're ready to ... 一旦准备好...
+drafting  起草
+We're committed to  致力于...
+Whereabouts   行踪
+Supposedly 可能...
+Suffering from an onset of the flu?   遭受感冒
+think outside the box   解放思想
+Fill out the form 填表
+upcoming  即将来临的
+irritated 激怒；使…无效；使…兴奋（irritate的过去分词） adj. 恼怒的，生气的
+stereotypical   陈规的 老套的
+ fully stocked with  装备有...
+ stumbled   绊倒  蹒跚
+ 
+ ---------------------------1008--------------------
+altogether 整个；裸体 adv. 完全地；总共；总而言之
+nevertheless  然后 尽管如此
+In the meantime  同时的
+put in place  落实到位 实施
+it works correctly as expected
+cover all 覆盖全部的...
+As specified in  所指明的作为 指定 中的指定 
+take in charge 逮捕；负责照料；引为己责
+Thanks to wait this come back.
+In parallel 
+see through  识破，看穿  <非正>帮助渡过难关
+Thanks a lot for your availability and your reactivity
+goodies  n. 好吃的东西；（地位低下的）老妇人；伪君子（goody的复数）
+
+To call it a day 
+To get out of hand 
+It's not rocket science 
+That ship has sailed 
+The last straw 
+Under the weather 
+To get/wrap one’s head around something 
+You can say that again 
+To kill two birds with one stone 
+To see eye to eye
+
+to undergo a brief maintenance
+plenty of information 
+I got a little bit deeper in the analysis and detected that
+I keep you posted
+We value your privacy
+alternatively  非此即彼；二者择一地；作为一种选择
+ 
+
+---------------------------1009----------------------------
+If the problem persists
+
+
+proceed to the content with a clear notion
+preferences and proficiency   偏好和熟练度
+be familiar to 为…所熟悉；被某人熟悉
+
+content should be edited with bullet points and sections  段落和分区清晰
+
+etiquette  礼仪 规矩
+to act accordingly  采取相应的行动
+it encumbering to  妨碍的
+concise  简明的 简洁的
+in a summarising way  概括的方式
+to come up with  想出  提出
+upcoming deadlines 
+In this segment  段落
+rigorous   严苛的
+one of the pillars   支柱之一
+Furthermore  此外 而且
+intuitive   直观的
+generate leads  开发潜在客户
+Tight on time  时间紧张
+it's the bees' knees   最好不过了...
+spawn
+breaks the mold
+
+namaste （印度的）合十礼
+likelihood   可能性
+for all support/assistance requests/needs ...,please reach out to ...
+captivating   迷人的有魅力的
+up your sleeve  备用的
+Best Practice  最佳实践  最优方法
+whilst you are away   当你不在的时候
+cover for   代替 掩护
+For urgent matters
+prioritize to  优先考虑
+
+-----------------------1011----------------------------------------·
+in a time zone overlapping   时区重叠
+make a point  立论；得一分；表明一种看法
+For my humble opinion
+
+
+
+-----------------------------1015----------------------------
+negatively impact
+best-in-class  领先的 一流的
+
+know-how   n. 诀窍；实际知识；专门技能
+take security into account  考虑到...
+have a point  有道理的
+all-purpose   通用的；多用途的
+I cannot imagine
+
+be likely to 可能的
+strongly believe  坚信
+a window of time 一段时间
+vacant  空虚的；空的；空缺的；空闲的；茫然的
+an extended period  持续的时期
+By continuing to ...
+right off the bat  立刻，立即；马上
+for any occasion  任何场合
+conditions apply  适用条件
+save the day.
+save my day  帮了我大忙
+urgent matter
+from time to time  不时地 有时的
+a professional vibe  专业的氛围
+it does not cost you to be polite  礼貌
+The same goes for  同样适用于... 同理
+the most frequent one
+highly unlikely  极不可能的  微乎其微的
+would be better off  更好...
+be taken seriously  受重视
+for different occasions  不同的场合
+It’s unlikely that   不太可能的...
+fully inspired by   受激发...
+playfully irritated
+most recent  最新的
+a fair amount of  相当数量的
+the unique approach  独特的方式
+chuckled along with  一起笑
+be enrolled   被录取 考上 登记 招生  服兵役
+opt-out  选择退出；不参加
+a series of survey question 问卷
+in a timely manner  及时的
+According to me  据我看
+is essentially as irking as  本质上和...一样烦人
+ROI 投资回收率（return on investment)
+a strong work ethic 强烈的责任感
+every once in a while  偶尔 时常
+overall productivity   综合生产力
+find yourself having trouble ...
+If you're scratching your head  挠头
+
+-----------------------1016-------------------------------------------、
+strictly follow 
+unattended installation  无人值守安装
+bulk import   批量导入
+roll out   开展
+striving and motivation  努力和主动
+accordingly  相应的
+modification parameters  修改参数
+
+
+--------------------------1022-----------------------------------------------
+spot
+pain points and needs  痛点和需求
+has been doing with  一直在做
+ 
+be more agile   
+sustainable  可以忍受的；足可支撑的；养得起的
+new collective work methods
+in shorter cycles
+learning from  学习 借鉴
+tried and tested methods 经过反复考验的
+to make the most of your time   充分利用你的时间
+ 
+catch a glimpse  瞥见
+scout  搜索，侦察；侦察员；侦察机
+
+questionnaire   调查表 问卷
+survey  调研
+quiz  n. 考查；恶作剧；课堂测验  vt. 挖苦；张望；对…进行测验
+expertise  专门知识；专门技术；专家的意见
+in a flexible way  灵活的
+cleverly use  巧妙的利用
+increase your efficiency on a daily basis  提高效率
+existing   现存的 存在的
+better reflect reality  更好的反应现实
+pilot phase  试验阶段  先导性试验阶段 试验阶段 初相 
+wanted to address several scenarios
+
+make it smooth and transparent 
+show stopper  项目障碍物
+would have been  本来 将已
+
+well structured and oriented
+
+a detailed action plan 
+holistic view   整体的 全盘的
+a robust and user friendly app   强健和用户友好的
+To achieve this goal
+mindset 心态；倾向；习惯；精神状态 心态 理念体系 思维模式 
+methodology   方法学，方法论
+prototypes  原型；技术原型；雏型
+in terms of 依据；按照；在…方面；以…措词
+
+work equally 同样工作
+Plenty of ideas
+progressively  渐进地；日益增多地
+
+yet room for improvement  但仍有改进的空间
+Let’s continue this momentum!
+intended   故意的，有意的；打算中的  已订婚者  打算；准备（intend的过去分词）
+ not aligned with
+ all together 同时 一起的
+unruly 不守规矩的；任性的；难驾驭的
+
+
+thoroughly
+it has to be this way
+lay off   解雇 休息
+ramble on  漫谈下去；继续漫步地 ,废话
+
+
+it's not that common  不常见
+in a nutshell  简单地，简约地；极其简括地说
+
+optimal solutions 最优解
+accumulated   积累
+few redundancies   冗余
+few redundancies and few warts
+have subtle differences  微妙的差异
+the most common ones  最常见的
+elsewhere  在别处  到别处
+spotting typos  拼写错误
+hypothesis   假设 假说
+posterior probability  后验概率
+prior probability   先验概率
+
+narrow down 缩小；限制；减少；变窄
+
+ 
+It's a little awkward, so we'll get straight to the point
+humbly 
+thriving  繁荣的；蒸蒸日上的；旺盛的  v. 兴旺（thrive的ing形式）
+for years to come
+in such a simple and reliable way
+benevolent  仁慈的；慈善的；亲切的
+neutral  中立的
+highly unlikely    微乎其微的
+As shown
+For further information see the ...
+the amount of
+How do we know if the journal limits are actually causing ...
+a few different mechanisms  不同的机制
+in place  适当，适当的；在适当的地方，在恰当的位置
+excessive   过多的
+to tweak it  调整
+
+improve the way people collaborate
+under medical incapacity 
+
+a whole lot of things 
+a means to 一种达到……的途径  一种手段 
+without need for any intervention  不需要干预
+placeholder   占位符
+serve only to demonstrate  只为...
+
+open to be rated or slated
+diligent  勤勉的；用功的，费尽心血的
+
+
+epiphany  对事物真谛的顿悟；主显节（每年一月六日纪念耶稣显灵的节日）；显现（特指神的显现）
+in the way it was intended  按照原计划
+illustrates   阐明  插图的
+seamlessly  integrate 无缝的集成
+Curious why？
+startups   创业公司
+consolidate  巩固
+tunneling SSH through HTTP proxies  通过http
+Several flaws exist  存在一些缺陷
+Digest   消化  吸收 融会
+a new approach to  一种新途径
+shortcomings  不足 毛病
+unwieldy   笨拙的；笨重的；不灵便的；难处理的
+
+
+If you have any question or it’s not clear, I’ll be at your disposal.
+sanity
+
+------------1102---------------------------
+questionnaire   问卷
+Please kindly be reminded that
+
+
+--------------1108------------------------------
+enroll 参加；登记；注册；记入名册
+
+
+in a testing phase  测试阶段
+intentionally   故意的
+figure it out   搞明白
+get the bottom of it 弄清真相
+come across 遇到
+this is not the case  事实不是这样
+in my scenario   在...场景
+practically eliminated   实际上消除
+come back with feedback
+I put that on my todo list
+
+In case you are alive :P please help me.
+most often   最经常；很多时候；通常来说
+in contrast to  与……形成对照
+thus  因此 从而；这样；如此
+is assumed to 假定...
+All scenarios i can imagine   能想象的所有场景
+Would be very nice if ...
+sorry for the late response 
+Can you maybe explain it a bit deeper?
+further investigate
+I'll keep an eye on it and try to get more ...
+pingable  连通的
+if so desired  如果需要
+utilize  利用
+at this point   这时候，此时此刻
+the same scenario will occur
+Up until this point  直到...
+a handful of   一把；少量的；一小部分
+this is done by doing ....
+along with  沿（顺）着；连同…一起；与…一道；随同…一起
+Severity  严重性 严重程度
+
+It consists of
+the common scenarios   常见的场景
+restrictive  限制
+is failing to   未能
+affected   受影响
+is experiencing issues 
+way too many
+have encountered large numbers of 
+accumulate   积攒
+most likely caused by ...
+concurrent   并发的 同时的
+permanent solution  长久之计
+occurring regularly  经常发生
+enclosed for your perusal 被附上的；与世隔绝的
+
+directives   指令, nagios参数?
+be most likely due to
+information I've gathered 
+help me out
+be taken into account
+
+car pulling  #拉车
+aforementioned
+it doesn't hurt to 
+I've combed the Internet and found a number of other people reporting the same problem, 
+I was able to finally figure out a solution.
+The problem seems to have been with ...
+I ended up testing with ...
+run into the error 
+
+-------------------1115-------------------------------------------------\
+Let’s be pragmatic  #实际点
+feel free to contact to me in case of any doubts  #有任何疑问请联系我
+purge 净化 清除
+
+Learning on the Fly
+goal oriented
+problem solving
+
+Do not hesitate in case of others information needed.
+in the bottom right corner  右下方
+in collaboration with   与…勾结；与…合作
+track them until closure
+a great illustration of  好的例子
+
+rigorous adj. 严格的，严厉的；严密的；严酷的
+psychological  adj. 心理的；心理学的；精神上的
+in a context of business  商业环境下
+prerequisites  n. 预备知识，先决条件（prerequisite复数）
+extract of   摘录于...
+
+
+fragment   片段
+very promising 
+on first glance
+as per my understanding
+corresponding to
+accordingly 
+Hypothesis   n. 假设
+flawed   adj. 有缺陷的；有瑕疵的；有裂纹的
+Methodology   n. 方法学，方法论
+I'm contacting you about ....
+
+Pre-requsisites
+explicitly  明确的
+imperatively 
+
+squeal  尖叫
+be caused by
+reach out for support ...
+infectious enthusiam  传染性热情
+toggle    开关
+more efficient   更高效的
+bottleneck   瓶颈
+identically  相同的
+"We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil."
+latter   后者的；近来的；后面的；较后的
+be preferable to  更好的
+equivalent  等价的
+insignificant  无关紧要的
+
+I'dlike to point out  ....
+go down this route   沿着走...
+strictly   严格的 完全的；彻底的
+urgency  紧急；催促；紧急的事
+certain 某一；必然的；确信；无疑的；有把握的  某些；某几个
+aforementioned  上述的；前面提及的
+
+cause it to be issue prone due to potential vulnerabilities by doing so
+spot on
+This is causing ...
+Any pointers?
+I am getting tons of these errors ...
+despite the fact that ... 尽管。。。
+cluttered  杂乱的 混乱的
+turned out to be ... 结果是
+necessarily  必要地；必定地，必然地
+In most cases 
+in certain amount of time  相当时间内
+let’s say  让我们数 假设
+bizarre  奇怪的 奇异的
+mitigates the issue 减轻 缓和
+works as expected
+
+did not make any difference
+Gentle reminder. 
+eagle-eyed 有眼力的；目光锐利的
+
+going through 熬过；仔细检查
+parallelism  n. 平行；类似，对应
+no brainer  无脑的
+
+network segment   网段
+post-mortem 验尸 死后，在死后 事后剖析 事后研究 
+beforehand  提前的；预先准备好的 事先；预先
+responsible for  是…的原由；为…负责
+in the base case 
+in many situations
+wantin 无；缺需要 欠缺的；不足的；不够格的
+such a scenario  这样的场景
+and so forth   等等 诸如此类
+whirlwind  旋风般的
+
+throughout
+streamlining  吝形化，流线型化
+More specifically  更具体的
+arbitrary    任意的
+Placed in   放置在
+exactly the same way
+For the time being  暂时 目前的
+show up 露面
+manipulation  操纵；操作；处理；篡改
+It’s mostly designed for    主要是为了
+in an automated fashion
+tied to   相关联
+straightforward  简单的；坦率的；明确的；径直的 直截了当地；坦率地
+encounter an error
+complexity  复杂，复杂性；复杂错综的事物
+prefixing  加前缀（prefix的现在分词）
+postfix
+suffix
+
+With these changes in place
+interactivity 交互性；互动性
+to handle that case 
+fever pitch  狂热；极度兴奋  爱情全垒打
+beforehand  预先的  事先的
+the most common one  最常见的
+iterate over it  遍历它
+a large portion of   大部分的
+split a big task into smaller reusable parts
+once and only once 一次且仅一次
+in this context  关于这点；由此而论；由于这个原因；在这个背景下
+in the form of   以…的形式
+be omitted  省略的 忽略的
+respectively  分别的 各自的
+
+Square brackets  方括号
+See ... for details
+
+correspond to  相当于…，符合于…
+opt to  选择
+
+
+vulnerable  脆弱的
+affect  影响 感染
+take effect   生效；起作用
+alongside  在……旁边
+equivalent to 等价的 相同的
+semicolons   分号
+be taken into account   被考虑进
+With regards to
+
+From what I can tell
+query string
+I'm having a spot of trouble with ...
+I'm currently attempting to 
+relevant
+would appear to be ...
+IFF 当且应当(if and only if)
+More than that for sure
+I am getting "WARNING ..."
+
+Server encountered an internal error
+associated with 
+instructive  有益的；教育性的
+master the skills  掌握技术
+works as expected 
+flexibility
+robust  强健的；健康的；粗野的；粗鲁的
+has a huge amount of development effort  behind
+tremendous effort 
+uncounted  无数的；没有数过的
+adaptable across platforms 
+give you a clue to get started
+provide alternatives
+meet a lot of your needs
+doable  可做的
+scale well  伸缩性好
+reside on
+Probably because 
+on the bright side  往好的方面想  好的一面是
+
+kicking off  开始造斜；开始某种活动
+take note and be sure 请注意并确认
+turnkey solution  整体解决方案
+criteria   标准，条件（criterion的复数）
+
+exceeding  超过；占优势（exceed的ing形式）  超越的；非常的；过度的
+simplistically（过分）简单化地
+versatile    多才多艺的；通用的，万能的；多面手的
+tailored     裁制；调整使适应（tailor的过去式和过去分词）
+specific individual user 
+draw out   取出；拟订；拉长；导致
+reveal hidden metrics 
+isolate problematic trends  隔离问题趋势
+adj. 定做的；裁缝做的；剪裁讲究的
+came up with   提出 提出了 想出 
+reasonable approach  合理的方式
+burn a lot of brain calories
+retrieve the status 
+subsequent 后来的，随后的
+Googling  网上搜索 谷歌一下 
+Let us know if this helps
+should have  应该有；本应该…
+The ideal way of 
+Please be sure to 
+pay close attention to 
+
+peers  平辈，同事（peer的复数）
+in a more constructive way
+a viable alternative
+brevity 简洁，简短；短暂，短促
+There’s a real human being on the other end of that network connection
+
+the moment it occurs
+drawbacks 缺点 退税
+in scenarios where 
+ 
+code snippet 小片；片断
+
+
+--------------20181225-------------------
+Take for example   以...为例
+could not pass on this opportunity   不能错过这个机会
+be attempting to   试图...
+Once you complete a challenge, you’ll ....
+as needed   根据需要；按需
+avatar  头像
+We wish you lots of luck and enjoyment.
+highly versatile  多才多艺的；通用的，万能的；多面手的
+tailored to 裁制；调整使适应 定做的；裁缝做的；剪裁讲究的
+on the other hand   另一方面
+reveal hidden 
+isolate problematic trends  隔离问题趋势
+reliable and affordable alternative   可靠和可承受的方法
+be dumped into log
+Utilize  利用
+
+entries  进入；词目 记录
+consistent  始终如一的，一致的；坚持的
+nuisance  讨厌的人；损害；麻烦事；讨厌的东西
+to isolate and predict problems before they occur  隔离和预测问题
+based upon   根据 依据
+to accommodate unique scenarios  适应特定场景 
+dubious   可疑的
+Keep an unwavering eye on all aspects of ... 坚定不移的关注着各个方向
+digging through 挖掘 调查
+nonnative   非本地的
+convoluted   复杂的；费解的；旋绕的
+intuitive  直觉的；凭直觉获知的 直观的 
+eliminate the tedious effort   消除
+eliminate unnecessary noise
+tedious    沉闷的；冗长乏味的
+often required to   通常要求.
+scattered   分散 混乱的
+Adapts seamlessly to any custom scenario  适用于任何场景
+dynamic 动态；动力
+
+oftentimes
+come to terms with the fact that ...
+a functional part of the society
+
+Yaldā Night = "longest and darkest night of the year,"
+plays a central role 
+A wide variety of f
+common to  共同的；共有的；为…所共用
+
+winter solstice   冬至
+good company  好伙伴；有风趣的伙伴，志趣相投的伙伴
+
+You probably wonder why ...
+Since then  从那起...
+similarly  同样地；类似于
+the most common approach  常见的方法
+effectively  有效地，生效地；有力地；实际上
+efficiently  有效地；效率高地
+
+log entries  日志项 目录 条目
+a set period of time  一段固定的时间
+it points towards a problem 
+integrates tightly with 紧密集成
+
+accommodate  适应；调解 容纳；使适应；供应；调解
+embark  从事，着手；上船或飞机
+tweaking  捏，扭，拧；对…稍作调整（tweak的现在分词）
+proceed with caution  谨慎行事
+cumbersome 笨重的；累赘的；难处理的
+preferably  较好；宁可，宁愿；更适宜
+at the very least  至少；起码；一点
+imminent   即将来临的；迫近的
+
+crucial  重要的；决定性的；定局的；决断的
+altogether  整个；裸体 完全地；总共；总而言之
+wanted  缺少 应该；打算；需要…在场 受通缉的；被征求的
+picture  that
+ease of use   易用性；简易操作
+a great deal of effort  费了很大的劲儿 
+drastically   彻底地；激烈地
+comprehensible  可理解的
+applicable  可适用的；可应用的；合适的
+conveniently obtain 方便的获得
+desperately  拼命地；绝望地；极度地
+scour  擦，冲刷；洗涤剂；（畜类等的）腹泻
+superiority  优越，优势；优越性
+robust  强健的；健康的；粗野的；粗鲁的
+seasoned   经验丰富的；老练的；调过味的
+efficiently versatile 
+a wide range of capabilities
+virtually  事实上，几乎；实质上
+come up with  提出；想出；赶上
+chances are  有可能
+in the unlikely event 在不太可能的事件中
+address it 提出它 解决它
+unwavering  坚定的；不动摇的
+In the unlikely event that does happen, chances are, work is already in progress to address it.
+keeping an unwavering eye on ...
+intermittent 间歇的；断断续续的；间歇性
+outage  储运损耗；中断供应；运行中断
+as a precaution  作为一项预防措施 预防起见
+out of town  不在城里；出门，室外
+
+-----------------------20181228-------------------------------------------
+thanks a lot for pointing that out,  ... is working on it.
+do not hesitate to contact us at service@bbb.com, enjoy ...
+consider upgrading rating,
+cheers
+
+we are very sorry for that,recently it's been unstable because of some problems with
+network, the issue is solved now and we're invretigating the cause to avoid such situations
+in the future, please feel free to contact us with any sugguestion you might have to ...
+
+Indeed, now the issue is solved and everything should work normally
+we're sorry/apologize for the inconvenience.
+we're aware that some users encounter that annoying bug and we're continuously working on that,
+for now a workaround is ...
+
+deviate from ... objective  偏离
+main priority   主要职责  首要任务
+rest assured our intention is ... 请放心，我们的意图是(我们的宗旨是...)
+
+there are some problems with ... due to ..
+in the very near future
+
+it would be amazing if you could provide us with more details regarding your problem
+
+good for you  真是了不起，还不错哟，你真行
+stay assured 
+identify the source of the problem
+
+w/o 不包含或没有（without）
+What should be done to 
+as noted  正如指出的那样
+is subject to  受支配 从属于  有…倾向的
+opt to   选择
+is intended to ... 意在
+defer to 尊重；听从
+principal feature  主要特点 主要特征 重要特征 
+alternatively   非此即彼；二者择一地；作为一种选择
+
+conforming to  符合；遵循  参考
+backwardly compatible with   向后兼容
+from the point of view of  从……的角度来看
+abbreviations [语] 缩写词，缩略语
+simply put  简言之；简单本说
+take care of different aspects of 
+be substituted seamlessly   无缝替代
+mechanisms 机制
+strongly coupled to  强烈的耦合
+prior to 在……之前；居先
+audit trails  稽核轨迹；审计跟踪
+
+illustration 说明；插图；例证；图解
+figure
+graphic
+chart
+diagram
+schematic  原理图；图解视图
+
+navigation 航行；航海
+accurately 精确地，准确地
+waning  减弱；月亏 渐亏的；逐渐减弱或变小的
+
+aggregates  总量；合体（aggregate的复数）；聚合物 聚集；共计；凝结（aggregate的第三人称单数）
+
+dusk 黄昏，薄暮；幽暗，昏暗
+dawn 黎明；开端
+accessible 易接近的；可进入的；可理解的
+DoD  美国国防部
+post-processed  后处理的
+At present  目前的
+The more information I have, the more likely ...
+in the first place  首先；起初
+a variety of 种种；各种各样的…
+
+derived 得到；推断（derive的过去分词）；由…而来 导出的；衍生的，派生的
+comprehensive security assessment   综合安全评估
+best practices 最佳实践；最优方法；最佳范例
+predominately 占优势地；有影响力地；更大量地；占绝大多数地
+tradeoff  权衡；折衷；（公平）交易（等于trade-off）
+experienced 老练的，熟练的；富有经验的
+we will look into it shortly
+went through  经历；穿过；审查
+
+be tailored to ...
+failing that 不然的话 失败的话
+may well 很可能；充分理由；有充分理由可以…
+put you on the right track
+a fairly brief   相当简短的
+be enthusiastic about 
+proficiency 精通，熟练
+a good fit with  非常适合
+
+Not only is it reliable, scalable and enterprise-ready,
+be outstanding compared to other ...
+unparalleled 无比的；无双的；空前未有的
+you owe it to yourself   欠自己的
+Keep in mind that  牢记
+
+in the interest of   为了；为了...的利益
+under the most dire of circumstances 最极端环境下
+
+a valuable password 
+laid down  放下；铺设；主张
+
+fits your needs 
+No restrictions
+feel free to contact us with any issues
+
+======================20190108==============================
+take ... to a whole new level
+come across error
+come to the right place.  来对地方了
+vice-versa  反之亦然
+In many of the cases
+
+Intellectually curious tech enthusiast 
+I don't have much experience programming ...
+At a minimum
+Ideal for ...
+affiliate 联号；隶属的机构等  使附属；接纳；使紧密联系 参加，加入；发生联系
+cloak  斗蓬；宽大外衣；托词  遮掩；隐匿
+behind the scenes  在幕后；秘密地
+in a timely manner 以一种及时的方式 及时地
+I GREATLY appreciate it! 
+be extremely amazed to ...
+relatively  相当地；相对地，比较地
+identical 完全相同的事物
+this lead to ...
+a certain ....  某些
+no worries about ...
+仁慈独裁者(Benevolent Dictator For Life)
+MRU  #most recently used
+cut to the chase  #开门见山；提到关键问题；转入（或切入）正题
+very first  #起先 起初 
+
+commenting  #注释 说明
+
+conduct n. 进行；行为；实施
+relevancy n. 关联；恰当
+trailing slash  结尾斜线
+if that helps any  如果有帮助的话
+went through my head  穿过我的脑海
+preceed  着手 
+an odd one  单个的
+pretty specific use case  具体的
+in my narrow use case
+am sticking to 
+iron out the details  解决细节问题
+accomplish  完成；实现；达到
+fill this need
+be likely not supported by 似乎不支持
+I won’t be covering much of that here 就不多讲了
+to invoke via SSH  通过ssh调用
+presumably   假设
+be prompted for   提示...
+SSO  single sign-on
+CEIP  #客户体验升级计划
+in a determined amount of time  #确定的时间内
+anticipated   预期的；期望的
+carve out time  挤出时间、
+on any account  无论如何，在任何情况下
+
+in a matter of minutes  在几分钟内
+an optimal solution  理想的方法
+intermittently   间歇地
+
+in the format specified in  以指定格式的...
+pinpoint why   查明，探明
+malformed  畸形的，难看的
+be iterated over  被迭代
+as the name implies  顾名思义  正如名字所示
+conventions   惯例；会议；[计] 约定（convention的复数）
+miscellany   杂录，杂集；混杂；混合物
+
+shipped with  与……一起装船（shipped是ship的过去分词） 附带……
+particularly useful for  特点特别适用于 特别适用于 
+fundamental comprehension   基本的理解
+
+Simple Network Management Protocol (SNMP) 
+object identifiers (OIDs)
+protocol data units (PDU) 
+NMS
+MIB
+
+notation  符号；乐谱；注释；记号法
+
+in collaboration with
+is responsible to
+manipulate  操纵；操作；巧妙地处理；篡改
+detailed information  详细信息；详细情报
+be new to
+
+reporting and correction of product defects
+Service-Level Agreements (SLAs) 
+in accordance with  依照；与…一致
+End of Life (EOL) 
+
+knowledge base 知识库
+will help in overcoming any difficulties you may encounter
+reach out to  把手伸向，接触
+a variety of 
+tap into  挖掘；接进
+best practices  最佳实践；最优方法；最佳范例
+eligible 合格者；适任者；有资格者
+perforce  一定，必须；必然地
+It is odd 
+sporadically  零星地；偶发地
+with no pattern
+
+Certificate Signing Request(CSR)
+narrow and rare
+flat-out  直率的；坦白的；最高的
+
+------------20190117-----------------------------
+I apologize, it won't happen again,
+Going forward I will ...
+This is my fault.
+condescend vi. 屈尊；俯就；（对某人）表现出优越感
+Good point,let me go check.
+
+Brilliant
+amazing
+extraordindary
+outstanding
+pianist
+mathematician
+remarkable
+marvelous
+splendid
+awesome
+excellent
+unbelievable
+magnificent
+exquisite
+delicate
+impeccable
+sublime
+superb
+sensational
+phenomenal
+inspiring
+
+aims to  旨在...
+do the trick 获得成功
+merely   仅仅，只不过；只是
+pretty straight-forward  很直接
+stumbled upon  偶然发现
+reinventing the wheel 重新造轮子
+at the behest of  在…命令下  依某人的吩咐 
+ended up using  最终使用的
+arbitrary 任意的；武断的；专制的
+presumably  大概；推测起来；可假定
+as a practical matter  想作为一个实际的问题
+spontaneously  自发地；自然地；不由自主地
+backwards compatibility  向后兼容 相容性 向后兼容性 
+robust      强健 
+obsolete    废词；陈腐的人 adj. 废弃的；老式的 vt. 淘汰；废弃
+deprecated  不赞成；弃用；不宜用（deprecate的过去式及过去分词形式）
+decommission    使…退役；解除…的军职
+came up with    提出 提出了 想出 
+puzzling  使迷惑的；使莫名其妙的
+by no means  决不
+得走了（go to go）
+wildcards 通配符；万用字符
+网上实时聊天(Internet Relay Chat) 
+It's mainly used for
+conversion  转换；变换；[金融] 兑换；改变信仰
+
+accessories 附件（accessory的复数形式）；辅助程序
+hierarchical 分层的；等级体系的
+In contrast  与此相反；比较起来
+arbitrary 任意的；武断的；专制的
+righteous  正义的；正直的；公正的
+be forced into
+raging on 猛烈地继续（raging是rage的现在分词）
+dedicated 专用的；专注的；献身的 以…奉献；把…用于（dedicate的过去式和过去分词
+audiophile  唱片爱好者；爱玩高级音响的人
+others  其他人
+babble  含糊不清地说；泄露  喋喋不休；呀呀学语；作潺潺声 胡言乱语
+
+verdict   结论；裁定
+down to  直到；下至；平息；处于低落状态；是…的责任
+Wii U Wii U 任天堂 
+conclusive 决定性的；最后的；确实的；确定性的
+subjective 主观的；个人的；自觉的
+pseudoscientific  伪科学的
+placebo  安慰剂；为死者所诵的晚祷词
+bandwagon 流行，时尚；乐队花车
+contentious   诉讼的；有异议的，引起争论的；爱争论的
+indifference  漠不关心；冷淡；不重视；中立
+from complete indifference to passionate zeal
+purportedly 据称，据称地
+be obligated to   对…负有责任
+granulated  成颗粒的 形成颗粒；表面变得粗糙（granulate的过去分词）
+one of a kind  独一无二
+betrothal   n. 订婚；婚约
+when necessary  在必要的时候
+the most common  最常见的
+an equal amount of   等量的
+in contrast with  与…形成对比；与…相比
+vibrant and enthusiastic 充满活力和热情
+audiophile  唱片爱好者； 发烧友 音响爱好者 音响发烧友 
+''The World is Study.''
+''I have no special talent. I am only passionately curious.''
+''Logic will get you from A to B. Imagination will take you everywhere.''
+thread  跟贴 帖子
+one heck of 
+to sum it up  总的来说
+sublime 崇高；顶点 庄严的；令人崇敬的；极端的；超群的 使…纯化；使…升华；使…变高尚
+aural  听觉的
+visual  视觉的，
+oral  口腔的
+an easy to drive
+most importantly  最重要的是
+as compared to  相对于；同…相比
+cosmetic change  外表的变化
+in the process  在过程中；在进行中
+scribblings  神秘涂鸦 
+a variety of  种种；各种各样的…
+
+so that 以便
+indented  犬牙交错的；受契约约束的；缩进排印的  缩进；切割成锯齿状（indent的过去分词）
+outline 轮廓；大纲；概要；略图  vt. 概述；略述；描画…轮廓
+headline  大标题；内容提要；栏外标题；头版头条新闻
+paragraph  段落；短评；段落符号
+sequential  连续的；相继的；有顺序的
+more intuitive to  更直观的
+enthusiast
+geek out  聊别人听不懂的话题（非正式）
+break down  分解；发生故障；失败；毁掉；制服
+full-fledged  羽毛生齐的；有充分资格的；发育完全的
+to visualize, structure and analyze your thoughts
+All it takes is  只需要...
+
+a pinch of  一撮，少许
+flexible and convenient   灵活和方便
+the whole picture   
+
+draft  草稿 草拟
+scratch  打草稿用的；凑合的；碰巧的
+stretch  拉伸
+sophisticated   复杂的；精致的；久经世故的；富有经验的
+v. 使变得世故；使迷惑；篡改（sophisticate的过去分词形式）
+精细的 复杂的 精致的 
+encounter issues
+be a security hazard   隐患
+merely the most common   仅仅是最常见的
+capture exception 异常捕捉
+a wide variety of use cases  各种各样的使用场景
+a large number of  大量 很多时候
+most commonly needed  最常需要的
+most typical use cases  最典型的使用案例
+vulnerable   易受攻击的，易受…的攻击；易受伤害的；有弱点的
+a serious security flaw  严重的安全漏洞
+result in  导致，结果是
+arbitrary  任意的；武断的；专制的 锁心所欲的
+strongly discouraged  强烈不推荐的
+along with   沿（顺）着；连同…一起；与…一道；随同…一起
+It offers a lot of flexibility so that   提供了很多灵活性
+platform-dependent  依赖平台的
+unless otherwise stated  除非另作说明
+Note in particular that 要特别注意的是
+quoting  引用
+backslash escaping   转义
+
+that is to say   就是；即；换言之 也就是说 那就是说 换句话说 
+the equivalent of  相当于
+seldom needed  很少需要的
+corresponding 
+respectively
+convention 惯例；[计] 约定；[法] 协定；习俗
+implicitly   含蓄地；暗中地
+invoked explicitly   显式的被调用
+metacharacters  元字符
+backquote  反引号
+the huge number of resources  大量的资源
+facilitate   促进；帮助；使容易
+easy to use  使用方便；易用性
+throughout  贯穿，遍及  自始至终，到处；全部
+engage with  交战；与…接洽
+constantly expanding its range  持续扩展范围
+Terms of Service  服务条款
+take a note of  把……记下来  做笔记
+
+password shouldn't be included in your code in plain text
+Possibly a good way to to choose the right tool is to dig into ... 可能最好
+A few suitable metrics
+be composed of  由…组成
+instantiate an object   实例化一个对象
+most commonly due to  主要是因为
+subjective  主观的；个人的；自觉的
+objective n. 目的；目标；[光] 物镜；宾格  客观的；目标的；宾格的
+One downside of   一个缺点是
+there turned out to be   结果是
+a deeper dive in to  更深入...
+adequate  充足的；适当的；胜任的
+too broad 宽泛
+Looking closer at this problem I just realized that
+as you please
+iterate through 循环访问  循环访问 迭代 
+practically speaking  实际上来说
+be compared to 被比作
+abbreviation  缩写；缩写词
+XO is defined as hugs and kisses
+in plain English  用浅显的英语；说得明白点；坦白地说
+at minimum  最小 至少
+thus  因此 因此；从而；这样；如此
+hence   因此；今后
+A conservative approach   保守的方法是
+suppose that  假如
+hassle  n. 困难，麻烦；激战  vt. 找麻烦，搅扰；与…争辩；使…烦恼  争论，争辩
+I've found the exact opposite to be true  事实刚好相反
+hypothetically  假设地；假想地
+for ... purposes  ...的目的
+a mess 一团糟；混乱
+
+----- 20190131--------------------------------
+snippets n. 片段（snippet的复数形式）；小片 代码片段
+once the fix lands
+explanatory message 解释性报文 
+a little wonky  不稳定的
+reasonably robust  合理的健壮
+be hovering between  摇摆不定
+error prone  容易出错的
+the following rationale  以下理由
+blindly follow   盲从
+doomed  注定的；命定的
+in the form of  以…的形式
+
+eliminate human error and human pain
+For concreteness 举个例子
+in particular   尤其，特别
+Just wanted to make sure of it before moving forward. 
+more than welcome  非常欢迎
+a bunch of 一群；一束；一堆
+ameliorate  减轻 改善
+
+the effect is negligible  相关诶不足道
+markedly  明显地；显著地；引人注目地
+It's certainly not worth the time it takes to ...
+manifests exceptionally well   表现的很好
+seamlessly 无缝地
+screw up  拧紧；鼓舞；弄糟；狠狠地提高
+What does work though, is actually ....
+suffice [sə'faɪs]  使满足；足够…用；合格 足够；有能力
+in parallell with 
+simultaneously 
+choked 使窒息（choke的过去式） adj. 堵塞的；生气的，恼怒的
+heaviness  沉重；沉闷；笨拙；迟钝；忧伤
+slight/subtle difference 细微的差异
+every possibly scenario 每个可能的场景
+and eventually turns into ... 最终变成
+empirical  经验主义的，完全根据经验的；实证的
+prominent 突出的，显著的；杰出的；卓越的
+
+bollocks  胡说
+hokum 胡扯，空话，废话
+
+After all, it can't really hurt anything
+Creative Commons CC组织, 知识共享（非营利组织名称）
+with loops of ...  循环的
+a wide variety of  种种，多种多样的，很多的
+abused to a point    滥用到一定程度
+settling into an oh-so-subtly different  适应一个微妙的变化
+aural bliss  听觉的祝福
+
+after a few days  几天之后
+defer  使推迟；使延期 推迟；延期；服从
+proponents 支持者；建议者
+supposedly  可能；按照推测；恐怕
+numinous  精神上的；超自然的；神圣的；庄严的
+sits squarely at the intersection of ...  处于交叉点
+in theory  理论上
+be rushing to   急于...
+all along the way
+pristine  崭新的，清新的，干净的；未开发的，原始的
+It seems to me 在我看来
+having had the experience 曾经有过...
+exquisite 服饰过于讲究的男子  精致的；细腻的；优美的，高雅的；异常的；剧烈的
+consciously  自觉地；有意识地
+subconsciously  潜意识地
+dramatically 戏剧地；引人注目地 显著地，剧烈地
+be wary of  提防；当心
+marathon 马拉松赛跑；耐力的考验 马拉松式的；有耐力的
+
+-------------------------------0211--------------------------------------
+mindset  心态；倾向；习惯；精神状态
+I present to you my apologies for the inconvenience in place of 
+QRCI  问题解决 
+the responsible person  负责人
+Which scope  范围
+the corrective actions  纠正措施
+Power interruption  停电
+restore  恢复
+MOOC （Massive Open Online Courses） 大规模在线开放课程
+neutral  中立国；中立者；非彩色；齿轮的空档
+controversial  有争议的；有争论的
+
+in a nutshell   简单地，简约地；极其简括地说
+dive into  深入
+cookbook 食谱
+effective 高效的
+mastery 掌握；精通；优势；征服；统治权
+crash course  速成课（等于cram course）
+fraudulent  欺骗性的；不正的
+fraud   欺骗；骗子；诡计
+individuals  [经] 个人；[生物] 个体（individual的复数）
+sophisticated  复杂的；精致的；久经世故的；富有经验的
+v. 使变得世故；使迷惑；篡改（sophisticate的过去分词形式）
+cyber  网络的，计算机的
+a very few  极少数
+vigilant   警惕的；警醒的；注意的；警戒的
+for your convenience 为了您的方便
+Pls. let me know in case of questions.
+It was brought to my attention that ...
+use various condition types to match
+The first and simplest workaround is ...
+as intended  如预期
+
+asterisk  星号；星号键
+A few resources failed to load due to issues with your network
+From my perspective
+opt out 决定退出；插播；请求免除
+
+with many convenient
+out-of-the-box  拆盒即可使用的；开箱即用的
+serve as  担任…，充当…；起…的作用
+a distro you'll instantly feel at home with
+IMHO  恕我直言（In My Humble Opinion）
+far and away  无疑地；显然地
+draw a conclusion 得出结论；作结论
+inherently unquantifiable factors
+a certain amount of  of knowledge and expertise 一定数量的
+
+If you have ever wanted to use Arch Linux yet not been brave enough to give it a go then this is a great way to dip your feet into the water.
+The practical aspect of   实用方面
+obscure and obsolete
+can be straightforward as long as
+The same holds true for ...
+The same is true of ...
+be prompted for 
+It isn't everybody's cup of tea though and you either love it or loathe it.
+with this regard is that
+whilst  同时；时时，有时；当…的时候
+a respin of  衍生...
+a more complete set of 更完整的
+requires a lot of manual tweaking to get things working. 
+familiarity with  熟悉,精通
+with that in mind  考虑到这一点 这一点 在考虑到 
+from scratch  白手起家；从头做起
+I wanted to ...
+cater to the needs of .... 迎合需要...
+no particular order 没有先后顺序
+it’s highly probable that... 很可能...
+breaks the notion of ... 打破了理念
+be prone to 易于……；有……的倾向
+are all set to 
+it’s half a battle won  成功的一半
+past this obstacle
+the more the merrier （人）越多越热闹 多多益善
+a huge plus point  加分项
+negate the hassles that ...
+one of the prime differences ... 主要的区别之一
+be hooked to ... 被吸引住
+a host of 许多，一大群；众多，大量
+a significant amount of
+various scenarios
+a variety of 
+boost productivity
+a learning curve 一个学习的过程/曲线
+in spare time  在闲暇的时候；在业余时间里
+give it a spin
+takes all of the hassle out of 省去所有的麻烦
+
+Fuzzy search 模糊搜索
+IRC Internet Relay Chat 
+just because ... don't think...
+beyond that  除了那个以外
+very few  极少数的；非常少
+noob friendly  对新手友好的
+ended up 以...告终
+privileged elite  精英特权
+render  渲染
+tiling window  铺砖式窗口 
+tearing  adj. 撕裂的；痛苦的；猛烈的
+for the time being. 暂时。；眼下。；目前。
+interact with 与...交互
+spawn
+fork
+By convention  按照惯例
+in a few different ways
+quite a few  不少，相当多
+This provides a lot of flexibility that can help in specific situations where ...
+I really appreciate your effort!
+consent to  同意；答应；赞成
+proceed further  更进一步
+have the capability to
+
+
+[语] noun n. 名词
+[语] verb 动词
+[语] preposition, prep.  介词
+adjective adj. 形容词
+[语] adverbial adv. 副词
+[语] article  art. 冠词
+[语] conjunction conj. 连接词
+ 
+abbr  n. 缩写词abbreviation adj. 缩写的abbreviated
+
+-----------------20190226--------------------------------------------
+what could you do? Give up? It’s simpler than you think.
+assuming that ...
+the main purpose of 
+mess around with
+fairly simple
+vintage looking  复古的 
+Nostalgic  怀旧的 乡愁的
+as the name suggests 顾名思义，就象这名字显示的一样
+geeky aura  极客光环
+There are various ways to ...
+There are other ways to ...
+a substitute of  代替 
+it can be utilized directly from ...
+Comprises of  由……组成 
+Amongst 
+A common misconception about 常见的误解是
+solely   单独的
+seasoned expert  经验丰富的专家
+you'll be prompted for your password.
+at your leisure 在你闲暇时
+for whatever reason  无论出于何种原因
+immensely useful   极大地；无限地；广大地；庞大地
+immune to 免于...
+It is a much safer way of 
+It might as well 
+with great power comes great responsibility 
+
+There are several different ways to 
+Let's assume that   假设
+Thank you in advance for any help rendered !
+but sometimes a different pair of eyes can help
+Anyway a few things come to mind
+consider this mostly thinking out loud at this point
+could cause irreparable damage to 
+at your own risk  由自己负责
+for your particular briefing
+after a several attempts I'd maid that
+provide the user significantly increased flexibility and performance 
+among other things  除了别的之外
+Natty uses
+It is an efficient way to 
+Got me out of the mire 
+the equivalent of  相当于
+the vast majority of 绝大多数的
+
+“When you know Slackware you know Linux. When you know Red Hat, all you know is Red Hat.”
+face a host of problems.
+One reason has to do with ...
+and thus  因此 就此 从而 
+let alone  更不必说；听任；不打扰
+the bulk of  大多数，大部
+in a timely fashion  及时地
+a safe bet  十有八九 几乎百分百确定
+behind the scenes  在幕后；秘密地
+in the spirit of   本着…的精神
+referred to as     被称为…
+snippets of code
+in response to    响应；回答；对…有反应
+among other things   除了别的之外
+What occurs behind the scenes 
+I don’t know whether it’s just me or if everyone else experiencing problems with ...
+Can somebody else please ...
+in favor of    利于；支持；赞同
+Ought To  应该
+take a peek  稍微留意
+mostly in the form of 
+work as you expect it to
+strictly necessary  绝对必要的
+let me reiterate the main points
+tend to   倾向于；趋向于
+in simple terms adv. 简单说（简言之）
+Let me come right out and say it 
+I do believe, with religious fervor ,in ...
+likewise  同样地；也
+resists the temptation  抵抗诱惑
+second nature  第二天性；老习惯
+See The Full Picture   看到全貌 
+wade through tons of ...
+it doesn't worth a dime  一文不值 微不足道 就值一毛钱 
+vice versa
+Other crucial tidbits to know
+You are probably wondering why
+be addressed   得到处理/解决
+end up with doing sth
+
+be bound to 必然；一定要
+every segment you experience is destined to be precious
+
+on a detour
+it doesn't appear to 似乎
+pitfall  陷阱，圈套；缺陷；诱惑
+it's very common to know ...
+in which case  在这种情况下
+Are you planning to 
+a leave of absence 请假
+in the best interests of both ... and……的最佳利益
+This is to bring to your kind attention that due to ...
+I am writing this application to inform you or bring to your notice that ...
+at your earliest convenience  尽早；得便务请…从速 在你方便时 
+I’m needing to
+it conveys a positive message 
+concise and crisp  简洁的
+No one is bothered about those details  没人在意这些细节
+give signals of immaturity  显得不成熟
+on account of  由于；因为；为了…的缘故
+We are glad to announce ...
+be essential to 对……必不可少
+
+These are some most common use cases of ...
+in a collaborative way
+facilitate incubation of ideas 
+yet another  另一种
+ before we get to that, let’s find out 
+Assuming  假设
+ 
+As per
+I will be highly obliged  感激的
+It is composed by ... 由...
+talk down to 轻视地（对人）说话；用高人一等口气说话
+take a personal leave of absence
+I was recently made aware that 
+as our main objective is ...
+proceed to   继续下去；进入…；改读…学位
+nested   嵌套的，内装的
+be obligated to  有义务的
+get sth expedited   加快
+obstacle   障碍，干扰，妨碍；障碍物
+infringe   侵犯；违反；破坏
+for granted  理所当然
+it appears that ... 看来，似乎是
+
+OTD 准时交货率（On-time Delivery）
+
+instinct     n. 本能，直觉；天性
+perspective  n. 观点；远景；
+reflex     n. 反射；反映；映像；回复；习惯性思维
+sensation   n. 感觉；轰动；感动
+intuition  n. 直觉；直觉力；直觉的知识
+sensitivity  n. 敏感；敏感性；过敏
+longing    n. 渴望，热望；憧憬
+belief
+thought
+experience
+insecurity
+judgement
+observation
+ignorance
+emotion
+demeanor   n. 风度；举止；行为
+expectation
+attitude
+self-image  n. 自我形象
+
+proceed to   继续下去；进入…；改读…学位
+More detailed explanatory text
+precede vt. 领先，在…之前
+
+amirite  我对么（am I right，网络用语）
+Quickly glimpse into 
+run into this issue quite a lot
+This should be a simple but useful
+orchestration with ... 用...编排
+seemingly 表面看来
+inevitably   不可避免地；必然地
+We've done this many times before
+is no exception in that sense 从那种意义上说 在这层意义上
+most importantly 
+blend the good sides of both  A and B
+happen to be 碰巧是；恰巧是
+to work around the problem
+needs tweaking  需要调整
+Go figure  猜猜看
+It will be somewhat  会有点...
+need to invest a fair amount of time tweaking and polishing 需要一点时间调整和打磨
+The main focus is on  重点是...
+For the lack of a better phrase  不能更好形容了
+many fold  成倍地；大量地；以许多倍 各式各样的
+unsuited for purpose  不适合目的的
+wean off 使断奶 使脱离  戒掉
+abysmally  极度地；深不可测地
+whatnot   放古董的架子；不可名状的东西
+I soon learned the problem 我很快知道了
+utterly counterintuitive  完全违反直觉的
+you probably don't want to bother  不想麻烦
+peachy   出色的
+lovely jubbly 好极了
+keen on  喜爱；热衷于…
+tons of 许多 无数的 一大堆  很多的
+marginally 少量的
+to be frank  说实话；老实说；坦率地说
+well optimized 
+hovering around 徘徊在...
+in terms of  依据；按照；在…方面；以…措词
+take into consideration that  考虑到
+auto-dim  自动变暗
+as it should be 本该如此 应当
+come down to  归根结底，可归结为；实质上是
+It's not strictly related to   不是严格相关的
+ironically  讽刺的是
+trauma 创伤
+prerequisites  预备知识，先决条件
+Proceed to 继续下去；进入…；改读…学位 转到
+subjected to  遭受；承受；受到 使某人经历某事 经过 
+navigate to  导航到
+best practices  最佳实践；最优方法；最佳范例
+Leverage 利用
+a vast of
+matter a great deal 关系重大
+as per 依照
+leaps forward
+be intended for  打算为…所用；预定给
+straight forward way
+
+has proven vital for  已经证明对...很重要
+ideal for  最理想的 为理想而奋斗 对…是理想的 
+has been around since ... 已经存在
+has a learning curve owing to 有学习难度因为...
+worth that extra time investment for the time it will save in the long run 这些额外的时间投资是值得的
+This is a concern that  值得关注的是...
+come down to personal preference  归结为个人喜好
+versatile  多面手的
+The likelihood of 可能性...
+a clear picture of 清除的了解
+In that niche, .. stands as the leader在那个领域
+reduce labor overhead costs 介绍人工成本
+streamline the process 简化的过程
+increase reliability and consistency
+pyramid example
+being thorough and accurate   全面和准确
+Essentially  本质上
+sophisticated  复杂的；精致的；久经世故的；富有经验的
+substantially differently from  显著的不同于
+either way  不管怎样；无论哪种方式
+You may have noticed that  ... 你可能已经注意到...
+undoubtedly   毋庸置疑的
+whereas   然而；鉴于；反之
+tend to be  倾向于；趋向于
+in concert with  和…相呼应；与…合作；和…一致
+considerably   相当地；非常地
+ultimately  最后；根本；基本上
+it’s emphasis is 重点是...
+go hand in hand  手拉手地前进；紧密联系；息息相关
+underlying  潜在的；根本的；在下面的；优先的
+break down the barriers between ...and ... 打破障碍
+in constant communication and tightens collaboration  持续紧密的协作
+outage 储运损耗；中断供应；运行中断
+Businesses that adopt this approach obtain gain following benefits
+theoretical vulnerabilities 理论上的漏洞
+To trim the efficiency
+widely regarded as an essential component of  普遍被视为...
+This is a subjective matter  主观的问题
+should be able to  应该能够……
+clutter on the host file system  杂乱的文件系统
+whereas  然而；鉴于；反之
+With that said  随着中说 这表示 所说 
+Following this principle  依照这个原则
+tinker with  胡乱地修补
+there is no consensus on  没有共识...
+the barrier to entry for 进入...的壁垒
+
+straight out of 来自 取自
+it's undeniably  不可否认的...
+it's objectively better 客观上更好
+
+it’s happening to
+fill out forms  填完表格 
+It has no beef with ... 没有抱怨
+get to the bottom of any issues  弄清楚问题
+stay tuned for more
+tamed ... into submission and perfection 
+originated by 起源于...
+Proven to be  被证明是
+That's the whole point. 
+But there could be another way
+pinpoint issue  定位问题
+annotations  释文 注释；记
+has been able to ...
+without disrupting patterns and processes that already work well?
+to achieve your objectives
+best practices and examples
+a brain dump of everything I've learned from being ... 
+
+TLDR is an acronym for Too Long, Didn't Read.
+It's mainly seen on ...
+It's quite a common
+super determined to find the most efficient way to do 
+ 
+====================interjections 感叹词 ======================================================
+aah!		aaah, aaaahh	"Help!"	"Aaaah! It's eating my leg!"	Fright, shock. Sometimes it means "ahh" instead.
+
+aha	a-ha	"I understand"	"Aha! So you took the money!"	Understanding, triumph (can also be used as "ahh")
+
+ahem		"Attention, please!"	"Ahem! Swearing is against office policy."	The sound of clearing one's throat. Used to get someone's attention, especially if they don't know (or apparently forgot) that you're there.
+
+ahh	ahhh, ohh	"Ok, I see"	"Ahh, yes, I understand now"	Realisation, understanding. Sometimes it means "aaah" or "eh" instead.
+
+ahh	ahhh..	"So relaxing"	"Ahh... This hot tub is amazing"	Relief or relaxation
+
+argh	augh	"Damn!"	"Argh, the car won't work!"	Annoyance, anger, frustration
+
+aww	aw, awww	"How sweet!"	"Aww, what an adorable puppy"	Shows sentimental approval (also see next entry)
+
+aww	aw, ohh, ahh	"That's too bad"	"Aww, it hit him right in the nuts!"	Feeling sorry or pity for someone
+
+aw	oh	"Come on!"	"Aw, don't be like that!"	Mild disappointment or protest
+
+bah		"Whatever"	"Bah, I never liked him anyways."	Dismissive, annoyed
+
+boo	booh	"That's bad"	"Boo, get off the stage!"	Disapproval, contempt
+
+boo!	booh!	"Scared you!"	I jumped out from the closet and yelled "boo!"	A noise used to scare people by surprise
+
+boo-hoo	boohoo	"I'm crying!"	Your internet is slow? Boo-hoo, how sad for you.	Used, often sarcastically, to imitate crying.
+
+brr	brrrr	"It's cold"	"Brrr, it's -20C outside"	Being cold, shivering
+
+d'oh	doh	"That was stupid/bad!"	"I just deleted all my files. D'oh!"	Homer Simpson's catchphrase when something bad happens.
+
+duh		"That's dumb"	"Duh, you didn't plug it in."	Expresses annoyance over something stupid or obvious
+
+eek	eeeek	"Help!"	"Eeek, a mouse!"	Girly scream. Surprised, scared.
+
+eep		"Oh no!"	"Eep! I didn't mean to say that!"	Surprise (female)
+eh?	huh?	"What?"	"Eh? I didn't hear what you said."	Misunderstanding. Also see "eh?" below
+eh?	huh?, eyh?	"Is that right?"	"So she dumped you, eh?"	Stereotypically overused by Canadians
+eww	ugh, ewww, yuck, ick	"Disgusting"	"Ewww, this apple is rotten"	Disgust, dislike
+fuff		"Bullshit"	"Oh fuff, you don't know what you're talking about!"	Contempt and disregard
+gah		"This is hopeless"	"Gah, I give up"	Exasperation and despair
+gee		"Really?"	"Gee, that's super!"	Surprise, enthusiasm, or just general emphasis.
+grr	grrrr	"I'm angry"	"Grrr, I'll kick his ass"	Anger, snarling, growling. Often used for dogs and other animals.
+hmm	hm, hmmmm	"I wonder" 	"Hmm, I'm not sure about that"	Thinking, hesitation.
+humph	harumph	"I don't like this"	"There are kids on my lawn again, humph!"	A snort, to express dislike, disbelief or annoyance.
+hah	heh	"Funny."	"Heh, that's clever"	The first syllable of "hahaha", when something is just a little funny. "Hah" can also be used spitefully in one-upmanship, as in "Hah, got you again you loser"
+haha	hehe, hahaha, bahaha	"Funny!"	"Haha, that's hilarious!"	Regular laughter.
+huh		"Really?"	"Huh, you were right"	Mild, indifferent surprise
+hurrah	hooray, huzzah	"Let's celebrate!"	"Hurrah, we won!"	Generic exclaimation of joy
+ick	yuck, ich, yak	"Disgusting"	"Ick, this milk has gone bad"	Disgust, dislike
+meh	eh	"I don't know"	"Meh, whatever you think is best"	Indifference
+mhm	mmhm, uh-hu	"Yes"	"Do you think so too?" "Mhm"	Agreement, acknowledgement.
+mm	mmm, mmh	"Lovely"	"Mmm, this ice cream is delicious"	Pleasure. Sometimes it means "hmm" instead.
+muahaha	mwahaha, bwahaha	"I'm so evil!"	"I switched the sugar and the salt! Muahaha!"	Evil villain's triumphant laugh
+mwah	m-wah	"Kiss!"	"Thanks, you're so sweet! Mwah!"	The sound of blowing a kiss
+nah		"No"	"Want another beer?" "Nah, I'm good"	Informal no
+nuh-uh	nuh-hu, nu-huh	"No, it isn't!"/"Did not!"	"I hit you!" "Nuh-uh!" "Yuh-uh!" "Nuh-uh!"	Childish negation or refusal
+oh		"I see"	"Oh, you wanted sugar, not milk."	Realisation
+ooh-la-la	oh-lala, la-di-da, la-dee-dah	"Fancy!"	"A seven layer wedding cake? Ooh-la-la!"	An often ironic (or just funny) way indicating that something is fancy or high class
+ooh	oooh	"Wonderful!"	"Oooh, it's shiny!"	Wonder, amazement (ohhh can also mean ahhh)
+oomph	umph	"I'm exerting myself"	"Push on 3.. 1, 2, 3.. oomph!"	A grunt made on sudden exertion. Also used as a noun to mean "power" or "energy" ("This song needs more oomph!")
+oops		"I didn't mean to do that"	"Oops, I knocked your cup over"	Being surprised at or acknowledging your own mistakes
+ouch	ow, ouch, yeow	"That hurts"	"Ouch, I hit my thumb"	Expression of pain
+oww	oww, ouch, yeow	"That hurts"	"Oww, I hit my thumb"	Expression of pain
+oy	oi, oyh	"Hey, you!"	"Oy! You forgot your wallet!"	Mainly British: Used to get someone's attention, similar to "hey!". Also used disapprovingly ("Oy, you spilled your drink all over me!").
+oy	oy vay	"Oh no..."	"The bills are piling up. Oy..."	Mainly Jewish: Used to express self-pity, similar to "woe is me!"
+pew	pee-yew	"It stinks!"	"Pew, that smells so gross!"	Used for foul odors
+pff	pffh, pssh, pfft	"That's nothing"	"Pff, I once caught a fish twice that size"	Unimpressed
+phew		"That was close!"	"I didn't do my homework, but the teacher didn't check. Phew!"	Expressing relief
+psst		Whispering "Hey, you!"	"Psst. Let's skip the next class!"	Used to quietly get someone's attention, often to tell them a secret.
+sheesh	jeez	"I can't believe this!"	"Sheesh, now he's drunk again" 	Exasperation, annoyance (corruption of "Jesus")
+shh	hush, shush	"Be quiet"	"Shh, I'm trying to hear what they're saying!" 	Used to make someone be quiet
+shoo		"Go away"	"Get out of here! Shoo!" 	Used to drive away animals or small children
+tsk-tsk	tut-tut	"Disappointing"	"Tsk-tsk, he is late for work again"	disappointment, contempt (this is a clicking sound. Clip from Futurama)
+uh-huh	mhm, uh-hu	"Yes"	"Do you think so too?" "Uh-hu"	Agreement, acknowledgement (easily confused with uh-uh)
+uh-oh	oh-oh	"Oh no!"	"Uh-oh, I think the bear is inside the house"	Concerned for indications that something will happen
+uh-uh	unh-unh, unh-uh	"No"	"Eat your spinach!" "Uh-uh!"	Refusal, especially if your mouth is full or if you refuse to open it (easily confused with uh-huh)
+uhh	uhm, err	"Wait, I'm thinking"	"Seven times eight is... uhh... 56"	Indicates a pause in, rather than the end of, a sentence
+umm	uhh, ummm	"I'm hesitant"	"Umm.. Do you really think that's wise?"	Being hesitant or skeptical (usually interchangable with "uhh" above)
+waah	waaaaah	"I'm crying!"	"I don't want you to go! Waaah!"	Used, often sarcastically, for imitating crying or whining.
+wee	whee, weee	"This is fun!"	"Weee! Faster!"	Used by children when doing something fun, and often ironically by adults when something is fun but childish
+whoa		"Hold on."	"Whoa, take it easy!"	Can be used to suggest caution as in here, and also stereotypically used by marijuana smokers to express dumbfounded amazement ("whoa, look at the colors!"). Originally a sound used to make horses stop.
+wow		"Amazing!"	"Wow, that's incredible!"	Impressed, astonished
+yahoo	yippee, woohoo	"Let's celebrate!"	"Yippie! We won!"	Generic exclaimation of joy
+yay		"Yes!"	"Yay! We won!"	All-purpose cheer. Approval, congratulations and triumph
+yeah	yeeeeaah!	"Yes!"	"Yeeeaah! Kick his butt!"	Common slang for "yes", sometimes also used as an interjection.
+yee-haw	yeehaw	"I'm excited!"	"Let's gather some cattle! Yee-haw!"	Much like "yahoo", but almost always associated with cowboys.
+yikes		"That's a bad surprise."	"I found out I owed $5000 in back taxes. Yikes!"	Fear and alarm.
+yoo-hoo	yoohoo	"Hey you!"	"Yoo-hoo, sugercup! Come give me a hug!"	The often ironic/comical, seductive call of a woman to get someone's attention
+yuh-uh	yuh-hu, yu-huh	"Yes, it is!"/"Did so!"	"I hit you!" "Nuh-uh!" "Yuh-uh!" "Nuh-uh!" ...	Childish affirmation, often used to counter "nuh-uh!" (not to be confused with yoo-hoo).
+yuck	ick, ich, blech, bleh, eww, ugh	"Disgusting!"	"Yuck, I wouldn't want to touch that"	Disgust, dislike
+zing	ba-dum-tss, badum tish	"Haha, well said!"	"You're so stupid, you'd trip over a wireless phone!" "Zing!"	Used (often ironically) to punctuate a punchline or witty comeback. From the sound of a rimshot, played after punchlines in some comedy acts.
+
+You bet. 你說的沒錯
+Way to go. 幹得好
+There / Here you go. 給你
+I was just like, “Hey! Don’t do that!” ...
+Kind of. 是有那麼一點
+The thing is, we need to talk. 重點是
+Whatever 隨便啦
+Guess what?
+Exactly. That’s what I’m saying.
+
+
+================================================================================
+a error occurred
+experiencing a problem preventing it from responding to requests
+you may wish to try again at a later time.
+in conjunction with   连同，共同；与…协力
+squeezing your eyes to see
+work out-of-the-box
+self-contained 
+Intuitive  凭直觉的
+ETA   预计抵达时间（estimated time of arrival）
+TOA   到达时间（Time of Advent）
+and thus   因此 所以 就此 
+
+an ironic saying
+
+the 3 metrics refer to   指标适用于
+trigger new ideas for innovation
+accelerate project delivery
+boost your project speed
+ 
+be facilitated by  从……受益  在……协助下
+Thanks to forward this information to the relevant people.
+issue analysis is in progress 
+
+please strictly follow
+Thanks for the heads up  谢谢你的提醒 
+
+We are delighted to announce ...
+humbled and awed   谦卑和敬畏
+devoted to    专心于...  专心致力于 
+In a recent study
+Despite these findings, further investigation is necessary
+It is commonly understood/known that ...
+Thus it seems that ...
+Why should it legitimately behave this way? 
+a sanity check/vet
+I dug around a bit and found that...
+great minds think alike  英雄所见略同
+
+This effectively boils down to   归结为...
+I've been thinking about this kind of scheme
+This might correct the situation you are thinking of
+It is a major pain to figure this out
+get a closer look at what’s going on.
+
+It delivers a comprehensive set of tools for those new to ...
+Major Features Include  主要特点内容包括 
+you can leverage every minute of your day to maximize your productivity. 
+also comes with 还配备了
+bypass restrictions  规避限制 
+optimize your workflow and productivity
+saving you hundreds of hours of work
+Effortlessly   轻松的
+This feature drastically simplifies the process 这个特性大大简化了这个过程
+likewise  同样地；也
+it gives you a better understanding of  更好地理解
+Notre Dame cathedral  #圣母院
+consecutive  连贯的
+it's very straightforward to ...
+
+I hope that's helpful
+let me know if you need any further support/assistance
+I'm eager to ...
+If applicable, include the following
+I am so great/enjoyable to get the chance to speak with you at ...
+I was really inspired by what you said about ...
+and I am looking forward to putting your advice into practice.
+would you be available to meet on ...
+
+the job seems to be an excellent match for my skills and interests.
+the creative approach to ..
+in addition to my enthusiam, I'll bring to the position strong skills
+assertiveness and ability to encourage others to work cooperatively
+I appreciate the time you took to interview me.
+
+please see enclosed the ...
+if any further ... is needed in this regard
+looking forward to your prompt response on this matter.
+I am writing this application to inform you ...
+check occasionally for important email
+I am determined to ... 决心...
+your consideration in this matter is appreciated
+
+this is inform you that ...
+in present situation ...
+please consider this application as offical record
+in any other case I will ...
+each and every  每个，每一个
+for the purpose of ...
+I have written this letter to say that ...
+I am sending the personal invitation in due course of time
+starting from ... till ..
+leave and oblige 
+
+I wouldn't able to attend next week ... due to ...
+I would be highly obliged to you if you consider ...
+your concern is required 
+
+I kindly request you to grant me leave on ... and make this leave as an informed leave
+ 
+================================================================================
+Goodbye email
+
+As all of you already know that ...is my last day in ..., before I leave I wish 
+to bid goodbye to all, It's a very emotional moment to me because all of you have 
+been great colleagues to me and more importantly, I can proudly say that I have 
+also found friends in you.
+
+I'd like to take this opportunity to thank all of you for immense support and coorperation
+that you all provided during my time here. I'll always remember our team work 
+especially in ... Project. Your support and team bonding was a source of strenght
+in a lot different ways, I have experienced your kindness, and so today please let 
+me extend my heartfelt gratitude to all of you, The guidance I received from you
+the ancouragement and comfort and above all, the friendship helped me a lot.
+
+I wish all of you a very best of times and hope that you will have a bright and growing 
+future.
+
+I'd like take this opportunity to bid farewell to all of you and wish to inform you 
+that today is my lasy day. working in this team has been a wonderful learning experience
+and I will miss you all a lot.
+I would personally like to thank ...for their constant support and guidance and for making me
+what I am today.
+I am looking forward to the new challenges in my career and wish all of you the best
+of lucky too.
+Keep in touch each other 
+
+A wonderful journey for me, you shown full supprt during last years
+I'll never forget the amazing techniques, skills, professionalism, kindness which you have gave me 
+and don't hesitation to reach me whenever you need me assitance.
+
+
+It is brought to your kind notice that I have to ...
+He is a responsible person and will keep you updated on the progress of ... in my absence
+Most respectfully it is stated that ... 仅此声明
+
+Thanking you in anticipation
+ 
+with due respect I'd like to 
+In case it's helpful
+a more straight forward way to
+I've been digging a little bit
+and didn't find anything directly corresponding to
+I’m just now getting to looking into it
+There were no entries in the debug log to indicate issues
+stick around 
+be affected by this issue
+You should enable socket reuse.  # if too many time_wait appears
+it is the main reason to increase the average load 
+What might cause this to happen? 
+arbitrarily   武断地；反复无常地；专横地
+here it goes
+for a certain reason 
+You cought be right
+it appears more like
+I have seen this come up from time to time. 
+navigate to 
+get stuck in a bad situation 
+walk you through 
+Please take in to account that
+In the form
+be obtained by 通过……获取
+subjective  主观的；个人的；自觉的
+objective   客观的；目标的；宾格的
+
+with no hassle
+it determines the behavior of ...
+Not to mention
+TL;DR  too long don't read
+Cases that get this far are rare
+the smoking gun  确凿的证据
+get a permanent fix
+any help in finding the cause of this?
+why this is happening?
+The vaguely remember   依稀记得
+in the nearest future  不久的将来
+see what happens
+It is very unlikely that  不太可能的
+rather than ... it is preferred ...
+
+A curated list of 一份精选的
+fine-tune
+settle and done
+cryptic
+extracting
+back and forth  来回的 反复的
+
+peer to peer
+
+coexist  共存
+set in stone  一成不变
+blow up
+easy money n. 不义之财；得来容易的钱；易被榨出钱来的；小菜一碟；低息货币
+given that  只要是，考虑到；假定，已知
+we'll keep it that way  我们就这么办吧
+
+metadata
+By your use of these resources, you agree to abide by ...
+happen to be    碰巧是；恰巧是
+things work out quite well
+but surely you could ...
+in cooperation with  与…合作
+despite the fact that ... 尽管事实是
+not to mention  更不必说；不必提及
+a bunch of  一群；一束；一堆
+that means a lot to me
+had me covered
+as time goes on 随着时间的推移
+slip up 疏忽；跌倒；遭到不幸
+nevertheless  然而，不过  虽然如此
+wholeheartedly  全心全意地，全神贯注地
+Works well in conjunction with  连同，共同；与…协力
+appear to be  好像是；仿佛
+I've sent multiple emails and received no response!
+... that comes with 附带...
+work collaboratively  协作
+throughout the day
+
+A curated list of 一份精选的
+have constantly evolved over the years
+a behemoth scale
+What has made them so vital is the simplicity that ...
+most of them fall short when it comes to  当...大多数不合格
+you will ever need
+has got you covered on all fronts
+This becomes even more difficult if you want to ...
+Aside from the fact that ...
+In the mean time 
+ 
+http://localhost:8888/?token=1ba9fbd3e9874ac70af6285ae1db03d1b2864e5d06713ad2
+
+
+you don't necessarily do this ...
+it's more like you do ...
+so you tend to be able to do ...
+
+come up with ... 提出；想出；赶上
+meet the contract
+it turns out that ...
+stick with ...
+be merely ...
+thing sort of ..
+nesting and the naming 
+constraints   #约束条件
+in effect
+when you're starting to ...
+that might be ...
+you really don't want to ...
+hipster style
+you can sort of do ...
+zulu time 祖鲁时间；格林尼治标准时间 GMT
+if you're ever doing ...
+mess around 
+it's got to be ...
+legitimate
+roughly understand about ...
+sophisticated  复杂的；精致的；久经世故的；富有经验的
+here's just another example of ...
+terminology   术语，术语学；用辞
+payoff
+you can almost think of ... as ...
+Javascript Object Notation (JSON)
+clean up 
+irascible
+definitive  权威的 最佳的
+voila  （法）瞧；可不是
+
+represent   代表；表现；描绘；回忆；
+one thing you'll notice that ...
+most typically like ...
+assemble capabilities from ... 配备有功能...
+abstract
+a defined set of rules ...
+overly 
+make use of ...
+derive ... from ... 源于；得自；获得
+ 
+geometry
+augment
+happens to be ...
+It is prohibited to ...
+despite the fact that ...
+To avoid confusion
+explicitly stated that 
+run with elevated permissions
+More precisely
+It's a general concept
+Immediately after user login  用户登录后立即
+diagnose the problem
+fine-grained  详细的
+My passions include 。。。
+Curriculum Vitae  简历 
+Over the past few years 。。。
+...  with seamless time tracking
+significant increase 
+Reveal the potiential
+insightfull Analytics and Metrics
+cycle time reports
+suits your needs
+boost the productivity
+improve the performance
+work more efficiently
+improve business processes
+increase business efficiency
+
+Definitely the best collaborative ....
+intuitive and expressive
+at a glance
+
+"Kanban Tool has proven itself as a very helpful tool for managing our clients workflows. 
+All employees successfully use it because its simplicity and functionality."
+
+"KanbanTool has revolutionised communication for us. Team members are communicating in real time a lot more; 
+everyone is focusing on bottlenecks; devs are collaborating with testers better.
+
+"Definitely the best collaborative visual project management software for Scrum and Kanban I have ever used." 
+
+"48% improvement in time-to-market and significant increase in software quality - the results speak for themselves."
+
+
+"The good thing about [kanban board] is that I find it really quick to make updates, track progress, 
+see at a glance the status of projects and roadmaps and see really quickly where the issues are."	
+	
+"As a project manager with Kanban software I always know what actually is going on with my project, 
+what problems need to be solved and what my team is working on."
+		
+
+completely written from scratch
+Open Source Software (FOSS)
+be primarily targeted at ...
+Based upon the experiences I have ...
+agreed upon
+get a picture of the whole process
+in quite a lot of situations
+Rarely used  很少使用 
+
+Grew up in ... I quickly became ...
+started off .., later on ... after being ... for a few years, I graduated with Bachelor of ... from 
+
+I'm currently ...
+I am a passionate ... who has made ...
+I turely believe in ...
+have the team to work collaboratively to achieve great outcome
+dozes of ...
+I see myself as a ... as opposed to
+to build rapport and trust
+
+Ability to complex ...
+analyze design and implement ...
+consistently seeking and learning new tech ...
+detail oriented 
+enhance ...
+excellent problem solver
+experience ...
+familiar with ...
+hands-on experience ...
+manage multiple projects in a deadline-driven environment
+stronge oral and written communication
+participting in open-source project
+Thrive in Dynamic, Fast-Paced environment
+transform requirements into design concepts
+troubleshoot and debug issues
+understand software and operation engineering best practices
+work well independently and within a team setting 
+work within an agile scrum team
+write clear and detailed technical specifications and documentation
+Expertise in Object Oriented Programming concepts
+over 6+ years of experience in ...
+proficiency in implementing design patterns such as MVC, MVVP, MVP architectures, singleton, delegation, target-action along with other concepts like categories and protocols
+
+deep experience in various ...
+Demonstrated ability in ...
+In-depth experience in  ...
+Agile/SCRUM development methodologies
+cutting edge tools
+Broad knowledge of IT trends and pitfalls
+ability to distill information and develop clear insights
+focus on quality, cost, and speed-to-market
+I had knowledge about  ...
+Advanced disciplinary knowledge of 
+Solid experience of OOP
+knowlege of ...
+experience with ...
+stringe foundation in ...
+good knowlege of performance tuning and characteristics, benchmarking and optimization
+Proficient understanding of ...
+in CI/CD and debugging and optimizing scale
+maintained ...
+worked on Agile based development model
+Worked in tandem with dev team ...
+Used Fabric for testing, beta releases and crash reporting
+took a circuitous and non-traditional path to ...
+I take an accessible, inclusive, performant, and ethical approach to all of my work
+strive toward in all 
+a wide variety of
+the saner, organized way to ...
+a seasoned veteran of
+be intrigued by 
+be fascinated by
+could be described as
+a notion that can be applied retroactively to ...
+somehow  以某种方法；莫名其妙地
+But then again ...
+the most elegant solution here would be to say that ...
+and thus 因此
+synonymous with
+enlightening approach
+while on the other hand ...
+accordingly change and adapt to the situation
+This brings us ...
+Namely that  即 也就是说...
+emphasized as below screen cut 
+a fast leaner
+solve problems in flexible ways
+persistence to strive for the best
+contact us if the problem persists.
+
+
+frameworks
+sprint planning/review/retrospective
+agile practices/leader/practioner
+method: pomodoro/eat the frog/eienhower matrix
+
+placeholder  占位符
+truncate  截断
+aligning   校准 对齐
+revocation
+to proceed  继续进行 接着 
+
+see what's inside ...
+the dependencies you rely on ...
+badger  獾；獾皮 纠缠不休
+badge  徽章；证章；标记
+metadata
+have you ever ...
+make it easy to ...
+
+
+
+Jay Hathaway is a former senior writer who specialized in internet memes and weird online culture. 
+He previously served as the Daily Dot’s news editor, was a staff writer at Gawker, 
+and edited the classic websites Urlesque and Download Squad. 
+His work has also appeared on nymag.com, suicidegirls.com,and the Morning News. 
+
+behave exactly same as 
+provisioned with  
+you don't have to deal with setting up
+highly encoureged to follow the order 
+cumbersome  #笨重的；累赘的；难处理的
+
+Replied 
+
+after doing ... end up with
+Conventionally  惯例的
+As detailed in   详述在...
+Taking the example above  以上面的例子为例
+
+
+be inclined to   倾向于…；有意
+you say "I wanted to ___" instead of "I want to ___". There's no grammatical reason for making it past tense; it just makes your sentence sound more polite. 
+
+
+manage to  设法；达成
+
+be far more prone to  this type of failure  更倾向于...
+drastically affect  极大的影响
+In essence  本质上
+like a charm  效验如神地；异常成功地
+open to debate 处在争论中的
+get sorted  得到处理  得到解决
+with a focus on ... fields such as  着重于……  专注于……
+in my practical experience
+
+with the advent of  随着…的出现
+There are various ways to deal with this
+it's always a good idea to
+Knowing what you don't know is half the battle; this would help you steer your efforts in the right direction
+
+No one got where they are in one day, it needs time and practice
+
+
+
+It can be daunting
+Tech is changing fast. The way we do things today is completely different from how we used to do them a couple of years ago. 
+With so much going on in the tech these days, it can be daunting for anyone beginning their career or even already in this field.
+
+
+Know what you don't know
+Knowing what you don't know is half the battle; this would help you steer your efforts in the right direction. 
+These developer roadmaps help you in finding out the missing links, 
+identify the loopholes in your knowledge and start improving – whether it is frontend, backend or devops.
+
+Stop worrying, start learning
+No one got where they are in one day, it needs time and practice. Let your established ideals not put you off, 
+they got to that point with practice; you have to start somewhere. 
+Pick a path, identify what you need to know and start improving yourself.
+
+
+worth mentioning that 
+take into account
+
+so there needs to be a way of
+This proves that
+outside of the scope of 
+captivated and consumed
+as in the following diagram
+in deliberate contrast to 
+This approach radically simplifies system semantics and increases the flexibility of the primitive
+
+do the trick
+
+generally ...
+Alternatively ...
+Worst case ...
+
+it pops up
+
+go through it all over again
+I'm getting the following error when I run  ...
+I have tried a number of solutions such as  ...
+nothing has seemed to work
+I'm going nuts with this error
+It clashes with  和...冲突
+leverage ... to
+make use of 
+pretty straightforward
+Please let me know in the comments
+how come
+let’s say you want to
+Before we move on, let’s go ahead and clean that up
+what happens if we need to 
+informative 
+gives a pitch 
+
+Versus the new way
+This may not seem like a big deal, but consider ...
+in the vast, ever-changing world of 
+reforce
+relegate
+harness
+Though the terms of 
+interchangeably
+break down
+handle some ... burden
+
+housed in ...
+emcompass
+depending on the context ...
+primarily taking about ...
+choreography
+amenable 
+specialize in ...
+the vital first step towards ...
+tradeoff
+tends to be ...
+apples-to-apples
+
+
+
+versatile 
+
+
+
+
+PLEASE RENAME THE SWITCH IN NAGIOS FROM NANDCSWTE092 TO NANDCSWTA092  
+PLEASE RENAME SWITCH FROM NANDCROUB051 TO NANDCROUA091   
+PLEASE UPDATE THE NAME OF THE SWITCH IN NAGIOS FROM NANDCSWTE091 TONANDCSWTA091
+
+
+ 
+784917332624
+https://www.marshallheadphones.com
+
+tremble and fall
+align people on objectives  结盟
+mortem
+scrum
+sliver bullet： A direct and effortless solution to a problem. something that acts as a magical weapon
+
+Getting this error message while trying to 
+We are thrilled to announce that 
+it leads the way ...
+LTS 长期支持（Long Term Support）
+but my guess it is will be
+be working towards it  努力实现它
+I am facing similar problem ...
+I'm getting this error when ...
+bump up 
+Curious to know if ...
+may need a bit of tweaking
+FWIW   不管有用与否；无论价值如何（是 for what it's worth 的缩写 
+I'm really new to ...
+In my case it stopped working from one moment to the other
+it has to be 
+matter most to  最重要的
+with phrases such as ...
+get an adrenaline rush   肾上腺激增
+Throughout most of his career
+in specific instances
+Most important is that
+
+
+at the wheel
+at the helm 
+It’s less specific than ...  没那么具体
+The more traditional sense of  更传统意义
+steer 
+steering  n. 操纵；指导；掌舵  v. 驾驶；掌舵
+navigation
+navy 
+spoked  n. 轮辐；刹车；扶梯棍
+wheel   n. 车轮；方向盘；转动
+vessel  n. 船，舰；[组织] 脉管，血管；容器，器皿
+lever   n. 杠杆；控制杆 vt. 用杠杆撬动；把…作为杠杆
+position n. 位置，方位；职位，工作；姿态；站位；[金融]仓位 v. 安置；把……放在适当位置
+rudder  船舵；飞机方向舵
+helve   n. 柄  vt. 装柄于
+
+sailboat  n. 帆船
+machinery n. 机械；机器；机构；机械装置
+old fashion term  旧的术语
+rudder stock  舵轴，[船] 舵杆；上舵杆
+cruiser n. 巡洋舰；巡航飞机，警察巡逻车
+destroyer n. 驱逐舰；破坏者；起破坏作用的事物
+frigate n. 护卫舰；三帆快速战舰
+aircraft carrier  n. 航空母舰；全能篮球中锋
+battleships  n. [船][军] 战列舰；战舰棋，海军棋
+maritime  adj. 海运的，航海的，海事的；近海的，沿海的
+marine  海运业；舰队；水兵；（海军）士兵或军官 adj. 船舶的；海生的；海产的；航海的，海运的
+seafaring  n. 航海业；海上航行 adj. 航海的
+nautical   adj. 航海的，海上的；船员的
+
+seafarer n. 船员；航海家
+captain n. 队长，首领；船长；上尉；海军上校
+sailor  n. 水手，海员；乘船者
+sail vi. 航行；启航，开船 n. 帆，篷；航行
+denote   表示，指示
+
+from time to time
+From that point of view  从这个角度来讲 
+whereas  n. 序言，开场白；条件语句 conj. 然而；鉴于
+
+is commonly used to ...
+be used metaphorically
+the one who holds the tiller takes instructions from the one who is "at the helm"
+The person operating the wheel is called the helmsman whose job is to "take the helm".
+
+be equivalent to 
+be associated to 
+idiomatic expression
+be supplanted by
+tied to
+resemble 类似
