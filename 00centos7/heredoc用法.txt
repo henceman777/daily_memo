@@ -1,0 +1,123 @@
+EOF结合cat命令进行行内容的追加了,heredoc
+
+1. EOF是END Of File的缩写,表示自定义终止符.既然自定义,那么EOF就不是固定的,可以随意设置别名,在linux按ctrl-d就代表EOF.
+EOF一般会配合cat能够多行文本输出.
+其用法如下:
+<<EOF      #开始
+adac
+adas
+adad
+EOF         #结束
+
+比如自定义：
+<<BBB        #开始
+adacad
+adasdad
+adadasd
+BBB          #结束
+
+2. tee方法
+tee /etc/apache2/other/$NAME.conf &>/dev/null <<EOF
+NameVirtualHost *:80
+<Virtualhost *:80>
+        ServerName $NAME.dev
+        ServerAlias www.$NAME.dev
+        DocumentRoot /var/www/$NAME
+
+        <Directory "/var/www/$NAME">
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+        </Directory>
+</VirtualHost>
+EOF
+
+
+
+3. Here Documents
+
+This type of redirection instructs the shell to read input from the current source until a line containing only word (with no trailing blanks) is seen.
+
+All of the lines read up to that point are then used as the standard input for a command.
+
+The format of here-documents is:
+
+          <<[-]word
+                  here-document
+          delimiter
+
+No parameter expansion, command substitution, arithmetic expansion, or pathname expansion is performed on word. If any characters in word are quoted, the delimiter is the result of quote removal on word, and the lines in the here-document are not expanded. If word is unquoted, all lines of the here-document are subjected to parameter expansion, command substitution, and arithmetic expansion. In the latter case, the character sequence \<newline> is ignored, and \ must be used to quote the characters \, $, and `.
+
+If the redirection operator is <<-, then all leading tab characters are stripped from input lines and the line containing delimiter. This allows here-documents within shell scripts to be indented in a natural fashion.
+
+Examples of cat <<EOF syntax usage in Bash:
+1. Assign multi-line string to a shell variable
+
+$ sql=$(cat <<EOF
+SELECT foo, bar FROM db
+WHERE foo='baz'
+EOF
+)
+
+The $sql variable now holds the new-line characters too. You can verify with echo -e "$sql".
+2. Pass multi-line string to a file in Bash
+
+$ cat <<EOF > print.sh
+#!/bin/bash
+echo \$PWD
+echo $PWD
+EOF
+
+The print.sh file now contains:
+
+#!/bin/bash
+echo $PWD
+echo /home/user
+
+3. Pass multi-line string to a pipe in Bash
+
+$ cat <<EOF | grep 'b' | tee b.txt
+foo
+bar
+baz
+EOF
+
+
+Here Document 不仅可以在终端上使用，在shell 文件中也可以使用，例如下面的here.sh 文件
+
+cat << EOF > output.sh
+echo "hello"
+echo "world"
+EOF
+
+
+
+不想展开这个变量怎么办呢，可以通过在起始的 delimiter的前后添加 " 来实现，例如将上面的here.sh 改为
+
+cat << "EOF" > output.sh  #注意引号
+echo "hello"
+echo "world"
+EOF
+
+得到的output.sh 的内容为
+
+echo "This is output"
+echo $1
+
+
+Here Document 还有一个用法就是将 '<<' 变为 '<<-'
+使用 <<- 的唯一变化就是Here Document 的内容部分每行前面的 tab (制表符)将会被删除掉
+这种用法是为了编写Here Document的时候可以将内容部分进行缩进，方便阅读代码
+
+
+sudo bash -c 'cat > /etc/yum.repos.d/some-name.repo' << EOF
+line1
+line2
+line3
+EOF
+
+If you need to write/replace the file:
+echo "some text" | sudo tee /path/to/file
+
+If you need to append to the file:
+echo "some text" | sudo tee -a /path/to/file
