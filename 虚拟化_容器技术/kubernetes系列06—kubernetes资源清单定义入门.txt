@@ -1,0 +1,165 @@
+### kubernetes系列06—kubernetes资源清单定义入门
+
+1. kubernetes常用的资源
+- workload工作负载型资源：
+pod，ReplicaSet,Deployment,StatefulSet，daemonset，job...
+
+- 服务器发现及均衡：
+Service，Ingress...
+
+- 配置与存储：
+volume，CSI，pv，pvc
+configmap，secret
+downwardAPI
+
+- 集群级资源：
+namespace，node，role，clusterrole，rolebinding，clusterrolebinding
+
+- 元数据型资源：
+HPA，podtemplate，limitrange
+
+2. 创建资源的方法
+apiserver 仅接受JSON格式的资源定义；
+yaml格式提供配置清单，apiserver 可自动将其转为JSON格式，而后再提交；
+
+3. 大部分的资源的配置清单
+apiserver: v1
+kind: pod
+metadata: 
+  name:
+  namespace:
+  labels:
+  annotation:
+  selfLink:
+
+spec:
+status:
+
+4. kubectl explain查询资源配置
+kubectl explain deployment
+kubectl explain pod
+kubectl explain pod.spec
+
+5. 示例
+kubectl get pods  #查询pod
+kubectl get pod myapp-746644f8d6-258m7 -o yaml  #输出yaml配置清单
+
+- 基于yaml文件创建pod
+mkdir manifests && cd manifests
+cat > pod-demo.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-demo
+  namespace: default
+  #labels: {app:myapp, tier:frontend} #映射可以写为{}形式;
+  labels: #也可以在下边分级写
+    app: myapp
+    tier: frontend
+spec:
+  containers:
+  - name: myapp
+    image: ikubernetes/myapp:v1
+  - name: busybox
+    image: busybox:latest
+    #command: ["/bin/sh","-c","sleep 3600"]  #列表可以写为[]形式;
+    command: #也可以在下边分级写,要加-
+    - "/bin/sh"
+    - "-c"
+    - "sleep 3600"
+EOF
+
+kubectl create -f pod-demo.yaml
+kubectl get pods -o wide 
+kubectl describe pods pod-demo
+kubectl logs pod-demo myapp  #查看pod中myapp容器的产生的日志
+
+kubectl delete -f pod-demo.yaml 
+
+6. pod资源
+- Pod资源常用选项
+metadata.label：标签
+    key=value
+        key：字母、数字、_、-、.
+        value：可以为空，只能字母或数字开头及结尾，中间可使用字母、数字、_、-、.
+metadata.annotations：资源注解
+spec.containers <[]object>
+    - name：容器名称
+      image：镜像
+      imagePullPolicy：下载镜像规则，若镜像时latest标签，默认是Always；否则默认IfNotPresen
+        Always总是镜像，Never不下载镜像，IfNotPresent本地有则不下载
+    ports：从容器中公开的端口列表
+        containerPort：Pod中服务的端口号
+        hostIP：暴露绑定在主机哪个IP上
+        hostPort：暴露在主机的端口号
+        name：暴露这个端口的名称
+    args：参数
+    command：执行命令
+spec.nodeSelector：节点标签选择器
+
+- 演示
+cat > pod-demo.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-demo
+  namespace: default
+  #labels: {app:myapp, tier:frontend} #映射可以写为{}形式;
+  labels: #也可以在下边分级写
+    app: myapp
+    tier: frontend
+  annotations:
+    along.com/created-by: "cluster admin"
+spec:
+  containers:
+  - name: myapp
+    image: ikubernetes/myapp:v1
+    ports:
+    - name: http
+      containerPort: 80
+    - name: https
+      containerPort: 443
+  - name: busybox
+    image: busybox:latest
+    imagePullPolicy: IfNotPresent
+    #command: ["/bin/sh","-c","sleep 3600"]  #列表可以写为[]形式;
+    command: #也可以在下边分级写,要加-
+    - "/bin/sh"
+    - "-c"
+    - "sleep 3600"
+  nodeSelector:
+    disktype: ssd
+EOF
+
+kubectl label node node1 disktype=ssd  #打标签
+kubectl get nodes node1 --show-labels
+
+kubectl create -f pod-demo.yaml #pod只会创建到node1节点上，因为node1的disktype=ssd标签
+kubectl get pod -o wide
+kubectl get pods --show-labels -l app
+
+7. pod健康检测
+pod健康检测分为存活性探测、 就绪型探测；这在生产环境几乎是必须配置的；
+如果没有就绪型探测；pod一启动就会被分配用户流量；若pod中的服务像tomcat等，需要时间启动；就会导致有一定时间，用户访问不到服务；
+如果没有存活性探测：pod中服务一旦失败，没有检测，不会将容器重启关闭；也会导致用户访问服务失败。
+
+- pod健康检测选项
+在spec字段下、containers字段配置，可使用explain查看详细用法
+kubectl explain pod.spec.containers.
+》livenessProbe 存活性探测
+  exec：指定检测的命令
+  failureThreshold：连续失败次数被认为失败，默认为3，最小值为1
+  httpGet：指定要执行的http请求
+  initialDelaySeconds：在容器启动多少秒后再检测
+  periodSeconds：每隔多少秒探测一次；默认为10秒。最低限度值是1
+  successThreshold：连续成功次数认为服务正常
+  tcpSocket：定涉及TCP端口的操作
+  timeoutSeconds:探测超时的秒数，默认为1秒
+》readinessProbe 就绪型探测（和livenessProbe 存活性探测选项一样）
+
+- pod中容器挂了，是否重启pod
+kubectl explain pod.spec.restartPolicy.   
+Always：总是重启（默认）
+OnFailure：只有容器状态为错误时，才重启
+Never：绝不重启
+
