@@ -1,0 +1,349 @@
+### 二进制安装部署kubernetes集群---超详细教程
+
+1. 组件版本
+Kubernetes 1.10.4
+Docker 18.03.1-ce
+Etcd 3.3.7
+Flanneld 0.10.0
+
+插件：
+Coredns
+Dashboard
+Heapster (influxdb、grafana)
+Metrics-Server
+EFK (elasticsearch、fluentd、kibana)
+
+镜像仓库：
+docker registry
+harbor
+
+2. 主要配置策略
+kube-apiserver：
+    使用 keepalived 和 haproxy 实现 3 节点高可用；
+    关闭非安全端口 8080 和匿名访问；
+    在安全端口 6443 接收 https 请求；
+    严格的认证和授权策略 (x509、token、RBAC)；
+    开启 bootstrap token 认证，支持 kubelet TLS bootstrapping；
+    使用 https 访问 kubelet、etcd，加密通信；
+
+kube-controller-manager：
+    3 节点高可用；
+    关闭非安全端口，在安全端口 10252 接收 https 请求；
+    使用 kubeconfig 访问 apiserver 的安全端口；
+    自动 approve kubelet 证书签名请求 (CSR)，证书过期后自动轮转；
+    各 controller 使用自己的 ServiceAccount 访问 apiserver；
+
+kube-scheduler：
+    3 节点高可用；
+    使用 kubeconfig 访问 apiserver 的安全端口；
+
+kubelet：
+    使用 kubeadm 动态创建 bootstrap token，而不是在 apiserver 中静态配置；
+    使用 TLS bootstrap 机制自动生成 client 和 server 证书，过期后自动轮转；
+    在 KubeletConfiguration 类型的 JSON 文件配置主要参数；
+    关闭只读端口，在安全端口 10250 接收 https 请求，对请求进行认证和授权，拒绝匿名访问和非授权访问；
+    使用 kubeconfig 访问 apiserver 的安全端口；
+
+kube-proxy：
+    使用 kubeconfig 访问 apiserver 的安全端口；
+    在 KubeProxyConfiguration 类型的 JSON 文件配置主要参数；
+    使用 ipvs 代理模式；
+
+集群插件：
+    DNS：使用功能、性能更好的 coredns；
+    Dashboard：支持登录认证；
+    Metric：heapster、metrics-server，使用 https 访问 kubelet 安全端口；
+    Log：Elasticsearch、Fluend、Kibana；
+    Registry 镜像库：docker-registry、harbor；
+
+3. 系统初始化
+kube-master：192.168.10.108
+kube-node1：192.168.10.109
+kube-node2：192.168.10.110
+
+3.1 主机名解析
+vim /etc/hosts
+192.168.10.108 kube-master
+192.168.10.109 kube-node1
+192.168.10.110 kube-node2
+
+3.2 添加k8s和docker用户
+useradd -m k8s
+sh -c 'echo along |passwd k8s --stdin' #为k8s 账户设置密码
+
+visudo #去掉%wheel ALL=(ALL) NOPASSWD: ALL这行的注释
+grep '%wheel.*NOPASSWD: ALL' /etc/sudoers
+%wheel ALL=(ALL) NOPASSWD: ALL
+
+gpasswd -a k8s wheel  #k8s用户归到wheel组
+id k8s
+
+#每台机器上添加 docker 账户，将 k8s 账户添加到 docker 组中
+useradd -m docker
+gpasswd -a k8s docker
+
+mkdir -p /opt/docker/
+vi /opt/docker/daemon.json   #可以后续部署docker时在操作
+{
+　　"registry-mirrors": ["https://hub-mirror.c.163.com", "https://docker.mirrors.ustc.edu.cn"],
+　　"max-concurrent-downloads": 20
+}
+
+3.3 ssh免密登录
+ssh-keygen #连续回车即可
+
+#将自己的公钥发给其他服务器
+ssh-keygen -t rsa
+ssh-copy-id root@kube-master
+ssh-copy-id root@kube-node1
+ssh-copy-id root@kube-node2
+
+ssh-copy-id k8s@kube-master
+ssh-copy-id k8s@kube-node1
+ssh-copy-id k8s@kube-node2
+
+3.4  /opt/k8s/bin 添加到 PATH 变量
+sh -c "echo 'PATH=/opt/k8s/bin:$PATH:$HOME/bin:$JAVA_HOME/bin' >> /etc/profile.d/k8s.sh"
+source /etc/profile.d/k8s.sh
+
+3.5 安装依赖包
+yum install -y epel-release
+yum install -y conntrack ipvsadm ipset jq sysstat curl iptables libseccomp
+
+Ubuntu:
+sudo apt-get install -y conntrack ipvsadm ipset jq sysstat curl iptables libseccomp
+
+3.6 关闭防火墙
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+sudo iptables -F && sudo iptables -X && sudo iptables -F -t nat && sudo iptables -X -t nat
+sudo iptables -P FORWARD ACCEPT
+
+3.6 关闭 swap 分区
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+3.7 关闭 SELinux
+setenforce 0
+grep SELINUX /etc/selinux/config
+SELINUX=disabled
+
+3.8 关闭 dnsmasq (可选)
+service dnsmasq stop
+systemctl disable dnsmasq 
+
+3.9 加载内核模块
+modprobe br_netfilter
+modprobe ip_vs
+
+3.10 核心参数
+cat > kubernetes.conf <<EOF
+net.bridge.bridge-nf-call-iptables=1
+net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.ip_forward=1
+net.ipv4.tcp_tw_recycle=0
+vm.swappiness=0
+vm.overcommit_memory=1
+vm.panic_on_oom=0
+fs.inotify.max_user_watches=89100
+fs.file-max=52706963
+fs.nr_open=52706963
+net.ipv6.conf.all.disable_ipv6=1
+net.netfilter.nf_conntrack_max=2310720
+EOF
+
+cp kubernetes.conf /etc/sysctl.d/kubernetes.conf
+sysctl -p /etc/sysctl.d/kubernetes.conf
+mount -t cgroup -o cpu,cpuacct none /sys/fs/cgroup/cpu,cpuacct
+
+3.11 系统时区
+timedatectl set-timezone Asia/Shanghai
+timedatectl set-local-rtc 0
+systemctl restart rsyslog
+systemctl restart crond
+
+yum -y install ntpdate
+ntpdate cn.pool.ntp.org
+
+4. 创建必要目录
+- 每台机器上创建目录：
+mkdir -p /opt/k8s/{bin,cert,script}
+mkdir -p /opt/etcd/cert
+mkdir -p /opt/lib/etcd
+chown -R k8s /opt/*
+
+curl https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh > check-config.sh
+chmod +x check-config.sh
+bash ./check-config.sh
+
+5. 创建CA证书和密钥
+kubernetes 系统各组件需要使用 x509 证书对通信进行加密和认证
+CA (Certificate Authority) 是自签名的根证书，用来签名后续创建的其它证书
+
+- 安装 cfssl 工具集
+mkdir -p /opt/k8s/cert && sudo chown -R k8s /opt/k8s && cd /opt/k8s
+wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+
+mv cfssl_linux-amd64 /opt/k8s/bin/cfssl
+mv cfssljson_linux-amd64 /opt/k8s/bin/cfssljson
+mv cfssl-certinfo_linux-amd64 /opt/k8s/bin/cfssl-certinfo
+chmod +x /opt/k8s/bin/*
+
+- 创建根证书CA
+CA 证书是集群所有节点共享的，只需要创建一个 CA 证书，后续创建的所有证书都由它签名
+cd /opt/k8s/cert
+vim ca-config.json
+{
+    "signing": {
+        "default": {
+            "expiry": "87600h"
+        },
+        "profiles": {
+            "kubernetes": {
+                "usages": [
+                    "signing",
+                    "key encipherment",
+                    "server auth",
+                    "client auth"
+                ],
+                "expiry": "87600h"
+            }
+        }
+    }
+}
+
+vim ca-csr.json  #证书请求文件
+{
+    "CN": "kubernetes",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "BeiJing",
+            "L": "BeiJing",
+            "O": "k8s",
+            "OU": "4Paradigm"
+        }
+    ]
+}
+
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+
+- 分发CA证书,密钥文件、配置文件
+vim /opt/k8s/script/scp_k8scert.sh
+NODE_IPS=("192.168.10.108" "192.168.10.109" "192.168.10.110")
+for node_ip in ${NODE_IPS[@]};do
+    echo ">>> ${node_ip}"
+    ssh root@${node_ip} "mkdir -p /opt/k8s/cert && chown -R k8s /opt/k8s"
+    scp /opt/k8s/cert/ca*.pem /opt/k8s/cert/ca-config.json k8s@${node_ip}:/opt/k8s/cert
+done
+
+chmod +x /opt/k8s/script/scp_k8scert.sh && /opt/k8s/script/scp_k8scert.sh
+
+6. 创建kubectl命令行工具
+kubectl 默认从 ~/.kube/config 文件读取 kube-apiserver 地址、证书、用户名等信息
+如果没有配置，执行 kubectl 命令时可能会出错
+kubectl get pods
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+
+wget https://dl.k8s.io/v1.10.4/kubernetes-client-linux-amd64.tar.gz
+tar -xzvf kubernetes-client-linux-amd64.tar.gz
+
+6.1 创建 admin 证书和私钥
+kubectl 与 apiserver https 安全端口通信，apiserver 对提供的证书进行认证和授权。
+kubectl 作为集群的管理工具，需要被授予最高权限。这里创建具有最高权限的admin 证书。
+
+- 创建证书签名请求
+cd /opt/k8s/cert/
+cat > admin-csr.json <<EOF
+{
+    "CN": "admin",
+    "hosts": [],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "BeiJing",
+            "L": "BeiJing",
+            "O": "system:masters",
+            "OU": "4Paradigm"
+        }
+    ]
+}
+EOF
+
+- 生成证书和私钥
+cfssl gencert -ca=/opt/k8s/cert/ca.pem \
+-ca-key=/opt/k8s/cert/ca-key.pem \
+-config=/opt/k8s/cert/ca-config.json \
+-profile=kubernetes admin-csr.json | cfssljson_linux-amd64 -bare admin
+
+ls admin*
+
+7. 创建和分发 kubeconfig 文件
+- 创建kubeconfig文件
+kubeconfig 为 kubectl 的配置文件，包含访问 apiserver 的所有信息，如 apiserver 地址、CA 证书和自身使用的证书
+
+- 设置集群参数
+kubectl config set-cluster kubernetes \
+--certificate-authority=/opt/k8s/cert/ca.pem \
+--embed-certs=true \
+--server=https://192.168.10.10:8443 \
+--kubeconfig=/root/.kube/kubectl.kubeconfig
+
+- 设置客户端认证参数
+kubectl config set-credentials kube-admin \
+--client-certificate=/opt/k8s/cert/admin.pem \
+--client-key=/opt/k8s/cert/admin-key.pem \
+--embed-certs=true \
+--kubeconfig=/root/.kube/kubectl.kubeconfig
+
+- 设置上下文参数
+kubectl config set-context kube-admin@kubernetes \
+--cluster=kubernetes \
+--user=kube-admin \
+--kubeconfig=/root/.kube/kubectl.kubeconfig
+
+- 设置默认上下文
+kubectl config use-context kube-admin@kubernetes --kubeconfig=/root/.kube/kubectl.kubeconfig
+
+chmod +x /opt/k8s/script/kubectl_environment.sh && /opt/k8s/script/kubectl_environment.sh
+
+- 验证kubeconfig文件
+kubectl config view --kubeconfig=/root/.kube/kubectl.kubeconfig
+
+- 分发 kubeclt 和kubeconfig 文件，分发到所有使用kubectl 命令的节点
+vim /opt/k8s/script/scp_kubectl.sh
+NODE_IPS=("192.168.10.108" "192.168.10.109" "192.168.10.110")
+for node_ip in ${NODE_IPS[@]};do
+    echo ">>> ${node_ip}"
+    scp /root/kubernetes/client/bin/kubectl k8s@${node_ip}:/opt/k8s/bin/
+    ssh k8s@${node_ip} "chmod +x /opt/k8s/bin/*"
+    ssh k8s@${node_ip} "mkdir -p ~/.kube"
+    scp ~/.kube/config k8s@${node_ip}:~/.kube/config
+    ssh root@${node_ip} "mkdir -p ~/.kube"
+    scp ~/.kube/config root@${node_ip}:~/.kube/config
+done
+
+chmod +x /opt/k8s/script/scp_kubectl.sh && /opt/k8s/script/scp_kubectl.sh
+
+8. 部署etcd集群
+etcd 是基于 Raft 的分布式 key-value 存储系统，由 CoreOS 开发，常用于服务发现、共享配置以及并发控制（如 leader 选举、分布式锁等）
+kubernetes 使用 etcd 存储所有运行数据。
+
+8.1 本文档介绍部署一个三节点高可用 etcd 集群的步骤：
+- 下载和分发 etcd 二进制文件
+
+创建 etcd 集群各节点的 x509 证书，用于加密客户端(如 etcdctl) 与 etcd 集群、etcd 集群之间的数据流；
+创建 etcd 的 systemd unit 文件，配置服务参数；
+检查集群工作状态；
+
+- 

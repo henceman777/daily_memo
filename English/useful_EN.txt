@@ -5250,18 +5250,9 @@ specialize in ...
 the vital first step towards ...
 tradeoff
 tends to be ...
-apples-to-apples
+apples-to-apples   同类
 
-
-
-versatile 
-
-
-
-
-PLEASE RENAME THE SWITCH IN NAGIOS FROM NANDCSWTE092 TO NANDCSWTA092  
-PLEASE RENAME SWITCH FROM NANDCROUB051 TO NANDCROUA091   
-PLEASE UPDATE THE NAME OF THE SWITCH IN NAGIOS FROM NANDCSWTE091 TONANDCSWTA091
+versatile  adj. 多才多艺的；通用的，万能的；多面手的
 
 
  
@@ -5397,3 +5388,8 @@ I'm looking forward to seeing you at the focus group on Saturday.
 18. act for 代理 、 act as 担当/担任
 19. in charge of 掌管 、 in the charge of 被...掌管，由...负责
 20. as regards / with respect to / as for 关于、至于...
+
+
+Be particularly alert for 
+If the above situations occur
+be deceived by   被欺骗

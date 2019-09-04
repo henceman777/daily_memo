@@ -1,0 +1,138 @@
+### kubernetes系列03—kubeadm安装部署K8S集群
+
+1. 安装介绍
+- 法一：
+kubeadm
+
+- 法二：
+二进制安装部署
+
+2. 环境和软件版本
+- 组件版本：
+docker 17.03.2
+kubeadm 1.11.1
+kubelet 1.11.1
+kubectl 1.11.1
+
+- 机器:
+kube-master：192.168.10.103
+kube-node1：192.168.10.104
+kube-node2：192.168.10.105
+
+- 主机名：
+sudo hostnamectl set-hostname master
+sudo hostnamectl set-hostname node1
+sudo hostnamectl set-hostname node2 
+
+vim /etc/hosts
+192.168.10.103 master
+192.168.10.104 node1
+192.168.10.105 node2
+
+- 时间同步：
+yum -y install ntpdate
+ntpdate cn.pool.ntp.org
+
+- 防火墙
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+
+iptables -F && iptables -X && iptables -F -t nat && iptables -X -t nat
+iptables -P FORWARD ACCEPT
+
+- swap禁用
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+- Selinux关闭
+setenforce 0
+vim /etc/selinux/config
+SELINUX=disabled
+
+3. 开始使用kubeadm安装kubernetes
+kubeadm 幕后发生的工作内容：https://github.com/kubernetes/kubeadm/blob/master/docs/design/design_v1.10.md
+
+3.1 master节点
+
+- 配置docker-ce源
+wget -O /etc/yum.repos.d/docker-ce.repo https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/centos/docker-ce.repo
+sed -i 's@download.docker.com@mirrors.tuna.tsinghua.edu.cn/docker-ce@g' /etc/yum.repos.d/docker-ce.repo
+
+- 配置kubernetes源
+cat >> /etc/yum.repos.d/kubernetes.repo <EOF
+[kubernetes]
+name=Kubernetes Repo
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+gpgcheck=0
+enable=1
+EOF
+
+- 更新yum仓库
+yum clean all
+yum repolist
+
+- 安装docker、kubelet、kubeadm、kubectl
+yum -y install docker-ce-17.03.2.ce          #下载稳定版本17.03.2
+yum -y install kubeadm-1.11.1 kubelet-1.11.1 #kubectl-1.11.1
+yum -y install https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/centos/7/x86_64/stable/Packages/docker-ce-selinux-17.03.3.ce-1.el7.noarch.rpm
+yum -y install docker-ce-17.03.2.ce
+
+- 启动服务
+mkdir -p /etc/docker
+tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://registry.docker-cn.com"]
+}
+EOF
+
+systemctl daemon-reload
+systemctl start docker
+systemctl enable docker.service
+
+- 打开iptables内生的桥接相关功能，
+echo 1 >/proc/sys/net/bridge/bridge-nf-call-ip6tables
+echo 1 >/proc/sys/net/bridge/bridge-nf-call-iptables
+
+- 配置kubelet服务
+vim /etc/sysconfig/kubelet
+KUBELET_EXTRA_ARGS="--fail-swap-on=false"
+KUBE_PROXY=MODE=ipvs
+
+systemctl enable kubelet.service
+
+- 初始化master节点
+kubeadm init --kubernetes-version=v1.11.1 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+
+#镜像拉取问题,下载好镜像:
+docker image load < ...tar.gz
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+- 验证
+ss -nutlp |grep 6443
+kubectl get cs
+kubectl cluster-info
+kubectl get nodes
+kubectl get ns
+
+- 部署cni插件flannel
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+docker image ls |grep flannel
+
+kubectl get nodes
+kubectl get pods -n kube-system
+
+3.2 node节点
+kubeadm join 192.168.10.103:6443 --token t56pjr.cm898tj09xm9pkqz \
+--discovery-token-ca-cert-hash sha256:3ffe1c840e8a4b334fc2cc3d976b0e3635410e52e3653bb39585b8b557f81bc4 \
+--ignore-preflight-errors=Swap
+
+#镜像拉取失败则
+docker image load -i kube-proxy-amd64.tar.gz
+docker image load -i pause.tar.gz
+
+3.3 验证
+kubectl get nodes
+kubectl get pods -n kube-system -o wide |grep node
+
