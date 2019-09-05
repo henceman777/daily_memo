@@ -5398,3 +5398,15 @@ be deceived by   被欺骗
 I'm basically trying to 
 I can't figure out 
 Any clue about ...
+much more efficiently and elegantly
+you should generally avoid 
+
+This works just fine
+Don't mean to beat a dead horse
+explicitly specify 明确/显式的指定
+substantially different to 本质不同的
+by convention  按照惯例
+be considered as 
+leading or trailing spaces 
+too commonly seen feature
+I don't see the point of   不明白
