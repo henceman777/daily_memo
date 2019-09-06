@@ -227,3 +227,13 @@ kubectl rollout history deploy/nginx-deployment --revision=3
 #查看版本
 #kubectl describe deploy/nginx-deployment
 kubectl rollout undo deploy/nginx-deployment --to-revision=1
+
+》创建资源模板的一些示例：
+创建deployment资源模板
+kubectl create deployment bb-dm --image=busyboxy --dry-run -o yaml > bb-dm.yml
+
+创建sevice资源模板
+kubectl create service clusterip bb-svc-cip --tcp=80:80 --dry-run -o yaml > bb-svc-cip.yml
+
+创建serviceaccount资源模板
+kubectl create serviceaccount vison --dry-run -o yaml > vison-sa.yml
