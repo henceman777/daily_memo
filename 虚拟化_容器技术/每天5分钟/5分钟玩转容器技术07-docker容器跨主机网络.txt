@@ -1,81 +1,78 @@
 ### 跨主机网络概述
 
-1. 单主机网络方案single-host
+#### 1. 单主机网络方案single-host
 - none
 - host
 - bridge
 - joined容器
 
-2. 跨主机网络方案multi-host
+#### 2. 跨主机网络方案multi-host
 - docker原生的overlay和macvlan
-- 第三方的, flannel,weave和calico
-
+- 第三方的, flannel,weave和calico  
 众多网络方案通过libnetwork和CNM和Docker集成
 
-3. libnetwork和CNM(Container Network Model)
+#### 3. libnetwork和CNM(Container Network Model)
 CNM模型对容器网络进行了抽象:
-- sandbox
+- sandbox:  
 是容器的网络栈,包含容器的interface、路由表、DNS等
 
-- endpoint
+- endpoint:  
 作用是将sandbox接入network, endpoint的典型实现是veth pair
 一个endpoint只能属于一个网络也只能属于一个sandbox
 
-- Network
+- Network:  
 包含一组endpoint,同一network的endpoint可以直接通信
 
-libnetwork和CNM定义了docker容器的网络模型:
-- Native Drivers
-none、bridge、overlay、macvlan
+- libnetwork和CNM定义了docker容器的网络模型:
+  - Native Drivers: none、bridge、overlay、macvlan
+  - Remote Drivers: flannel、weave、calico等
 
-- Remote Drivers
-flannel、weave、calico等
-
+---
 ### 准备overlay网络环境
 Docker提供overlay driver,使得用户可以创建基于Vxlan的overlay网络, Vxlan可将二层数据封装到UDP进行传输
 vxlan提供和vlan相同的以太网二层服务,
 
-Docker overlay网络需要一个key-value数据库用于保存网络状态信息,包括network,endpoint,IP等
+Docker overlay网络需要一个key-value数据库用于保存网络状态信息,包括network,endpoint,IP等  
 常用的软件有: Consul、etcd、zookeeper
 
-
-1. 容器方式运行consul
-docker run -d -p 8500:8500 -h consul --name consul progrium/consul -server -bootstrap
-
+#### 1. 容器方式运行consul
+docker run -d -p 8500:8500 -h consul --name consul progrium/consul -server -bootstrap  
 通过 http://IP:8500 访问 Consul
 
-2. 修改配置文件
+#### 2. 修改配置文件
 host1 和 host2 的 docker daemon 的配置文件/etc/systemd/system/docker.service
-
+```
 --cluster-store=consul://ip:8500 --cluster-advertise=ens33:2376
-
 systemctl daemon-reload
 systemctl restart docker.service
 
 host1和host2将注册到consul数据库中
-
-3. 创建overlay网络
-docker network create -d overlay ov_net1
+```
+#### 3. 创建overlay网络
+```
+docker network create -d overlay ov_net1  
 docker network ls
 
 host2上也可以看到ov_net1网络，因为host1将ov_net1网络信息存入了consul
 
 docker network inspect ov_net1
-
+```
 IPAM指的是IP Address Management,docker自动为ov_net1分配IP空间
 
-4. 运行一个busybox容器并连接至ov_net1
+#### 4. 运行一个busybox容器并连接至ov_net1
+```
 docker run -itd --name bbox1 --network ov_net1 busybox
 docker exec bbox1 ip r
+```
 
-- docker 会创建一个 bridge 网络 “docker_gwbridge”，为所有连接到 overlay 网络的容器提供访问外网的能力
-docker network inspect docker_gwbridge  #172.18.0.0/16
-网桥docker_gwbridge就是作为这个网络的网关172.18.0.1，这样bbox1就可以访问外网了
-
-外网要访问容器，可通过主机端口映射，比如：
+- docker 会创建一个 bridge 网络 “docker_gwbridge”，为所有连接到 overlay 网络的容器提供访问外网的能力  
+docker network inspect docker_gwbridge  #172.18.0.0/16  
+网桥docker_gwbridge就是作为这个网络的网关172.18.0.1，这样bbox1就可以访问外网了  
+外网要访问容器，可通过主机端口映射，比如：  
 docker run -p 80:80 -d --net ov_net1 --name web1 httpd 
 
-- 在host2中运行bbox2
+- 在host2中运行bbox2  
+```
 docker run -itd --name bbox2 --network ov_net1 busybox
 docker exec bbox2 ip r
 docker exec bbox2 ping -c 2 bbox1
@@ -87,30 +84,39 @@ br0还会连接一个vxlan设备和其他host建立vxlan tunnel,实现了通信
 
 ln -s /var/run/docker/netns /var/run/netns
 docker exec bbox1 ip netns  #查看host1的网络namespace
+```
+---
 
 ### 理解overlay网络的隔离
+```
 docker network create -d overlay ov_net2
 docker run -itd --name bbox3 --network ov_net2 busybox
 
 在bbox3内ping不通bbox1,可见overlay网络是互相隔离的,要实现bbox3和bbox1的通信,需要
 docker network connect ov_net1 bbox3
 docker exec bbox3 ping -c 2 bbox1
+```
 
-- overlay IPAM
-docker默认为overlay网路分配24位掩码的子网10.0.x.0/24,所有主机共享这个subnet,容器启动时会顺序从分配IP
+- overlay IPAM:  
+docker默认为overlay网路分配24位掩码的子网10.0.x.0/24,所有主机共享这个subnet,容器启动时会顺序从分配IP  
+```
 docker network create -d overlay --subnet 10.22.1.0/24 ov_net3  #可以手动指定subnet地址
+```
 
-
+---
 ### macvlan网络
-macvlan本身是linux kernel模块,允许在同一个物理网卡上配置多个MAC地址,即多个interface,每个interface可以有自己的IP
-macvlan本质上是一种网络虚拟化技术
+macvlan本身是linux kernel模块,允许在同一个物理网卡上配置多个MAC地址,即多个interface,每个interface可以有自己的IP  
+macvlan本质上是一种网络虚拟化技术  
 macvlan的优点是性能极好,不需要创建网桥
 
-1. 准备环境
+#### 1. 准备环境
+```
 ip link set ens33 promisc on #打开网卡的混杂模式
 ip link show ens33|grep PROMISC
+```
 
-2. 创建macvlan网络
+#### 2. 创建macvlan网络
+```
 docker network create -d macvlan \
  --subnet=172.16.86.0/24 \
  --gateway=172.16.86.1 \
@@ -122,21 +128,24 @@ host2上运行:
 docker run -itd --name bbox2 --ip=172.16.86.11 --network mac_net1 busybox
 
 docker没有为macvlan网络提供DNS服务,overlay网络是由DNS功能的
+```
 
-
+---
 ### macvlan的网络结构分析
-1. macvlan不依赖bridge
+#### 1. macvlan不依赖bridge
+```
 yum install bridge-utils  #安装brctl命令
 brctl show
 
 docker exec bbox1 ip link
 容器的eth0是ens33网卡通过macvlan虚拟出来的interface,这个interface直接和主机的网卡连接,无需NAT和端口映射
+```
 
-2. 用sub-interface实现多macvlan的网络
-一个网卡只能创建一个macvlan网络
+#### 2. 用sub-interface实现多macvlan的网络
+一个网卡只能创建一个macvlan网络  
 vlan技术可以将网络的二层网络划分成多个逻辑网络(4096个),这些逻辑网络在层上是隔离的
-
-yum install -y vlan
+```
+yum install -y vlan  
 Linux网卡也支持vlan,同一个interface可以收发多个vlan的数据包,前提是创建vlan的sub-interface
 
 先要创建sub-interface网卡enp0s9.10和enp0s9.20配置
@@ -157,14 +166,15 @@ docker run -itd --name bbox4 --ip=172.16.20.11 --network mac_net20 busybox
 sysctl -w net.ipv4.ip_forward=1
 
 macvlan 网络的连通和隔离完全依赖 VLAN、IP subnet 和路由，docker 本身不做任何限制，用户可以像管理传统 VLAN 网络那样管理 macvlan
+```
 
-
-### flannel网络
+### flannel网络:
 flannel是CoreOS开发的容器网络解决方案,flannel为每个host分配一个subnet,容器从此subnet中分配IP,这些IP无需NAT和端口映射就可以跨主机通信
 flannel会为每个主机运行一个flanneld的agent,其职责就是从IP池中划分subnet,为了在各主机共享信息,flannel使用etcd存放网络配置
 数据包如何在主机间转发是通过backend实现的,常见的有vxlan和host-gw
 
-1. 192.168.56.101上安装配置etcd
+#### 1. 192.168.56.101上安装配置etcd
+```
 ETCD_VER=v2.3.7
 DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download
 curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
@@ -177,8 +187,10 @@ etcd -listen-client-urls http://192.168.56.101:2379 -advertise-client-urls http:
 测试 etcd 是否可用：
 etcdctl --endpoints=192.168.56.101:2379 set foo "bar"
 etcdctl --endpoints=192.168.56.101:2379 get foo 
+```
 
-2. build flannel
+#### 2. build flannel
+```
 docker pull cloudman6/kube-cross:v1.6.2-2
 docker tag cloudman6/kube-cross:v1.6.2-2 gcr.io/google_containers/kube-cross:v1.6.2-2 
 
@@ -187,8 +199,10 @@ cd flannel
 make dist/flanneld-amd64 
 scp dist/flanneld-amd64 192.168.56.104:/usr/local/bin/flanneld  #拷贝到host1
 scp dist/flanneld-amd64 192.168.56.105:/usr/local/bin/flanneld   #拷贝到host2
+```
 
-3. 将flannel网络配置信息保存到etcd
+#### 3. 将flannel网络配置信息保存到etcd
+```
 vi  flannel-config.json
 {
   "Network": "10.2.0.0/16",
@@ -201,16 +215,20 @@ vi  flannel-config.json
 将配置存入etcd：
 etcdctl --endpoints=192.168.56.101:2379 set /docker-test/network/config < flannel-config.json
 etcdctl get 
+```
 
-4. 启动flannel
+#### 4. 启动flannel
+```
 host1 和 host2 上执行如下命令：
 flanneld -etcd-endpoints=http://192.168.56.101:2379 -iface=ens33 -etcd-prefix=/docker-test/network
 
 flanneld 启动后，host1 内部网络会发生一些变化:
 ip addr show flannel.1
+```
 
 ### docker中使用flannel
-1. 配置docker连接flannel
+#### 1. 配置docker连接flannel
+```
 vi /usr/lib/systemd/system/docker.service
 ... --bip=10.244.0.1/24 --mtu=1450
 
@@ -227,24 +245,27 @@ systemctl restart docker.service
 ip r
 
 则同主机的容器通过docker0通信,跨主机通过flannel.1转发
+```
 
-2. 将容器连接到flannel网络
+#### 2. 将容器连接到flannel网络
+```
 docker run -itd --name bbox1 busybox
 docker run -itd --name bbox2 busybox
+```
 
 ### flannel的联通性和隔离
 flannel将各主机的docker0容器网络组成了一个大的互通网络,实现跨主机通信,没有隔离
 
-- flannel和外网连接
+- flannel和外网连接  
 容器通过docker0 NAT访问外网
 通过主机端口映射，外网可以访问容器内部
 
 
 ### flannel的host-gw Backend
-1. host-gw backend 介绍
-flannel支持很多backend,vxlan、host-gw等
+#### 1. host-gw backend 介绍
+flannel支持很多backend,vxlan、host-gw等  
 host-gw不会封装数据包,而是在主机的路由表上创建到其他主机subnet的路由条目,从而实现跨主机通信
-
+```
 vi  flannel-config.json
 {
  "Network": "10.2.0.0/16",
@@ -261,28 +282,33 @@ etcdctl --endpoints=192.168.56.101:2379 set /docker-test/network/config < flanne
 flanneld -etcd-endpoints=http://192.168.56.101:2379 -iface=enp0s8 -etcd-prefix=/docker-test/network
 
 ip route
+```
 
-2. host-gw 和 vxlan 这两种 backend 做个简单比较。
-host-gw 把每个主机都配置成网关，主机知道其他主机的 subnet 和转发地址。vxlan 则在主机间建立隧道，不同主机的容器都在一个大的网段内（比如 10.2.0.0/16）。
+#### 2. host-gw 和 vxlan 这两种 backend 做个简单比较
+host-gw 把每个主机都配置成网关，主机知道其他主机的 subnet 和转发地址  
+vxlan 则在主机间建立隧道，不同主机的容器都在一个大的网段内（比如 10.2.0.0/16）  
 虽然 vxlan 与 host-gw 使用不同的机制建立主机之间连接，但对于容器则无需任何改变，bbox1 仍然可以与 bbox2 通信。
 由于 vxlan 需要对数据进行额外打包和拆包，性能会稍逊于 host-gw
 
-
+---
 ### Weave网络
-1. 介绍
+#### 1. 介绍
 weave 是 Weaveworks 开发的容器网络解决方案
 weave 创建的虚拟网络可以将部署在多个主机上的容器连接起来
 对容器来说，weave 就像一个巨大的以太网交换机，所有容器都被接入这个交换机，容器可以直接通信，无需 NAT 和端口映射
 除此之外，weave 的 DNS 模块使容器可以通过 hostname 访问
 
-2. 环境介绍
+#### 2. 环境介绍
 weave不依赖分部署数据库(etcd和consul)交换网络信息,每个主机只需运行weave组件就能建立跨主机容器网络
 
-- 安装weave
+- 安装weave:
+```  
 curl -L git.io/weave -o /usr/local/bin/weave
 chmod a+x /usr/local/bin/weave
+```
 
 - host1上启动weave
+```
 weave launch  #weave组件都是以容器方式运行的
 weave运行了3个容器:
 weave主程序,负责建立weave网络收发数据、提供DNS服务
@@ -292,27 +318,36 @@ weaveproxy提供docker命令的代理,当用户运行docker cli创建容器时,�
 weave会创建新的docker network ls weave
 driver是weavemesh
 docker network inspect weave
+```
 
-3. weave网络的结构
+#### 3. weave网络的结构
+```
 eval $(weave env)
 docker run --name bbox1 -itd busybox
 eval $(weave env --restore)  #恢复之前的环境变量
+```
 
 ### weave网络的通信和隔离
+```
 weave launch 192.168.56.104  #指定 host1 的 IP 192.168.56.104，这样 host1 和 host2 才能加入到同一个 weave 网络
 
 运行容器 bbox3：
 eval $(weave env)
 docker run --name bbox3 -itd busybox
+```
 
-1. weave网络连通性
+#### 1. weave网络连通性
 
-2. weave网络的隔离
-要实现网络隔离，可以通过环境变量 WEAVE_CIDR 为容器分配不同 subnet 的 IP
+#### 2. weave网络的隔离
+要实现网络隔离，可以通过环境变量 WEAVE_CIDR 为容器分配不同 subnet 的 IP  
+```
 docker run -e WEAVE_CIDR=ip:10.32.6.6/24 -it busybox
+```
 
+---
 
 ### weave网络和外网的通信
+```
 - 首先将主机加入weave网络
 - 然后将主机当作访问weave网络的网关
 
@@ -321,40 +356,46 @@ ip addr show weave
 
 - 让其他非 weave 主机访问到 bbox1 和 bbox3，只需将网关指向 host1。例如在 192.168.56.101 上添加如下路由：
 ip route add 10.32.0.0/12 via 192.168.56.104 
+```
 
-1. IPAM
-10.32.0.0/12 是 weave 网络使用的默认 subnet，如果此地址空间与现有 IP 冲突，可以通过 --ipalloc-range 分配特定的 subnet。
+#### 1. IPAM  
+10.32.0.0/12 是 weave 网络使用的默认 subnet，如果此地址空间与现有 IP 冲突，可以通过 --ipalloc-range 分配特定的 subnet。  
 weave launch --ipalloc-range 10.2.0.0/16 
 
+---
 ### calico网络
-calico是纯三层虚拟网络方案
-Calico 为每个容器分配一个 IP，每个 host 都是 router，把不同 host 的容器连接起来
+calico是纯三层虚拟网络方案  
+Calico 为每个容器分配一个 IP，每个 host 都是 router，把不同 host 的容器连接起来  
 Calico 还有一大优势：network policy。用户可以动态定义 ACL 规则，控制进出容器的数据包，实现业务需求
 
-1. 环境
+#### 1. 环境
 Calico 依赖 etcd 在不同主机间共享和交换信息，存储 Calico 网络状态。我们将在 host 192.168.56.101 上运行 etcd
 Calico 网络中的每个主机都需要运行 Calico 组件，提供容器 interface 管理、动态路由、动态 ACL、报告状态等功能0
 
-- host 192.168.56.101 上运行如下命令启动 etcd：
+```
+#host 192.168.56.101 上运行如下命令启动 etcd：
 etcd -listen-client-urls http://192.168.56.101:2379 -advertise-client-urls http://192.168.56.101:2379
 
-修改 host1 和 host2 的 Docker daemon 配置文件 /etc/systemd/system/docker.service， 连接 etcd：
+#修改 host1 和 host2 的 Docker daemon 配置文件 /etc/systemd/system/docker.service， 连接 etcd：
 --cluster-store=etcd://192.168.56.101:2379 
 
 systemctl daemon-reload
 systemctl restart docker.service
 
-- 部署calico
+#部署calico
 wget -O /usr/local/bin/calicoctl https://github.com/projectcalico/calicoctl/releases/download/v1.0.2/calicoctl
 chmod +x calicoctl
 calicoctl node run #host1和host2上启动calico
 
-- 创建calico网络
+#创建calico网络
 docker network create --driver calico --ipam-driver calico-ipam ca_net1 #host1和host2上执行
 calico是global的网络,etcd会将cal_net1同步到所有主机
+```
 
+---
 ### calico的网络结构
-1. host1 中运行容器 bbox1 并连接到 cal_net1：
+```
+host1 中运行容器 bbox1 并连接到 cal_net1：
 docker container run --net cal_net1 --name bbox1 -tid busybox
 
 docker exec bbox1 ip address
@@ -367,18 +408,20 @@ docker container run --net cal_net1 --name bbox2 -tid busybox
 calico 默认的 policy 规则是：容器只能与同一个 calico 网络中的容器通信
 
 calicoctl get profile cal_net1 -o yaml  #查看profile，profile定义该网络的policy
+```
 
+---
 ### 定制calico的policy
-Calico 默认的 policy 规则是：容器只能与同一个 calico 网络中的容器通信
+Calico 默认的 policy 规则是：容器只能与同一个 calico 网络中的容器通信  
 calico 能够让用户定义灵活的 policy 规则，精细化控制进出容器的流量
-
-- 首先创建 cal_web。
+```
+#首先创建 cal_web。
 docker network create --driver calico --ipam-driver calico-ipam cal_web 
 
-- 在host1 中运行容器 web1，连接到 cal_web：
+#在host1 中运行容器 web1，连接到 cal_web：
 docker container run --net cal_web --name web1 -d httpd
 
-- 创建 policy 文件 web.yml
+#创建 policy 文件 web.yml
 - apiVersion: v1
   kind: profile
   metadata:
@@ -393,13 +436,16 @@ docker container run --net cal_web --name web1 -d httpd
         ports:
         - 80
 
-- 应用该policy
+#应用该policy
 caclicoctl apply -f web.yml
-
 docker exec bbox3 wget web1_IP
+```
+
+---
 
 ### 如何定制calico的IP池
-- 首先定义一个 IP Pool，比如：
+```
+#首先定义一个 IP Pool，比如：
 cat << EOF | calicoctl create -f -
 - apiVersion: v1
  kind: ipPool
@@ -407,48 +453,48 @@ cat << EOF | calicoctl create -f -
    cidr: 17.2.0.0/16
 EOF
 
-- 可用此IP Pool创建calico网络:
+#可用此IP Pool创建calico网络:
 docker network create --driver calico --ipam-driver calico-ipam --subnet=17.2.0.0/16 my_net
 
 docker container run --net my_net --ip 17.2.3.11 -it busybox
+```
 
 ### 一文搞懂docker网络
-之前学习了docker的overlay、macvlan、flannel、weave、calico等跨主机网络方案
+之前学习了docker的overlay、macvlan、flannel、weave、calico等跨主机网络方案  
 PoC选型
 
 docker起初只提供了single-host的网络,后来涌现出跨主机multi-host的网络
 
-1. 集中网络的比较
-- 网络模型
+#### 1. 集中网络的比较
+- 网络模型  
 连接不同主机上容器的虚拟网络,这个虚拟网络的拓扑结构和实现技术就是网络模型
-> Docker overlay 如名称所示，是 overlay 网络，建立主机间 VxLAN 隧道，原始数据包在发送端被封装成 VxLAN 数据包，到达目的后在接收端解包。
-> Macvlan 网络在二层上通过 VLAN 连接容器，在三层上依赖外部网关连接不同 macvlan。数据包直接发送，不需要封装，属于 underlay 网络。
-> Flannel 我们讨论了两种 backend：vxlan 和 host-gw。vxlan 与 Docker overlay 类似，属于 overlay 网络。host-gw 将主机作为网关，依赖三层 IP 转发，不需要像 vxlan 那样对包进行封装，属于 underlay 网络。
-> Weave 是 VxLAN 实现，属于 overlay 网络。 
+  - Docker overlay 如名称所示，是 overlay 网络，建立主机间 VxLAN 隧道，原始数据包在发送端被封装成 VxLAN 数据包，到达目的后在接收端解包。
+  - Macvlan 网络在二层上通过 VLAN 连接容器，在三层上依赖外部网关连接不同 macvlan。数据包直接发送，不需要封装，属于 underlay 网络。
+  - Flannel 我们讨论了两种 backend：vxlan 和 host-gw。vxlan 与 Docker overlay 类似，属于 overlay 网络。host-gw 将主机作为网关，依赖三层 IP 转发，不需要像 vxlan 那样对包进行封装，属于 underlay 网络。
+  - Weave 是 VxLAN 实现，属于 overlay 网络。 
 
-- 分布式存储distributed store，etcd、consul等key-value数据库
-> Docker Overlay、Flannel和Calico 都需要 etcd 或 consul
-> Macvlan是简单的 local 网络，不需要保存和共享网络信息
-> Weave自己负责在主机间交换网络配置信息，也不需要 Distributed Store
+- 分布式存储distributed store: etcd、consul等key-value数据库
+  - Docker Overlay、Flannel和Calico 都需要 etcd 或 consul
+  - Macvlan是简单的 local 网络，不需要保存和共享网络信息
+  - Weave自己负责在主机间交换网络配置信息，也不需要 Distributed Store
 
 - IPAM 管理网络的IP
-> overlay网络中所有的主机共享一个subnet
-> macvlan需要用户自己管理subnet
-> flannel为每个主机自动分配独立的subnet,用户只需指定一个大的IP池
-> weave默认配置下所有容器使用10.32.0.0/12的subnet,可以通过--ipalloc-range避免冲突
-> calico从IP池中为主机分配自己的subnet
+  - overlay网络中所有的主机共享一个subnet
+  - macvlan需要用户自己管理subnet
+  - flannel为每个主机自动分配独立的subnet,用户只需指定一个大的IP池
+  - weave默认配置下所有容器使用10.32.0.0/12的subnet,可以通过--ipalloc-range避免冲突
+  - calico从IP池中为主机分配自己的subnet
 
 - 连通性和隔离
-> 同一docker overlay的网络中的容器可以通信,实现跨网络访问，只有将容器加入多个网络。与外网通信可以通过 docker_gwbridge 
-> macvlan网络的连通或隔离完全取决于二层vlan和三层路由
-> 不同flannel网络中的容器可以直接通信,没有隔离
-> weave网络默认配置下的所有容器在一个大的subnet中,可以自由通信，如果要实现隔离,则指定不同的subnet
-> calico默认配置下只允许位于同一网络的容器间通信,但是通过强大的policy能够实现任意场景的访问控制
+  - 同一docker overlay的网络中的容器可以通信,实现跨网络访问，只有将容器加入多个网络。与外网通信可以通过 docker_gwbridge 
+  - macvlan网络的连通或隔离完全取决于二层vlan和三层路由
+  - 不同flannel网络中的容器可以直接通信,没有隔离
+  - weave网络默认配置下的所有容器在一个大的subnet中,可以自由通信，如果要实现隔离,则指定不同的subnet
+  - calico默认配置下只允许位于同一网络的容器间通信,但是通过强大的policy能够实现任意场景的访问控制
 
-- 性能
-underlay网络性能优于overlay
-Overlay 网络利用隧道技术，将数据包封装到 UDP 中进行传输。因为涉及数据包的封装和解封，存在额外的 CPU 和网络开销
-Macvlan、Flannel host-gw、Calico 的性能会优于 Docker overlay、Flannel vxlan 和 Weave
-
-Overlay 较 Underlay 可以支持更多的二层网段，能更好地利用已有网络，以及有避免物理交换机 MAC 表耗尽等优势
+- 性能:  
+  - underlay网络性能优于overlay  
+  - Overlay 网络利用隧道技术，将数据包封装到 UDP 中进行传输。因为涉及数据包的封装和解封，存在额外的 CPU 和网络开销  
+  - Macvlan、Flannel host-gw、Calico 的性能会优于 Docker overlay、Flannel vxlan 和 Weave
+  - Overlay 较 Underlay 可以支持更多的二层网段，能更好地利用已有网络，以及有避免物理交换机 MAC 表耗尽等优势
 

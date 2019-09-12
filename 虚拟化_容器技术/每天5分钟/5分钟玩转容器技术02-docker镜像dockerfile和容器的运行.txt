@@ -196,6 +196,8 @@ docker exec -it container_id bash|sh
 -d参数后台启动容器\
 docker exec -it进入容器并打开交互的终端
 
-指定容器的三种方法:短ID、长ID、容器名称 --name 命名,docker rename可以重命名
+指定容器的三种方法:
+- 短ID、长ID、容器名称 
+- --name 命名, docker rename可以重命名
 
 
