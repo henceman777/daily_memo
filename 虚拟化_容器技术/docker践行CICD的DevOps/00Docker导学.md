@@ -273,7 +273,8 @@ ip netns exec test1 ping 192.168.1.2
 ip netns exec test2 ping 192.168.1.1
 
 ```
-### 5. bridge详解
+
+### 5. bridge网络
 ```
 docker network ls
 yum install -y bridge-utils
@@ -284,8 +285,86 @@ brctl show
 
 ### 6. 容器间的link
 
+### 7. 容器的端口映射
+```docker run --name web1 -d -p 80:80 nginx```
 
-第五章. Docker的持久化存储和数据共享
+### 8. host和none的网络模式
+```
+docker run --name web2 -d --network none nginx
+docker run --name web2 -d --network host nginx  #共享宿主机网络namespace
+```
+
+### 9. 跨主机网络
+#### vxlan的overlay和underlay
+#### overlay网络和etcd实现多机容器通信
+```
+# setup etcd cluster,分布式key-value存储
+# 在docker-node1上
+wget https://github.com/coreos/etcd/releases/download/v3.0.12/etcd-v3.0.12-linux-amd64.tar.gz
+tar zxvf etcd-v3.0.12-linux-amd64.tar.gz
+cd etcd-v3.0.12-linux-amd64
+nohup ./etcd --name docker-node1 --initial-advertise-peer-urls http://192.168.205.10:2380 \
+--listen-peer-urls http://192.168.205.10:2380 \
+--listen-client-urls http://192.168.205.10:2379,http://127.0.0.1:2379 \
+--advertise-client-urls http://192.168.205.10:2379 \
+--initial-cluster-token etcd-cluster \
+--initial-cluster docker-node1=http://192.168.205.10:2380,docker-node2=http://192.168.205.11:2380 \
+--initial-cluster-state new &
+#在docker-node2上
+wget https://github.com/coreos/etcd/releases/download/v3.0.12/etcd-v3.0.12-linux-amd64.tar.gz
+tar zxvf etcd-v3.0.12-linux-amd64.tar.gz
+cd etcd-v3.0.12-linux-amd64/
+nohup ./etcd --name docker-node2 --initial-advertise-peer-urls http://192.168.205.11:2380 \
+--listen-peer-urls http://192.168.205.11:2380 \
+--listen-client-urls http://192.168.205.11:2379,http://127.0.0.1:2379 \
+--advertise-client-urls http://192.168.205.11:2379 \
+--initial-cluster-token etcd-cluster \
+--initial-cluster docker-node1=http://192.168.205.10:2380,docker-node2=http://192.168.205.11:2380 \
+--initial-cluster-state new&
+
+# 检查cluster状态
+./etcdctl cluster-health
+...
+cluster is healthy
+
+# 重启docker服务
+# 在docker-node1上
+service docker stop
+/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=etcd://192.168.205.10:2379 --cluster-advertise=192.168.205.10:2375&
+# 在docker-node2上
+service docker stop
+/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=etcd://192.168.205.11:2379 --cluster-advertise=192.168.205.11:2375&
+
+# 创建overlay network
+docker network create -d overlay demo
+docker network ls
+docker network inspect demo
+./etcdctl ls /docker  
+./etcdctl ls /docker/nodes
+./etcdctl ls /docker/networks/v1.0/
+
+# 创建连接demo网络的容器
+# 在docker-node1上
+docker run -d --name test1 --net demo busybox sh -c "while true; do sleep 3600; done"
+docker exec test1 ifconfig
+# 在docker-node2上
+docker run -d --name test2 --net demo busybox sh -c "while true; do sleep 3600; done"
+
+# 验证连通性
+docker exec -it test2 ifconfig
+docker exec test1 sh -c "ping 10.0.0.3"
+```
+
+## 第五章. Docker的持久化存储和数据共享
+### docker持久化数据的方案
+- 基于本地文件系统的volume
+- 基于plugin的volume
+
+### data volume的类型
+- docker自管理的data volume
+- 绑定挂载的volume,用户指定挂载点
+
+
 第六章. Docker Compose多容器部署
 
 第七章. 容器编排工具-Docker Swarm
