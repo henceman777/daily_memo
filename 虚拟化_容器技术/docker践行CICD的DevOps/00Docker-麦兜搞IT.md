@@ -364,8 +364,81 @@ docker exec test1 sh -c "ping 10.0.0.3"
 - docker自管理的data volume
 - 绑定挂载的volume,用户指定挂载点
 
+## 第六章. Docker Compose多容器部署
+### 部署wordpress
+```
+- mysql容器
+docker run -d --name mysql -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root \
+-e MYSQL_DATABASE=wordpress mysql
+- wordpress容器
+docker run -d -e WORDPRESS_DB_HOST=mysql:3306 --link mysql -p 8080:80 wordpress
+```
+### docker compose批处理
+通过yaml格式定义多个docker容器
+```
+- services代表一个container，类似docker run
+- networks和volumes参数，给service引用
 
-第六章. Docker Compose多容器部署
+# docker run -d --network back-tier -v db-data:/var/lib/postgresql/data postgres:9.4
+相当于：
+services:
+  db:
+    image: postgres:9.4
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+    networks:
+      - back-tier
+
+services:
+  worker:
+    build: ./worker
+    links:
+      - db
+      - redis
+    networks:
+      - back-tier
+
+# 例子
+version: '3'
+
+services:
+
+  wordpress:
+    image: wordpress
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_PASSWORD: root
+    networks: my-bridge
+
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - my-bridge
+
+volume:
+  mysql-data:
+
+networks:
+  my-bridge:
+    driver: bridge
+
+```
+### docker-compose的使用
+docker-compose --version
+docker-compose up -d
+     
+
+
+
+
+
 
 第七章. 容器编排工具-Docker Swarm
 第八章. Docker Cloud和Docker企业版
