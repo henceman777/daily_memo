@@ -1,3 +1,14 @@
+## 一. [Jenkins官方文档](https://jenkins.io/zh/doc/pipeline/tour/getting-started/)
+docker run \
+>   --rm \
+>   -u root \
+>   -p 8080:8080 \
+>   -v jenkins-data:/var/jenkins_home \
+>   -v /var/run/docker.sock:/var/run/docker.sock \
+>   -v "$HOME":/home \
+>   jenkinsci/blueocean
+
+
 ### Jenkins配置
 设置Jenkins主目录
 设置JDK、Ant路径
