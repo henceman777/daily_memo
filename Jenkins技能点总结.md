@@ -138,4 +138,77 @@ step是最基本的操作单元，小到创建目录，大到构建docker镜像
 Pipeline：单个Job完成所有任务编排，多分支pipeline跟据jenkinsfile自动创建job
 pipeline基于Groovy语言实现：声明式和脚本式
 
+Docker 1.9以后支持overlay 网络driver，overlay需要key-value存储；如consul、etcd等
 
+
+### Devops：
+- 自动化测试
+- 持续集成
+- 代码质量管理
+
+
+设计架构规划-代码的存储-构建-测试、预生产、部署、监控
+
+
+### Git版本控制系统
+#### vcs
+- svn集中式版本控制系统，集中式中央数据仓库，对网络要求高
+- Git分布式版本控制系统
+git config --global user.name max
+git config --global user.email max@123.com
+git config --global color.ui true
+
+
+
+git reset b.txt等效于git rm --cached b.txt
+git checkout -- d 
+git rm -f d  #删除彻底
+git diff --cached a
+
+
+
+### Jenkins Pipeline
+#### CI/CD持续集成和部署
+持续集成：自动化的构建(编译、发布、自动测试)，尽量尽早发现集成错误
+持续部署：通过自动化构建、测试和部署循环来快速交付高质量的产品
+持续交付：频繁的将软件新版本，交付给质量团队或用户，以供评审
+
+#### pipeline
+Jenkins 2.0大的精髓是Pipeline as Code，帮助jenkinsCI到CD的转变
+Pipeline的实现方式Groovy DSL的语法
+
+- Pipeline的概念
+用户定义的CD流水线模式，构建-测试-发布
+
+- Node
+是机器，Jenkins环境的部分，能够执行Pipeline，node代码块是脚本式pipeline语法的关键特性
+
+- Stage
+定义整个Pipeline中执行的概念上不同的任务子集，有插件可视化或呈现进度
+
+- Step
+一项任务
+
+#### jenkinsfile声明式和脚本式
+```
+pipeline{
+agent any
+stages{
+stage("get code"){
+steps{
+echo "get code from scm"
+}
+}
+stage("package"){
+steps{
+echo "package code"
+}
+}
+stage("deploy"){
+steps{
+echo "deploy package to node1"
+}
+}
+}
+}
+```
