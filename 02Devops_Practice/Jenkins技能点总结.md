@@ -1,4 +1,6 @@
-## 一. [Jenkins官方文档](https://jenkins.io/zh/doc/pipeline/tour/getting-started/)
+## [Jenkins官方文档](https://jenkins.io/zh/doc/pipeline/tour/getting-started/)
+
+```
 docker run \
 >   --rm \
 >   -u root \
@@ -7,15 +9,16 @@ docker run \
 >   -v /var/run/docker.sock:/var/run/docker.sock \
 >   -v "$HOME":/home \
 >   jenkinsci/blueocean
-
+```
 
 ### Jenkins配置
+```
 设置Jenkins主目录
 设置JDK、Ant路径
 设置Git地址和目录
 
-
 系统设置JAVA_HOME、Ant_HOME
+```
 
 ### 构建Job
 - 常规设置general
@@ -140,32 +143,62 @@ pipeline基于Groovy语言实现：声明式和脚本式
 
 Docker 1.9以后支持overlay 网络driver，overlay需要key-value存储；如consul、etcd等
 
+---
+老男孩git、jenkins 2019
 
 ### Devops：
 - 自动化测试
 - 持续集成
 - 代码质量管理
 
-
 设计架构规划-代码的存储-构建-测试、预生产、部署、监控
-
 
 ### Git版本控制系统
 #### vcs
 - svn集中式版本控制系统，集中式中央数据仓库，对网络要求高
 - Git分布式版本控制系统
+```
 git config --global user.name max
 git config --global user.email max@123.com
 git config --global color.ui true
-
-
 
 git reset b.txt等效于git rm --cached b.txt
 git checkout -- d 
 git rm -f d  #删除彻底
 git diff --cached a
 
+#HEAD版本指针
+git tag -a v1.0 -m 'version v1.0'  当前打标签
+git tag -a v1.1 1asdw12 -m "version v1.1"
+git reset --hard v2.0  回滚标签
 
+git remote add origin url
+git push -u origin master
+```
+
+### GitLab
+```
+#安装
+yum install -y curl policycoreutils-python openssh-server
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+EXTERNAL_URL="http://192.168.142.11" yum install -y gitlab-ce
+
+vi /etc/gitlab/gitlab.rb 
+gitlab-ctl reconfigure
+gitlab-ctl status
+gitlab-ctl tail
+
+#使用
+更换logo
+关闭允许注册
+
+#dev用户和保护分支
+#merge request
+
+```
+### Jenkins
+
+---
 
 ### Jenkins Pipeline
 #### CI/CD持续集成和部署
