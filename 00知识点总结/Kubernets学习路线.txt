@@ -1,0 +1,146 @@
+Kubernets学习路线
+
+1. Cloud Native
+- 瀑布到devops
+- 单体到微服务
+- Cloud ENabled到Cloud Native
+
+2. 容器
+- 介绍/特性/文件系统/镜像/网络
+
+3. Kubernetets架构基础
+- 由来
+  - Google Borg简介
+  - Borg的设计理念和局限性
+  
+- Kubernets架构基础
+  - 架构/核心组件/基本功能
+  
+4. Kubernets安装
+- 集群搭建
+  
+5. 深入理解k8s
+- 设计理念
+- 分层架构
+- 架构设计原则
+- 常用的对象
+  - pod: 计算资源规划/存储资源规划
+  - 控制副本数量: replication controller/replicaset/deployment
+  - 服务发现和负载均衡
+    - 网络资源划分
+	- 服务发布
+  - 配置管理: configmap/secrets
+  - 隔离资源和服务Namespace
+  - 节点管理
+  - 服务发现和负载均衡：endpoint/kubedns/service/ingress
+  - k8s存储卷
+  - 安全
+  - 权限管理
+  - quota管理
+  - k8s调度器原理: Affinity/Taint
+  
+6. k8s设计和实现
+- k8s的数据库 etcd
+  - Raft协议
+  - etcd的实现
+  - k8s如何使用etcd
+  - 如何构建高可用的etcd集群
+  
+- k8s运行时: CRI
+- k8s网络: CNI,常用的网络插件
+
+7. k8s落地实施
+- 自定义Bootstrapper
+- 自定义网络插件
+- 基于Prometheus和Grafana的监控系统
+- 自定义Cloud Provider
+  - LB方案: service controller/ingress controller
+  - 存储方案: 网络存储/本地存储
+  - 服务发现解决方案: 自定义DNS Controller
+- 集群联邦
+
+8. 微服务
+- 架构的本质
+- 组件支撑
+- 产品开发,交付和治理模式
+- 演进式的设计
+- 微服务不是万能的
+- 高可用
+- 监控解决方案
+  - 数据系统构建
+  - 微服务架构下的日志
+  - 常用的数据系统构建模式
+  - k8s集群中的日志/监控系统
+- 持续交付系统
+
+================================================================================
+
+一. 微服务架构和云原生
+
+二. 容器的基础
+- 容器vs虚拟机
+- 容器原理
+- 容器特性
+- 容器应用场景
+
+三. Docker基础
+- 基本特性/架构
+- 主要组件概念、
+- Docker环境部署
+- 常用命令和技巧
+
+四. Docker进阶
+- Docker的生命周期和工作原理
+- Docker镜像Image
+  - 镜像的组织结构
+  - 镜像的写时复制
+  - Dockerfile指令
+  - Dockerfile最佳实践
+  - 如何构建企业级镜像中心
+  
+- Docker网络
+  - Null/Host/Container/Bridge/Overlay
+
+- Docker存储驱动
+  - AUFS
+  - Overlay/Overlay2
+  
+- Docker数据卷
+  - 卷管理
+  - 数据备份
+ 
+- Docker安全
+- Docker实战
+  - 配置详解
+  - 部署私有镜像仓库
+  - 拉取/修改/提交镜像
+  - Dockerfile创建镜像
+  - 运行Docker容器
+  - 管理调试分析Docker容器
+  
+五. k8s构架分析和HA部署方案
+六. k8s的HA部署实战
+- etcd集群搭建
+- 三master节点的HA部署
+- 网络组件的部署
+- Node节点的部署
+- Addon插件部署
+
+
+--------------------------------------------------------------------------------
+- 深入理解k8s对象
+- k8s网络
+- k8s存储
+- k8s认证,serviceAccount及RBAC
+- k8s服务发现
+
+- k8s调度和服务质量保证 
+- k8s日志
+- k8s的监控告警
+- k8s包管理工具Helm
+- 实践
+  - k8s构建Jenkins CI平台
+  - 构建企业Taas平台
+  - 构建企业DevOps平台
+  
+  

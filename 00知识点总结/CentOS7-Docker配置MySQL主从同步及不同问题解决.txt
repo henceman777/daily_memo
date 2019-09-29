@@ -1,0 +1,167 @@
+docker配置mysql主从同步
+
+一。CentOS7+MySQL主从配置 准备
+yum install -y docker
+
+docker version
+systemctl start docker
+
+二. 开始配置
+1. 安装MySQL
+- docker pull mysql:5.7.13 或者docker pull mysql:8.0
+
+2. 配置主从
+-$ 主容器master
+docker run --name master -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7.13
+docker ps -a 或者docker container ls -a
+
+- MASTER上执行sql:
+GRANT REPLICATION SLAVE ON *.* to 'backup'@'%' identified by 'backup';
+show grants for 'backup'@'%';
+
+- 修改MySQL配置环境
+mkdir -pv /usr/local/mysql/{master,slave1,slave2}
+docker cp master:/etc/mysql/my.cnf /usr/local/mysql/master/my.cnf
+
+vi /usr/local/mysql/master/my.cnf
+[mysqld]
+log-bin=mysql-bin
+serever-id=1
+#auto_increment_increment=2  #步进值auto_imcrement,一般有n台主MySQL就填n
+#auto_increment_offset=1     #起始值。一般填第n台主MySQL。此时为第一台主MySQL
+#binlog-ignore=mysql         #忽略mysql库
+#binlog-ignore=information_schema   #忽略information_schema库
+#replicate-do-db=aa          #要同步的数据库，默认所有库
+
+docker cp /usr/local/mysql/master/my.cnf master:/etc/mysql/my.cnf
+docker restart master
+
+-$ 从服务器
+docker run --name slave1 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7.13
+从服务的配置文件server-id=2
+docker restart slave1
+
+在slave1上执行：
+CHANGE MASTER TO MASTER_HOST='192.168.40.143',
+MASTER_PORT=3306,
+MASTER_USER='backup',
+MASTER_PASSWORD='backup';
+ 
+START SLAVE;
+
+show slave status; #slave_IO_running,slave_SQL_running都是YES就ok
+docker logs slave1 -f  #日志追踪
+
+### SLAVE_SQL_RUNNING no的解决方法：
+stop slave ;
+set GLOBAL SQL_SLAVE_SKIP_COUNTER=1;
+start slave ;
+show slave status;
+
+3. 配置完成即可测试主从同步
+
+---------
+搭建MySQL环境:
+### 创建网桥网络
+docker network create --driver bridge --subnet 172.25.0.0/16 mysql_net
+
+docker network ls
+
+### 创建mysql容器
+- master
+docker create --privileged=true --name master_mysql \
+-v /usr/local/mysql/master/data:/var/lib/msyql \
+-v /usr/local/mysql/master/my.cnf:/etc/msyql/my.cnf \
+-e MYSQL_ROOT_PASSWORD=root \
+--net msyql_net \
+--ip 172.25.0.3 -p 3307:3306 mysql:8.0
+
+- slave
+docker create \
+--privileged=true \
+--name slave_msyql \
+-v /home/data/mysql/data/slave:/var/lib/mysql \
+-v /home/data/mysql/salve:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=root \
+--net mysql_net \
+--ip 172.25.0.2 \
+-p 3308:3306 mysql:8.0
+
+- 启动
+docker start master_mysql
+docker start slave_mysql
+docker ps -a
+docker container ls -a
+
+docker network inspect mysql_net
+
+### 设置容器远程访问
+docker exec -it master_mysql /bin/bash
+mysql -uroot -p -h 172.25.0.3
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+
+### 启动主从
+- master
+SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+GRANT REPLICATION SLAVE ON *.* to 'root'@'%' identified by 'root'; --赋权限给root用户
+flush privileges; --刷新权限
+
+- slave
+change master to 
+master_host='172.25.0.3',     --master的ip  不能为127.0.0.1
+master_user='root',           --master的帐号密码
+master_password='root',
+master_log_file='mysql-bin.000003', --master 查询的file名  注意上面！
+master_port=3306,                   --master 端口 坑！为容器端口 不是主机端口
+master_log_pos=596;                 --日志文件位置  注意上面！
+
+
+================================================================================
+#### Slave_SQL_Running: No问题的解决
+sql线程的问题,原因是数据不同步,从机事务回滚了
+- 从机进行了写操作
+- slave机重启,事务回滚
+
+- 解决办法1: 忽略错误,继续同步(适合要求不严格的)
+stop slave;
+set GLOBAL SQL_SLAVE_SKIP_COUNTER=1;
+start slave;
+show slave status;
+
+- 解决办法2：重做主从,完全同步
+###先master锁表,防止数据写入
+flush tables with read lock;
+###进行数据备份
+mysqldump -uroot -p -hlocalhost > mysql.bak.sql 
+### 查看master状态
+show master status;
+### 把mysql备份文件传到从库,进行恢复
+scp mysql.bak.sql root@ip:/tmp/
+### 停止从库
+stop slave;
+source /tmp/mysql.bak.sql
+### 设置从库同步
+change master to 
+master_host = '192.168.128.100',
+master_user = 'rsync', 
+master_port=3306, 
+master_password='', 
+master_log_file = 'mysqld-bin.000001', 
+master_log_pos=3260;
+
+### 重启开启slave
+start slave;
+show slave status;
+ 
+### master上
+show processlist;
+show master status; #主机上查看binlog文件位置
+
+change master to
+master_host="master_IP",
+master_user="user",
+master_password="password",
+master_log_file="xxx-bin.000004",
+master_log_pos=232343;
+
+start slave;
+

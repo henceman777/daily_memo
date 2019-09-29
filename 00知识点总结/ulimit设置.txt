@@ -1,0 +1,100 @@
+### ulimit用于当前shell和它启动进程所占用的资源，可用于修改系统资源限制
+
+1.命令介绍
+ulimit -n  #linux系统打开文件描述符的最大值
+
+ulimit -a  #显示目前资源限制的设定
+-H #硬限制
+-S #设定资源的弹性限制
+-n #指定同一时间最多可打开的文件数
+-u #用户最多可启动的进程数目
+
+ulimit -SHn 65535  #针对"too many open files"报错, 临时修改S:soft limit  H:Hard limit
+
+#推荐控制文件描述符大小,永久生效
+echo '  *    -     nofile    65535' >> /etc/security/limits.conf
+
+2.系统调优
+ulimit -u 10000 #设置用户最大进程数为10000
+ulimit -n xxxx #对于多socket连接并处于打开状态的java应用来说
+
+建议设置成无限制（unlimited）的一些重要设置是：
+数据段长度：ulimit -d unlimited
+最大内存大小：ulimit -m unlimited
+堆栈大小：ulimit -s unlimited
+CPU 时间：ulimit -t unlimited
+虚拟内存：ulimit -v unlimited 
+
+暂时的,ulimit命令
+永久生效, 修改 /etc/security/limits.conf文件
+- 解除 Linux 系统的最大进程数和最大文件打开数限制：
+vi /etc/security/limits.conf
+#添加如下的行
+* soft noproc 11000
+* hard noproc 11000
+* soft nofile 4100
+* hard nofile 4100
+#说明：* 代表针对所有用户
+#      noproc 是代表最大进程数
+#      nofile 是代表最大文件打开数 
+
+- SSH 接受 Login 程式的登入,方便在 ssh 客户端查看 ulimit -a 资源限制
+vi /etc/ssh/sshd_config 
+#把 UserLogin 的值改为 yes,并把 # 注释去掉
+
+- 修改所有 linux 用户的环境变量文件：
+vi /etc/profile
+ulimit -u 10000
+ulimit -n 4096
+ulimit -d unlimited
+ulimit -m unlimited
+ulimit -s unlimited
+ulimit -t unlimited
+ulimit -v unlimited 
+
+
+- #在程序里面需要打开多个文件，进行分析，系统一般默认数量是1024
+ulimit -HSn 102400  #这只是在当前终端有效，退出之后，open files又变为默认值
+也可以写到/etc/profile中，因为每次登录终端时，都会自动执行/etc/profile,或
+
+vim /etc/security/limits.conf  #加入以下配置，重启即可生效
+* soft nofile 65535 
+* hard nofile 65535
+
+ulimit -v ulimited  #将虚拟内存限制改为无限制
+
+/etc/pam.d/login
+session required /lib/security/pam_limits.so
+**********
+#另外确保/etc/pam.d/system-auth文件有下面内容
+session required /lib/security/$ISA/pam_limits.so
+#这一行确保系统会执行这个限制
+
+cat ~/.bash_profile
+ulimit -n 10240
+
+- /proc目录里面包括很多系统当前状态的参数
+/proc/sys/fs/file-max  #设置系统打开最大文件数量,如果出现大量文件句柄错误,增加这个值
+echo  6553560 > /proc/sys/fs/file-max  #sysctl -w "fs.file-max=34166"
+vi /etc/sysctl.conf #加入以下内容，重启生效
+fs.file-max = 6553560
+
+/proc/sys/fs/inode-max
+
+vi /etc/sysctl.conf
+fs.file-max=xxx
+fs.inode-max=xxx
+
+lsof -p PID  #看到某ID的打开文件状况
+lsof -u username|wc -l  #统计用户打开文件数(包括socket和会话数)
+lsof |grep -v 'TCP|UDP'|awk '{print $8}'|sort |uniq|wc -l #统计当前所有进程的文件打开数
+分析当前进程打开文件数的排序并此打开文件数最多的进程打开了哪些文件
+lsof |egrep -v 'TCP|UDP'|awk '{print $2}' |sort -n |uniq -c |sort -nr |head -n1  
+
+查看当前线程总数
+echo "`ps -eLf |awk '{print $6}'|grep -v NLWP |xargs |sed 's/ /+/g'`" |bc
+查看当前进程数
+ps aux |grep -v 'USER'|wc -l
+
+统计SOCKE联接数
+netstat |awk '$1=="unix"'|wc -l

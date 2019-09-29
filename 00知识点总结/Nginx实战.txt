@@ -1,0 +1,509 @@
+#Nginx实战
+
+Nginx作为一款轻量级高性能的http服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器
+nginx有一个主进程和其他子进程,主进程负责加载和执行配置文件,并驻留子进程
+子进程用来作为实际请求处理
+nginx采用基于事件的模型和OS依赖的机制,在多个子进程之间高效的分配请求
+nginx在linux下使用epoll事件模型,在fresbsd上采用kqueue模型
+
+- 作为web服务器,处理静态文件索引文件效率非常高
+- 作为代理服务器,可以实现无缓存的反向代理加速
+- 作为负载均衡服务器,可内部直接支持Rails和php也可以支持HTTP代理服务器对外服务
+- 性能方面,采用内核Poll模型,可支持更多的并发连接,内存却占用较少
+- 稳定性方面,CPU和内存占用较低
+- 高可用性上,nginx支持热部署,启动速度迅速,可以不间断服务队软件进行升级配置等
+
+=================================================================================
+1. 安装 centos6
+yum -y install gcc gcc-c++ autoconf automake zlib zlib-devel openssl openssl-devel \
+pcre* make gd-devel libjpeg-devel libpng-devel libxml2-devel bzip2-devel libcurl-devel
+
+- useradd nginx -s /sbin/nologin -M
+- wget http://nginx.org/download/nginx-1.9.15.tar.gz
+...
+./configure \
+    --prefix=/usr/local/product/nginx-1.9.15 \
+    --user=www \
+    --group=www \
+    --with-http_ssl_module \    #支持https
+    --with-http_v2_module \
+    --with-http_stub_status_module \  #支持nginx状态查询
+    --with-pcre                       #支持rewrite重写功能，必须制定pcre
+make && make install 
+ln -s /usr/local/product/nginx-1.9.15 /usr/local/nginx
+
+- 启动脚本
+vim /etc/rc.d/init.d/nginx
+#!/bin/bash
+# nginx Startup script for the Nginx HTTP Server
+# it is v.0.0.2 version.
+# chkconfig: - 85 15
+# description: Nginx is a high-performance web and proxy server.
+#              It has a lot of features, but it's not for everyone.
+# processname: nginx
+# pidfile: /var/run/nginx.pid
+# config: /usr/local/nginx/conf/nginx.conf
+ 
+nginxd=/usr/local/nginx/sbin/nginx
+nginx_config=/usr/local/nginx/conf/nginx.conf
+nginx_pid=/var/run/nginx.pid
+RETVAL=0
+prog="nginx"
+ 
+# Source function library.
+. /etc/rc.d/init.d/functions
+ 
+# Source networking configuration.
+. /etc/sysconfig/network
+ 
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+[ -x $nginxd ] || exit 0
+ 
+# Start nginx daemons functions.
+start() {
+if [ -e $nginx_pid ];then
+   echo "nginx already running...."
+   exit 1
+fi
+   echo -n $"Starting $prog: "
+   daemon $nginxd -c ${nginx_config}
+   RETVAL=$?
+   echo
+   [ $RETVAL = 0 ] && touch /var/lock/subsys/nginx
+   return $RETVAL
+}
+ 
+# Stop nginx daemons functions.
+stop() {
+        echo -n $"Stopping $prog: "
+        killproc $nginxd
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && rm -f /var/lock/subsys/nginx /var/run/nginx.pid
+}
+ 
+# reload nginx service functions.
+reload() {
+    echo -n $"Reloading $prog: "
+    #kill -HUP `cat ${nginx_pid}`
+    killproc $nginxd -HUP
+    RETVAL=$?
+    echo
+}
+ 
+# See how we were called.
+case "$1" in
+start)
+        start
+        ;;
+stop)
+        stop
+        ;;
+reload)
+        reload
+        ;;
+restart)
+        stop
+        start
+        ;;
+status)
+        status $prog
+        RETVAL=$?
+        ;;
+*)
+        echo $"Usage: $prog {start|stop|restart|reload|status|help}"
+        exit 1
+esac
+exit $RETVAL
+
+chmod +x /etc/rc.d/init.d/nginx
+chkconfig --add nginx
+chkconfig --level 345 nginx on 
+
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+
+
+
+kill -s QUIT pid #优雅退出
+Nginx配置文件常见结构的从外到内依次是「http」「server」「location」等
+
+include vhosts/*.conf;  #用做多个虚拟主机
+=================================================================================
+一. 虚拟主机
+虚拟主机提供单独的nginx服务器会单独运行的一组nginx进程(运行多个网站)
+events {
+	worker_connections 4096;
+}
+http {
+	server {
+		listen 80;
+		server_name localhost;
+		access_log logs/host.access.log main;
+		location / {
+			root html;
+			index index.html index.htm;
+		}
+	}
+}
+
+- 基于IP的虚拟主机
+server {
+	listen 192.168.204.131:80;
+	server_name example.org www.example.com;
+	root /data/www;
+}
+ 
+server {
+	listen 192.168.204.132:80;
+	server_name example.net www.example.com;
+	root /data/bbs;
+}
+
+- 基于域名的虚拟主机
+cat /etc/hosts  #设置域名解析
+127.0.0.1 www.blog.com www.bbs.com
+
+vi nginx.conf
+server {
+	listen 80;
+	server_name www.blog.com;
+	location / {
+		root /usr/local/dev/nginx/page;
+		index index.html;
+	}
+}
+ 
+server {
+	listen 80;
+	server_name www.bbs.com;
+	location / {
+		root /usr/local/dev/nginx/page;
+		index index2.html;
+	}
+}
+
+- 基于端口的虚拟主机
+server {
+	listen 8080;
+	server_name www.blog.com;
+	root /usr/local/dev/nginx/page;
+}
+ 
+server {
+	listen 9090;
+	server_name www.bbs.com;
+	root /usr/local/dev/nginx/page;
+}
+
+
+二, Nginx URL重写
+rewrite功能就是实现URL重写,采用pcre Perl兼容正则表达式的语法规则
+所以需要事先编译安装pcre库
+
+1. 相关指令:
+- if指令:
+~ 区分发小写匹配
+~* 不区分大小写
+!~ 区分大小写不匹配 !~*
+-f和!-f 判断是否存在文件
+-d和!-d 判断是否存在目录
+-e和!-e 判断是否存在文件或目录
+-x和!-x 判断文件是否可执行
+
+location = / {} # 只匹配"/"
+location / {}   #匹配任何请求
+location ^~ /images/ {} #匹配任何以/images/开始的请求
+location ~* .(gif|jpg|jpeg)$ {}  #匹配以gif/jpg/jpeg结尾的请求
+
+### 例如:IE浏览器则进行跳转
+if ($http_user_agent ~MSIE){
+	rewrite ^(.*)$/msie/$1 break;
+}
+
+- return指令
+示例,如果访问的URL以.sh .bash 结尾,返回状态码403
+location ~ .*\.(sh|bash)?$
+{
+	return 403;
+}
+
+
+- set指令
+set variable value
+
+- rewrite指令
+示例,将www重定向到http://
+if ($host ~* www\.(.*)){
+	set $host_without_www $1;
+	rewrite ^(.*)$ http://$host_without_www$1 permanent;
+}
+
+-- 永久重定向:
+rewrite ^(.*)$ http://blog.720ui.com permanentl;
+
+-- 文件目录不存在时,重定向到某个html文件
+if ( !-e $request_filename ){
+	rewrite ^/(.*)$ error.html last;
+}
+
+-- 访问目录跳转, 将访问/b跳转到/bbs目录上去
+rewrite ^/b/?$ /bbs permanent;
+
+-- 目录兑换 /123456/xxxx ====> /xxxx?id=123456
+rewrite ^/(d+)/(.+)/ /$2?id=$1 last;
+
+-- 根据不同的浏览器得到不同的结果
+if ($http_user_agent ~ Firefox) {
+	rewrite ^(.*)$ /firefox/$1 break;
+}
+ 
+if ($http_user_agent ~ MSIE) {
+	rewrite ^(.*)$ /msie/$1 break;
+}
+ 
+if ($http_user_agent ~ Chrome) {
+	rewrite ^(.*)$ /chrome/$1 break;
+}
+
+-- 防盗链, 根据Referer信息防止盗链
+location ~*\.(gif|jpg|png|swf|flv)${
+	valid_referers none blocked www.cheng.com*.test.com;
+	if ($invalid_referer)
+	rewrite ^/(.*) http://www.lianggzone.com/error.html
+}
+
+-- 禁止访问/data开头的文件
+location ~^/data {
+	deny all;
+}
+
+-- 禁止访问.sh exe后缀的文件
+location ~ .*\.(sh|exe)?${
+	return 403;
+}
+
+-- 设置类型文件的浏览器访问缓存时间
+location ~ .*.(gif|jpg|jpeg|png|bmp)$
+{
+	expires 30d;
+}
+ 
+location ~ .*.(js|css)$
+{
+	expires 1h;
+}
+
+-- 设置过期时间并不记录404错误日志
+favicon.ico和robots.txt设置过期时间,为favicon.ico为99天,robots.txt为7天并不记录404错误日志
+
+location ~(favicon.ico) {
+	log_not_found off;
+	expires 99d;	
+	break;
+}
+ 
+location ~(robots.txt) {
+	log_not_found off;
+	expires 7d;
+	break;
+}
+
+-- 设置过期时间并不记录访问日志, 设定某个文件的过期时间;这里为600秒,并不记录访问日志
+location ^~ /html/scripts/loadhead_1.js {
+	access_log off;
+	root /opt/lampp/htdocs/web;
+	expires 600;
+	break;
+}
+
+
+三. 日志配置和切割
+访问日志记录客户端访问的每一个请求
+log_format设置日志格式,access_log指定日志文件的存放路径格式和缓存大小
+
+1. 日志配置
+- log_format
+log_format main '$remote_addr [$time_local] "$request" $status';
+
+$remote_addr, $http_x_forwarded_for 记录客户端IP地址
+$remote_user 		记录客户端用户名称
+$request 			记录请求的URL和HTTP协议
+$status 			记录请求状态
+$body_bytes_sent 	发送给客户端的字节数,不包括响应头的大小；
+					该变量与Apache模块mod_log_config里的“%B”参数兼容。
+$bytes_sent 		发送给客户端的总字节数。
+$connection 		连接的序列号。
+$connection_requests 当前通过一个连接获得的请求数量。
+$msec 				日志写入时间。单位为秒,精度是毫秒。
+$pipe 				如果请求是通过HTTP流水线(pipelined)发送,pipe值为“p”,否则为“.”
+$http_referer		记录从哪个页面链接访问过来的
+$http_user_agent 	记录客户端浏览器相关信息
+$request_length 	请求的长度（包括请求行,请求头和请求正文）
+$request_time 		请求处理时间,单位为秒,精度毫秒；
+					从读入客户端的第一个字节开始,直到把最后一个字符发送给客户端后进行日志写入为止
+$time_iso8601 		ISO8601标准格式下的本地时间
+$time_local 		通用日志格式下的本地时间
+
+- access_log
+access_log logs/access.log main;
+access_log off; # 关闭访问日志
+
+2. 日志切割, 按天切割
+- 切割脚本
+#!/bin/bash
+
+logs_path="/var/logs/nginx/"  # 设置日志文件存放目录
+pid_path="/usr/local/dev/nginx/nginx.pid" # 设置pid文件
+# 重命名日志文件
+mv ${logs_path}access.log ${logs_path}access_$(date -d "yesterday" +"%Y%m%d").log
+kill -USR1 `cat ${pid_path}`  # 向nginx主进程发信号重新打开日志
+
+- crontab任务
+crontab -e
+# 每天夜晚12点就会自动创建备份文件
+0 0 * * * bash /usr/local/dev/nginx/nginx_log.sh
+
+四. 限速功能
+1. http端设置limit_zone
+http {
+	#设置一个叫one的10m大小的session容器
+	limit_zone one $binary_remote_addr 10m;  
+	server {
+		location /files/ {
+			limit_conn one 1;   #限制one中记录状态每个IP只能发起一个并发连接
+			limit_rate_after 1000k; #下载1000k后开始限速
+			limit_rate 100k;  #每个连接限速100k(非对IP)
+		}
+	}
+}
+
+
+五. 反向代理功能reverse proxy
+反向代理接受外部客户端请求,转发给内部服务器,并将内部结果返回给外部客户端
+正向代理,客户端向代理发送请求并制定目标,代理服务器转交请求并获得内容返回给原客户端
+
+1. 反向代理的作用:
+- 保护网站,所有请求必经代理
+- 缓存静态资源,加速请求
+- 实现负载均衡,F5/四层LVS/七层Nginx、Haproxy
+
+2. Nginx方向代理
+- nginx集群配置
+http节点下:
+upstream tomcats {
+	server 127.0.0.1:9001 down;  #暂时不参与负载
+	server 127.0.0.1:9002 backup; #别的忙时才请求这个(压力最小)	
+	server 127.0.0.1:9003 weight=2; # weight最大负载权重越大
+	server 127.0.0.1:9004 max_fails=2 fail_timeout=60s;
+}
+
+location下:
+location / {
+	proxy_pass_header Server;
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Scheme $scheme;
+	proxy_pass http://tomcats;  #应用服务其http地址
+}
+
+- 分配策略
+-- none(轮询)
+-- weight(按权分配)
+-- ip_hash(访问IP),访客固定访问后端服务器,保持session
+...
+ip_hash;
+...
+
+-- fair(第三方),按后端响应时间分配,响应时间短的优先 fair;
+-- url_hash(第三方),
+
+实例模板
+upstream tomcats {
+	server ip:8080;
+}
+ 
+server {
+	listen 80;
+	server_name www.test1.com;
+ 
+location / {
+	proxy_pass http://tomcats;
+ 
+	#Proxy Settings
+	proxy_redirect off;
+	proxy_set_header Host $host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+	proxy_max_temp_file_size 0;
+	proxy_connect_timeout 90;
+	proxy_send_timeout 90;
+	proxy_read_timeout 90;
+	proxy_buffer_size 4k;
+	proxy_buffers 4 32k;
+	proxy_busy_buffers_size 64k;
+	proxy_temp_file_write_size 64k;
+	}
+}
+
+
+- 反向代理实战
+upstream tomcats {
+	server 127.0.0.1:9001;
+	server 127.0.0.1:9002;
+}
+ 
+server {
+	listen 80;
+	server_name www.test02.com;
+	location / {
+		proxy_pass_header Server;
+		proxy_set_header Host $http_host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Scheme $scheme;
+		proxy_pass http://tomcats;
+	}
+}
+
+
+六. 参数优化
+1. 本机缓存设置
+location ~ ^/(images|javascript|js|css|flash|media|static)/ {
+	expires 30d; 	#过期30天
+}
+
+2. 定义错误提示页面
+error_page 500 502 503 504 /50x.html;
+	location = /50x.html {
+	root html;
+}
+
+3. 自动显示目录
+location / {
+	autoindex on;
+	autoindex_exact_size off; #默认为on,显示出文件的确切大小
+	autoindex_localtime on;  #默认为off,显示的文件时间为GMT时间
+}
+
+七. FastCGI
+nginx本身不支持PHP,可以通过fastCGI将请求转发给php/python/perl等编写的应用框架处理
+server {
+	listen 80;
+	location ~ \.php$ {
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME /PHP文件路径$fastcgi_script_name; # PHP文件路径
+		fastcgi_pass 127.0.0.1:9000;  # PHP-FPM地址和端口号
+		#fastcgi_pass unix:/var/run/php5-fpm.sock; # 另一种方式
+	}
+}
+
+PHP-FPM是php的一个份额fastcgi管理器
+
+
+
+
+
+
+
+

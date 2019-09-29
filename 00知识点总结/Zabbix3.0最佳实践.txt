@@ -1,0 +1,134 @@
+Zabbix3.0最佳实践
+
+
+1.zabbix简介
+一个高度集成的网络监控解决方案,提供企业级开源分布式监控
+基于web界面,提供分布式系统监控及网络监控功能
+能监控各中网络参数,保证服务器系统的安全运行,并提供灵活的通知机制以及让管理员快速定位问题
+由zabbix server和agent构成,可选zabbix proxy
+通过SNMP,agent,fping端口监视等方法对远程服务器或网络状态监视
+
+2.zabbix功能
+- 主机性能监控,网络设备性能监控,数据库,FTP等协议监控,多种告警方式,报表绘图功能
+- 支持自动发现网络设备和服务器
+- 支持自动发现key实现动态监控项的批量监控
+- 支持分布式,集中展示,管理分布式监控点
+- 扩展性好,server提供通用接口api,可以自己开发完善各类监控,自定义监控项,报警级别等
+- 数据收集
+
+2.1api功能
+http://www.zabbix.com/documentation.php
+
+2.2zabbix优缺点
+- 开源
+- server对设备要求低
+- 支持设备多,自带多种监控模板
+- 支持分布式集中管理,自动发现功能,自动化监控
+- 开放式接口,扩展性好,插件编写简单
+- 监控的item比较多服务器队列大时可以采取被动模式,被监控客户端主动从server端下载item然后
+上传到server端,减小服务器的负载
+- api支持,方便和其他系统集成
+
+- 需要安装客户端agent,数据存储在数据库里,性能瓶颈在数据库
+
+zabbix监控原理:
+C/S模式采集数据,B/S模式web端展示和配置
+被监控端:agent方式采集数据,网络设备则采用SNMP方式
+Server端:收集的数据,写入数据库再通过php+apache在web端展示
+
+zabbix运行条件:
+server需要LAMP或LNMP,硬件要求不高
+agent端支持所有的linux/windows/unix
+SNMP
+
+3.zabbix环境准备
+cat /etc/redhat-release #查看系统版本
+uname -r #查看内核版本
+getenforce #检测selinux是否关闭
+systemctl stop firewalld #关闭firewall防火墙
+ifconfig eth0|awk -F '[ :]+' 'NR==2{print $3}' #查看IP地址
+hostname #查看主机名
+
+3.1安装zabbix
+rpm -ivh http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-release-3.0-1.el7.noarch.rpm
+yum install -y zabbix-server-mysql zabbix-web-mysql zabbix-agent mariadb-server
+
+- 初始化数据库：
+https://www.zabbix.com/documentation/3.0/manual/appendix/install/db_scripts
+systemctl start mariadb
+systemctl enable mariadb
+mysql -uroot -p
+MariaDB > create database zabbix character set utf8 collate utf8_bin; 
+MariaDB > grant all privileges on zabbix.* to zabbix@localhost identified by 'zabbix';
+
+cd /usr/share/doc/zabbix-server-mysql-3.0.3/ 
+zcat create.sql.gz |mysql -uroot zabbix
+
+mysql_secure_installation
+
+- zabbix服务器进程启动
+grep  ^[a-Z]  /etc/zabbix/zabbix_server.conf
+LogFile=/var/log/zabbix/zabbix_server.log
+LogFileSize=0
+PidFile=/var/run/zabbix/zabbix_server.pid
+DBHost=localhost
+DBName=zabbix
+DBUser=zabbix
+DBPassword=zabbix
+SNMPTrapperFile=/var/log/snmptrap/snmptrap.log
+Timeout=4
+AlertScriptsPath=/usr/lib/zabbix/alertscripts
+ExternalScripts=/usr/lib/zabbix/externalscripts
+LogSlowQueries=3000
+
+systemctl start zabbix-server
+systemctl enable zabbix-server
+
+- 编辑Zabbix前端PHP配置
+vim /etc/httpd/conf.d/zabbix.conf
+php_value max_execution_time 300
+php_value memory_limit 128M
+php_value post_max_size 16M
+php_value upload_max_filesize 2M
+php_value max_input_time 300
+php_value always_populate_raw_post_data -1
+php_value date.timezone Asia/Shanghai
+
+systemctl start httpd
+systemctl enable httpd
+
+- 安装zabbix web
+http://Zabbix_server_ip/zabbix
+admin/zabbix
+
+- 配置zabbix-agent端
+vim /etc/zabbix/zabbix_agentd.conf
+Server=127.0.0.1 #修改Server端的IP地址（被动模式IP地址）
+ServerActive=127.0.0.1 #主动模式，主动向server端报告
+Hostname=Zabbix server
+
+systemctl start zabbix-agent
+systemctl enable zabbix-agent
+
+server_port: 10051
+agent_port: 10050
+
+- web界面配置
+configration-->Hosts添加主机
+ls /var/log/zabbix/zabbix_
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

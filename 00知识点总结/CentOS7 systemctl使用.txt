@@ -1,0 +1,79 @@
+CentOS7 systemctl使用
+CentOS 7.x开始,CentOS开始使用systemd服务来代替daemon
+
+1. 对比serivce
+service [服务] start 	systemctl start [unit type] 	启动服务
+service [服务] stop 	systemctl stop [unit type] 	    停止服务
+service [服务] restart 	systemctl restart [unit type] 	重启服务
+
+2. 对比chkconfig
+chkconfig [服务] on 	systemctl enable  [unit type] 	设置服务开机启动
+chkconfig [服务] off 	systemctl disable [unit type] 	设备服务禁止开机启动
+
+3. 查看系统上的服务
+systemctl 				列出所有的系统服务
+systemctl list-units 	列出所有启动unit
+systemctl list-unit-files 	列出所有启动文件
+systemctl list-units –-type=service –-all 	列出所有service类型的unit
+systemctl list-units –-type=target –-all 	列出所有target
+
+systemctl is-active [unit type] 	查看服务是否运行
+systemctl is-enable [unit type] 	查看服务是否设置为开机启动
+systemctl mask [unit type] 			注销指定服务
+systemctl unmask [unit type] 		取消注销指定服务
+
+4. init 命令与systemctl命令对比
+init 0 	systemctl poweroff 	系统关机
+init 6 	systemctl reboot 	重新启动
+
+systemctl suspend 		进入睡眠模式
+systemctl hibernate 	进入休眠模式
+systemctl rescue 		强制进入救援模式
+systemctl emergency 	强制进入紧急救援模式
+
+5. 设置系统运行级别
+init级别 	systemctl target
+0 			shutdown.target
+1 			emergency.target
+2 			rescure.target
+3 			multi-user.target
+4 			无
+5 			graphical.target
+6 			无
+
+- 设置运行级别
+systemctl get-default  #获取当前级别target
+systemctl set-default multi-user.target #设置默认的运行级别
+systemctl isolate multi-user.target 或者graphical.target #不重启切换multi-user
+systemctl list-dependencies #查看当前运行级别target(mult-user)启动了哪些服务
+systemctl list-dependencies --reverse #查看哪些target引用了当前运行级别的target
+
+6. 关闭网络服务
+systemctl list-units --all | grep sshd
+
+### 如果想完全关闭sshd服务的话
+systemctl stop sshd.service
+systemctl stop sshd.socket
+systemctl disable sshd.service sshd.socket
+
+yum -y install net-tools #centos7.x默认没有安装net-tools,
+netstat -lnp |grep sshd #是否关闭22端口
+
+systemctl stop firewalld.service  #关闭防火墙firewall
+systemctl disable firewalld.service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

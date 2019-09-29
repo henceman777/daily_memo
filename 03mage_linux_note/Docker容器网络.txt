@@ -1,0 +1,133 @@
+#### 04.Docker容器网络
+
+1. ip netns命令使用
+创建两个网络名称空间r1,r2
+创建一对网卡veth1.1和veth1.2, veth1.1和veth1.2天然可以连接
+可将veth1.1和veth1.2分别接入不同的netname,
+
+```
+yum install bridge-utils -y
+yum install -y iproute
+rpm -q iproute
+ip netns help
+
+ip netns add r1   #创建网络名称空间r1
+ip netns add r2   #创建网络名称空间r2
+ip netns list     #查看netnames
+
+ip netns exec r1 ifconfig -a  #查看r1名称空间的网卡
+ip netns exec r2 ifconfig -a
+
+
+##创建虚拟网卡对
+ip link add name veth1.1 type veth peer name veth1.2  #创建一对网卡veth1.1和veth1.2
+ip link show  
+
+ip link set dev veth1.2 netns r1  #将veth1.2加入到网络名称空间r1中
+ip netns exec r1 ifconfig -a      #查看r1中的veth1.2网卡
+
+ip netns exec r1 ip link set dev veth1.2 name eth0  #将r1中的veth1.2改名为eth0
+
+ifconfig veth1.1 10.1.0.1/24 up  #激活宿主机上的veth1.1
+ifconfig
+
+ip netns exec r1 ifconfig eth0 10.1.0.2/24 up  #激活veth1.2,eth0
+ping 10.1.0.2  #宿主机上ping eth0的IP
+
+ip link set dev veth1.1 netns r2  #将veth1.1加入到网络名称空间r2中
+ip netns exec r2 ifconfig veth1.1 10.1.0.3/24 up
+ip netns exec r2 ifconfig
+ip netns exec r2 ping 10.1.0.2  #r2网络名称空间内页可以ping通r1中的eth0
+```
+
+2. 4中不同的容器网络架构类型
+Closed Container   封闭式,不设备网络设备
+Bridged Container  桥接式;虚拟网络设备,一半在docker0桥上brctl,一半在容器上
+Joined Container  联盟式;容器A有自己的网络名称空间,容器B共享A的网络名称空间
+Open Container 开发式,共享宿主机的网络名称空间
+
+
+- #bridge
+docker run --name t1 -it --rm busybox:latest  #默认是bridged模式的
+docker run --name t1 -it --network bridge --rm busybox:latest  #显式指定bridge网络
+
+- #None
+docker run --name t1 -it --network none --rm busybox:latest  #无网络设备,封闭式容器
+
+docker run --name t1 -it -h t1.jinmax.io --rm busybox:latest  #可注入主机名
+
+docker run --name t1 -it -h t1.jinmax.io --dns 114.114.114.114 --dns-search ijinmax.io --rm busybox:latest
+docker run --name t1 -it -h t1.jinmax.io \  #指定主机名
+--dns 114.114.114.114 \  #指定dns
+--dns-search ijinmax.io \   #指定搜索域
+--add-host www.jinmax.com:1.2.3.4 \  #指定hosts解析
+--rm busybox:latest
+
+- 开放端口
+docker run --name web1 -it -p 80 --rm nginx:latest  #指定容器端口映射到主机所有地址的一个动态端口
+iptables -t nat -nvL #查看端口映射
+docker port web1  #查看动态端口映射  80/tcp -> 0.0.0.0:32768
+http://192.168.40.143:32768/
+
+docker run --name web1 -it -p 80:80 --rm nginx:latest  #宿主机任意地址的80端都可以
+
+docker run --name web1 -it -p 192.168.40.143:81:80 --rm nginx:latest  #指定宿主机IP和端口81映射到容器的80端口
+80/tcp -> 192.168.40.143:81
+
+docker run --name web2 -it -P --rm nginx:latest  #暴露所有端口
+
+- 
+docker run --name b1 -it --rm busybox
+docker run --name b2 --network container:b1 -it --rm busybox  #b2加入并共享b1的网络名称空间,IP相同
+
+在b2中:
+/ # echo "Max Awsome!!"> /tmp/index.html
+/ # httpd -h /tmp/
+/ # netstat -tnl
+
+可以在b1中访问;
+/ # wget -O - -q 127.0.0.1
+Max Awsome!!
+
+- #host
+docker run --name b2 -it --network host --rm busybox  #加入宿主机的网络namespace
+/ # echo "MAX max max ....." > /tmp/index.html
+/ # httpd -h /tmp
+/ # netstat -tln
+这样容器外部可以直接访问
+
+- 修改docker0的地址
+cat /etc/docker/daemon.json
+{
+  "registry-mirrors": ["https://registry.docker-cn.com"],
+  "bip": "10.0.0.1/16",
+  "hosts": ["tcp://0.0.0.0:2375","unix:///var/run/docker.sock"]
+}
+
+systemctl daemon-reload
+systemctl restart docker
+ifconfig docker0
+ss -tnl
+
+###报错,配置后和hosts冲突
+vi /usr/lib/systemd/system/docker.service
+ExecStart=/usr/bin/dockerd -H fd://  #删除-H后的
+
+
+docker -H ip:port ps  #远程到其他主机查看容器
+
+docker network create -d bridge --subnet "172.10.0.0/16" --gateway "172.10.0.1" mybr0
+ip link set dev br-1d8344f9ecc5 name docker1
+
+docker run --name t1 -it --net mybr0 busybox:latest
+
+cat /proc/sys/net/ipv4/ip_forward
+
+
+Cloud native is a term used to describe container-based environments. 
+Cloud-native technologies are used to develop applications built with services packaged in containers, 
+deployed as microservices and managed on elastic infrastructure through agile DevOps processes and continuous delivery workflows
+
+云原生是描述基于容器环境的术语,
+云原生技术用于开发基于容器服务的应用程序
+部署成为服务并由伸缩性架构管理通过

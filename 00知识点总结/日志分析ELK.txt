@@ -1,0 +1,411 @@
+日志分析工具ELK
+
+1.Elasticsearch
+基于Lucene的搜索服务器,提供分布式多用户的全文搜索引擎,基于RESTful API web接口
+Java开发,作为Apache许可下开源,达到实时搜索、稳定可靠、快速
+
+1.1 elasticsearch术语
+- NRT
+从索引文档到可搜索有些延迟1秒
+- 集群
+一个或多个节点存储数据,主节点通过选举产生,提供跨节点的联合索引和搜索功能
+集群有唯一的标识名称,默认是elasticsearch
+
+- 节点
+就是一台单一的服务器,存储数据并参与集群的索引和搜索,节点也通过名字标识
+默认下,每个节点设置成加入到elasticsearch集群
+
+- 索引
+相似属性的一系列文档的集合,如nginx日志,syslog索引等,索引名字必须小写
+- 类型
+一个索引中定义一个或多个类型,一个类型被定义成具有一组共同字段的文档
+
+- 文档
+是信息的基本单元,可以被索引,JSON格式
+
+- 分片和副本
+elasticsearch提供将索引分成多个分片的功能
+每一个分片就是一个全功能的独立的索引，可以位于集群中任何节点上
+
+分片的两个最主要原因：
+a、水平分割扩展，增大存储量
+b、分布式并行跨分片操作，提高性能和吞吐量
+
+副本也有两个最主要原因：
+a、高可用性，以应对分片或者节点故障。出于这个原因，分片副本要在不同的节点上。
+b、提供性能，增大吞吐量，搜索可以并行在所有副本上执行
+
+默认情况下，elasticsearch为每个索引分片5个主分片和1个副
+
+
+2.Logstash
+由Ruby开发,基于消息message-based的简单架构,运行在java虚拟机JVM上
+Logstash可配置单一的代理端agent和其他开源软件结合,实现不同的功能
+
+2.1四大组件
+- Shipper：发送事件events至Logstash
+- Broker and Indexer：接受并索引事件
+- Search and Storage：允许对事件进行搜索和存储
+- Web Interface: 基于web的展示界面
+
+2.2Logstash主机分类
+- 代理主机agent host,作为事件的传递者shipper,将日志数据发送至中心主机,只需logstash代理程序
+- 中心主机central host,运行包括Broker、Indexer、Search and Storage、web界面的各组件
+
+
+3.Kinana
+开源的,汇总、分析和搜索数据日志并提供web界面
+
+
+4.ELK的优点
+- 不用登录服务器查看日志
+- 可以集中分析日志
+- 提高日志分析查询效率
+
+
+5.elk部署
+5.1准备
+cat /etc/redhat-release
+uname -a
+tail -2 /etc/hosts
+ifconfig eth0|awk -F '[ :]+' 'NR==2{print $3}'
+systemctl stop firewalld
+getenforce 0
+systemctl disable firewalld.service
+
+echo "#time sync by zsq at $(date +%F)" >> /var/spool/cron/root
+echo "*/5 * * * * /usr/sbin/ntpdate time.nist.gov &>/dev/null" >>/var/spool/cron/root
+
+/sbin/service crond restart
+free -m
+cat /proc/cpuinfo |grep"physical id"|sort|uniq|wc -l  #最好给两个CPU
+
+wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -ivh epel-release-latest-7.noarch.rpm  #安装EPEL
+
+- 安装elasticsearch
+rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+vim /etc/yum.repos.d/elasticsearch.repo
+yum install -y elasticsearch #或者 rpm -ivh elasticsearch-2.4.3.rpm
+
+systemctl daemon-reload
+systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
+
+- 配置管理elasticsearch
+node1上的：
+grep -n '^[a-Z]' /etc/elasticsearch/elasticsearch.yml
+17:cluster.name: check-cluster  #集群节点
+23:node.name: linux-node1   	#节点名字
+33:path.data: /data/es-data  	#数据路径
+37:path.logs: /var/log/elasticsearch/ #自身log
+43:bootstrap.memory_lock: true 	#是否锁定内存
+54:network.host: 0.0.0.0 		#默认是所有网段
+58:http.port: 9200 				#端口
+
+mkdir -p /data/es-data
+chown elasticsearch.elasticsearch /data/es-data/
+systemctl start elasticsearch
+netstat -ntpl|grep grep 9200
+
+- elasticsearch插件
+/usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head  #集群管理插件
+http://ES_IP:9200/_plugin/head/
+
+- 部署第二台，集群部署node2
+java -version
+rz -E
+rpm -ivh elasticsearch-2.4.3.rpm 
+systemctl daemon-reload
+systemctl enable elasticsearch.service
+netstat -ntpl|grep 9200
+systemctl start elasticsearch.service
+
+grep -n '^[a-Z]' /etc/elasticsearch/elasticsearch.yml
+17:cluster.name: check-cluster
+23:node.name: linux-node2
+33:path.data: /data/es-data
+37:path.logs: /var/log/elasticsearch/
+43:bootstrap.memory_lock: true
+54:network.host: 0.0.0.0
+58:http.port: 9200
+
+mkdir -p /data/es-data
+chown elasticsearch.elasticsearch /data/es-data/
+systemctl start elasticsearch
+netstat -ntpl|grep 9200
+
+echo "# allow user 'elasticsearch' mlockall" >> /etc/security/limits.conf
+echo "#elasticsearch soft memlock unlimited" >> /etc/security/limits.conf
+echo "#elasticsearch hard memlock unlimited" >> /etc/security/limits.conf
+
+- 安装kopf监控插件
+/usr/share/elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf
+http://ES_IP:9200/_plugin/kopf
+
+/usr/share/elasticsearch/bin/plugin install lukas-vlcek/bigdesk #bigdesk插件
+
+- node间组播通信和分片
+
+6.logstash日志收集
+logstash收集日志的流程:
+input从哪儿收集日志
+->codec
+->filter发出去前进行过滤
+->codec输出至前台,方便便测试
+->output输出至elasticsearch或redis消息队列
+
+
+6.1Logstash安装
+- java
+java -version
+rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+
+cat /etc/yum.repos.d/logstash.repo
+[logstash-2.3]
+name=Logstash repository for2.3.x packages
+baseurl=https://packages.elastic.co/logstash/2.3/centos
+gpgcheck=1
+gpgkey=https://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+
+yum install -y logstash
+
+- rubydebug方式前台输出展示以及测试
+/opt/logstash/bin/logstash -e 'input { stdin {} } output { stdout{codec => rubydebug} }'
+
+- 内容写到elasticsearch中
+/opt/logstash/bin/logstash -e 'input { stdin {} } output { elasticsearch { hosts => ["192.168.230.128:9200"]}}'
+
+/opt/logstash/bin/logstash -e 'input { stdin {} } output { elasticsearch { hosts => ["192.168.230.128:9200"]} stdout{codec => rubydebug}}'
+
+
+https://www.elastic.co/guide/en/logstash/2.3/configuration.html
+
+cd /etc/logstash/conf.d/  #配置
+cat 01-logstash.conf
+input { stdin { } }									#标准输入
+output {
+  elasticsearch { hosts => ["localhost:9200"] }		#写到elasticsearch中
+  stdout { codec => rubydebug }						#写到标准输出中
+}
+
+/opt/logstash/bin/logstash -f /etc/logstash/conf.d/01-logstash.conf  #-f指定配置文件
+
+配置文件语法
+Input plugins 插件file
+
+6.2Logstash收集系统日志
+cat  file.conf 
+input{ #标准输入
+ file {
+     path => "/var/log/messages"#路径
+     type => "system"#设置类型，系统日志
+     start_position => "beginning"#从头开始收集
+  }
+}
+output{#标准输出
+ elasticsearch {
+   hosts => ["192.168.230.128:9200"]
+   index => "system-%{+YYY.MM.dd}"#指定索引，索引的名称，可以指定年月日，会自动生成索引
+   }
+}
+
+/opt/logstash/bin/logstash -f file.conf
+
+- Logstash收集java日志
+/var/log/elasticsearch/check-cluster.log 这是elasticsearch自带的java日志，我们来收集它
+
+[root@linux-node1 ~]# cat file.conf 
+input{
+ file {
+     path => "/var/log/messages"
+     type => "system"#设置类型
+     start_position => "beginning"
+  }
+ file {
+     path => "/var/log/elasticsearch/check-cluster.log"#java日志的路径
+     type => "es-error"#设置类型
+     start_position => "beginning" #从头开始收集
+  }
+}
+#使用类型来做判断，是system的收集到system的索引里，是es-error的收集到es-error里
+output{
+   if [type] == "system" {
+    elasticsearch {
+        hosts => ["192.168.230.128:9200"]
+        index => "system-%{+YYY.MM.dd}"
+             }   
+          }
+   if [type] == "es-error" {
+        elasticsearch {
+                hosts => ["192.168.230.128:9200"]
+                index => "es-error-%{+YYY.MM.dd}"
+
+       }
+    }
+}
+
+/opt/logstash/bin/logstash -f file.conf 
+
+
+引入Codec multiline插件
+cat multilne.conf
+input {
+   stdin {
+       codec => multiline {
+           pattern =>"^\["#以中括号开头，\转义
+           negate => true
+           what =>"previous"
+}
+}
+}
+
+output {
+    stdout {
+        codec =>"rubydebug"
+}
+}
+
+
+7.安装Kibana
+rpm--import https://packages.elastic.co/GPG-KEY-elasticsearch
+vi /etc/yum.repos.d/kibana.repo
+[kibana-4.5]
+name=Kibana repository for 4.5.x packages
+baseurl=http://packages.elastic.co/kibana/4.5/centos
+gpgcheck=1
+gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+
+yum install kibana -y
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable kibana.service
+
+grep "^[a-Z]" /opt/kibana/config/kibana.yml
+server.port: 5601 #端口
+server.host: "0.0.0.0" #允许访问主机,建议内网
+elasticsearch.url: "http://192.168.230.128:9200" #es的地址
+kibana.index: ".kibana"  #索引
+
+systemctl start kibana #启动
+netstat -ntpl|grep 5601 #检查
+
+http://192.168.230.128:5601
+
+
+- Logstash收集Nginx日志
+rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+yum install nginx
+service nginx start #或者systemctl start nginx.service
+
+cat nginx.conf 
+
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+'$status $body_bytes_sent "$http_referer" '
+'"$http_user_agent" "$http_x_forwarded_for"';
+log_format json '{ "@timestamp": "$time_iso8601", '#在http段添加json格式的日志
+'"@version": "1",'
+'"client": "$remote_addr", '
+'"url": "$uri", '
+'"status": "$status", '
+'"domain": "$host", '
+'"host": "$server_addr", '
+'"size": "$body_bytes_sent", '
+'"responsetime": "$request_time", '
+'"referer": "$http_referer",'
+'"ua": "$http_user_agent"'
+'}';
+#access_log  /var/log/nginx/access.log  main;  #将原有的注释
+
+    sendfile        on;
+#tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+#gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+
+[root@linux-node1 conf.d]# cat default.conf 
+server {
+    listen       80;
+    server_name  localhost;
+
+#charset koi8-r;
+#access_log  /var/log/nginx/log/host.access.log  main; #注释原有的
+   access_log  /var/log/nginx/access_json.log  json;#在server段添加日志格式
+    location /{
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+}
+
+
+cd /var/log/nginx/
+tail -f access_json.log
+nginx -t
+service nginx restart
+
+cat json.conf 
+input {
+
+file{
+type=>"access_nginx"
+        path =>"/var/log/nginx/access_json.log"
+        codec =>"json"
+}
+}
+
+output {
+    stdout {
+        codec=>"rubydebug"
+}
+}
+
+#运行，刷新访问nginx的地址http://192.168.230.128 ，让其生成日志，然后屏幕有输出就表示正常
+/opt/logstash/bin/logstash -f json.conf  
+
+
+./configure --prefix=/usr/local/nginx \
+--with-ipv6 \ 
+--with-http_ssl_module \                           
+--with-http_realip_module \
+--with-http_addition_module \ 
+--with-http_dav_module \
+--with-http_flv_module \
+--with-http_mp4_module \
+--with-http_gzip_static_module \
+--with-http_perl_module \
+--with-mail \
+--with-mail_ssl_module
+
+
+
+
+
+
+
+
+
+
+
+
+
+
