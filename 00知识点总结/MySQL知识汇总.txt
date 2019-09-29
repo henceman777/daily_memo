@@ -1,0 +1,204 @@
+- mysql主从的动静分离,MySQL还原大文件
+1、启动多实例,创建多个数据库,数据分别指向每块硬盘
+2、mysql配置文件参数调优: 在my.cnf中使用innodb
+max_allowed_packet = 1024M  #指定允许的最大文件大小
+wait_timeout=288000000
+interactive_timeout=288000000
+net_buffer_length= 
+#对于InnoDB,调整系统参数：innodb_log_buffer_size
+
+show VARIABLES like '%max_allowed_packet%';
+
+3、关闭binlog,mysql/mysqldump/source(推荐方法)
+create database backup;
+use backup;
+mysql -u 用户名 -p 数据库名 < 数据库名.sql
+source /home/SQL/mmall.sql
+
+
+- mysql数据库用的是主从读写分离,主库写,从库读,假如从库无法读取了、或者从库读取特别慢,你会如何解决？
+先添加从库数量,临时把问题给解决,然后抓取slow log ,分析sql语句,该优化就优化处理。
+硬件跟不上,需要升级；软件需要调试优化
+
+1、业务量不大的
+从库查询太多,主库能处理业务就全放在主库吧,从库只做灾备,备份,对实时性要求不高的统计报表类工作；
+2、已经出现延迟的
+3、延迟N天无法解决的
+那就重做slave,一般来说在slave上show proceslist看查看当前的system user正在执行什么,那就是问题SQL
+如果pos点一直不动,也可以去主库对应的binlog上查看下执行的是什么玩意
+
+4、5.6版本下从库是单线程复制 主库是多线程复制,当遇到执行慢的sql时,就是阻塞后面的同步,升级5.7,并开启多线程复制来解决
+5、从库太多,主库binlog同步到多个从库上,io瓶颈 解决方式：减少从库数量,增加io
+6、硬件配置不一样 解决方式：主从使用一样的硬件配置
+7、网络瓶颈
+
+提高性能的方法:
+1.分库,将一个主库拆分为4个主库,每个主库的写并发就500/s,此时主从延迟可以忽略不计
+2.打开mysql支持的并行复制,多个库并行复制,如果说某个库的写入并发就是特别高,单库写并发达到了2000/s,并行复制还是没意义。
+3.重写代码,写代码的同学,要慎重,插入数据之后,直接就更新,不要查询。
+4.如果确实是存在必须先插入,立马要求就查询到,然后立马就要反过来执行一些操作,对这个查询设置直连主库。不推荐这种方法,这么搞导致读写分离的意义就丧失了。
+
+
+- 高并发场景下数据库的常见问题及解决方案
+1、分库分表
+随着系统访问量的增加,QPS越来越高,数据库磁盘容量不断增加
+分表就是把一个表的数据放到多个表中,然后查询的时候你就查一个表。
+可以按照某一个维度来进行分表（例如按照用户id来分表,将一个用户的数据就放在一个表中。
+然后操作的时候你对一个用户就操作那个表就好了）。这样可以控制每个表的数据量在可控的范围内
+
+分库是什么？一般来说一个数据库服务器最多支撑到并发2000,一定要扩容了,而且一个健康的单库并发值你最好保持在每秒1000左右
+不要太大。那么你可以将一个库的数据拆分到多个库中,访问的时候就访问一个库好了
+
+常见的分布分表中间件有：cobar、TDDL、atlas、sharding-jdbc、mycat。
+它们可以分为client层和proxy方案
+client方案的的优点在于不用部署,运维成本很低,但是如果要升级什么的得重新升级版本再发布,各个服务之间都需要耦合client依赖
+proxy方案优点是对个各个服务都是透明的,如果需要升级什么的直接在中间件搞就可以了,但是得需要专门去部署运维
+
+mycat：
+基于cobar改造的,属于proxy层方案,支持的功能非常完善,而且目前应该是非常火的而且不断流行的数据库中间件,社区很活跃
+使用中间件,比如大名鼎鼎的MyCat,用它来做路由,管理整个分库分表,乃至跨库跨表的连接
+
+Mysql的读写分离可以使用MySQL Proxy和Amoeba实现
+
+2、如何对数据库进行垂直拆分或者水平拆分？
+水平拆分就是把一个表的数据给弄到多个库的多个表里去
+垂直拆分就是把一个有很多字段的表给拆分成多个表,或者是多个库上去
+3、如何让未分库分表的系统动态迁移到分库分表
+停机迁移方案
+双写迁移方案：
+这就是所谓双写,同时写俩库,老库和新库,读库还是读老库,然后在平滑的下线在之前直接走老库的老服务
+
+4、动态扩容缩容分库分表方案
+停机扩容
+
+
+- mysql的读写分离
+mysql的读写分离基于主从复制架构,一个主库,然后主库挂多个从库,然后我们单单写主库,然后主库会自动把数据同步到从库,然后读从库来访问数据。
+mysql主从复制的原理：
+主库将变更写binlog日志,然后从库连接到主库之后,从库有一个IO线程,将主库的binlog日志拷贝到自己本地,写入一个中继日志中
+接着从库中有一个SQL线程会从中继日志读取binlog,然后执行binlog日志中的内容,也就是在自己本地再次执行一遍SQL
+这样就可以保证自己跟主库的数据是一样的
+
+半同步复制:
+semi-sync复制,指的就是主库写入binlog日志之后,就会将强制此时立即将数据同步到从库,从库将日志写入自己本地的relay log之后,接着会返回一个ack给主库,主库接收到至少一个从库的ack之后才会认为写操作完成了
+保证数据丢失问题
+并行复制：
+指的是从库开启多个线程,并行读取relay log中不同库的日志,然后并行重放不同库的日志,这是库级别的并行,解决延迟问题
+
+- SQL查询语句优化
+索引/借助explain查询优化器/不使用select */limit来减少返回行数/查询缓存
+
+
+- 安装mycat
+mkdir -p /usr/lib/jvm
+tar -zxvf jdk-11.0.1_linux-x64_bin.tar.gz
+vim /etc/profile
+export JAVA_HOME=/usr/lib/jvm/jdk-11.0.1
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export  PATH=${JAVA_HOME}/bin:$PATH
+
+source /etc/profile
+java -version
+
+http://dl.mycat.io/1.6-RELEASE/
+tar -zxvf Mycat-server-1.6-RELEASE-20161028204710-linux.tar.gz
+cd ./mycat
+vim ./mycat/conf/schema.xml
+vim server.xml
+
+比较了常用的读写分离方式,推荐mycat,社区活跃,性能稳定
+实现读写分离
+主要思路：使用mycat中间件,转发sql指令到后端mysql节点。mycat不负责数据库同步
+
+
+- MyISAM和InnoDB区别
+MyISAM是MySQL的默认数据库引擎（5.5版之前）
+虽然性能极佳,而且提供了大量的特性,包括全文索引、压缩、空间函数等,但MyISAM不支持事务和行级锁,而且最大的缺陷就是崩溃后无法安全恢复。
+5.5版本之后,MySQL引入了InnoDB（事务性数据库引擎）,MySQL 5.6版本后默认的存储引擎为InnoDB。
+大多数时候使用InnoDB 存储引擎,但是在某些情况下使用MyISAM也是合适的比如读密集的情况下
+
+两者的对比：
+是否支持行级锁 : MyISAM 只有表级锁(table-level locking),而InnoDB 支持行级锁(row-level locking)和表级锁,默认为行级锁。
+是否支持事务和崩溃后的安全恢复： MyISAM 强调的是性能,每次查询具有原子性,其执行数度比InnoDB类型更快,但是不提供事务支持。
+								 但是InnoDB 提供事务支持事务,外部键等高级数据库功能。 
+								 具有事务(commit)、回滚(rollback)和崩溃修复能力(crash recovery capabilities)的事务安全(transaction-safe (ACID compliant))型表。
+
+是否支持外键： MyISAM不支持,而InnoDB支持。
+是否支持MVCC ：仅 InnoDB 支持。应对高并发事务, MVCC比单纯的加锁更高效;MVCC只在 READ COMMITTED 和 REPEATABLE READ 两个隔离级别下工作;
+				MVCC可以使用 乐观(optimistic)锁和悲观(pessimistic)锁来实现;各数据库中MVCC实现并不统一
+
+- 字符集及校对规则
+
+- 索引
+MySQL索引使用的数据结构主要有BTree索引和哈希索引
+MySQL的BTree索引使用的是B数中的B+Tree,但对于主要的两种存储引擎的实现方式是不同的
+MyISAM: 
+B+Tree叶节点的data域存放的是数据记录的地址。在索引检索的时候,首先按照B+Tree搜索算法搜索索引,如果指定的Key存在,则取出其 data 域的值,
+然后以 data 域的值为地址读取相应的数据记录。这被称为“非聚簇索引”
+InnoDB: 
+其数据文件本身就是索引文件。相比MyISAM,索引文件和数据文件是分离的,其表数据文件本身就是按B+Tree组织的一个索引结构,树的叶节点data域保存了完整的数据记录。
+这个索引的key是数据表的主键,因此InnoDB表数据文件本身就是主索引。这被称为“聚簇索引（或聚集索引）”
+
+
+- 查询缓存
+query_cache_type=1
+query_cache_size=600000
+
+
+- 什么是事务?
+事务是逻辑上的一组操作,要么都执行,要么都不执行
+类似转账,事务就是保证这两个关键操作要么都成功,要么都要失败
+
+事务的四大特性ACID:
+原子性:
+一致性:
+隔离性:
+持久性:
+
+
+- 锁机制与InnoDB锁算法
+MyISAM采用表级锁(table-level locking)。
+InnoDB支持行级锁(row-level locking)和表级锁,默认为行级锁
+
+表级锁和行级锁对比：
+表级锁： MySQL中锁定粒度最大的一种锁,对当前操作的整张表加锁,实现简单,资源消耗也比较少,加锁快,不会出现死锁。
+		其锁定粒度最大,触发锁冲突的概率最高,并发度最低,MyISAM和 InnoDB引擎都支持表级锁。
+行级锁： MySQL中锁定粒度最小的一种锁,只针对当前操作的行进行加锁。 
+		行级锁能大大减少数据库操作的冲突。其加锁粒度最小,并发度高,但加锁的开销也最大,加锁慢,会出现死锁。
+
+InnoDB存储引擎的锁的算法有三种：
+    Record lock：单个行记录上的锁
+    Gap lock：间隙锁，锁定一个范围，不包括记录本身
+    Next-key lock：record+gap 锁定一个范围，包含记录本身
+
+	
+- MySQL备份和还原
+冷备份：停止数据库服务进行备份
+热备份：不停止数据库服务进行备份
+mysql的存储引擎为MyIsam时，只支持冷备份,可直接拷贝data目录下的数据库文件,为保持数据一致性必须停机或锁表备份
+mysql的存储引擎为InnoDB时，支持热备份，因为InnoDB引擎是事务性存储引擎,可根据日志来进行redo和undo
+mysqldump命令用于InnoDB引擎的备份
+
+-- 备份指定数据库(demo)
+mysqldump -u root -h 127.0.0.1 -p demo > demo.sql
+-- 备份指定数据库(demo)中的指定表(student)
+mysqldump -u root -h 127.0.0.1 -p demo student >
+-- 备份多个数据库(demo、sys)
+mysqldump -u root -h 127.0.0.1 -p --databases demo sys >
+-- 备份所有数据库
+mysqldump -u root -h 127.0.0.1 -p --all-databases >
+
+恢复:
+-- 恢复至指定数据库(Test)
+mysql -u root -h 127.0.0.1 -p Test < demo.sql
+
+-- 登录mysql命令行
+use Test;
+source XXXX.sql
+
+备份工具:
+mysqlbackup
+mysqlhotcopy  #限unix
+mysqldump  #小规模导出
+

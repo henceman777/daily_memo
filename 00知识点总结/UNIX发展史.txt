@@ -1,0 +1,84 @@
+Unix发展
+
+1. MULTICS计划
+1965年AT&T贝尔实验室/通用电气/麻省理工学院联合开发multics系统
+后项目失败
+
+2. UNIX萌芽
+AT&T的Ken Tompson开发太空漫游不得不操作系统DEC PDP-7上
+- 需要有一个简单的文件系统
+- 需要一个子进程和shell
+
+Ken Thompson和Dennis Retchie一起开发了B语言,Retchie将其发展为C语言
+UNIX便在Bell实验室流行开来
+1969年诞生,thompson用汇编开发
+
+1973年1月用C语言彻底重写了UNIX第三版本
+
+3. UNIX的发展
+AT&T在败诉后,将UNIX提供给大学供教学和研究
+1979年一月发行的UNIX是真正可移植的UNIX系统
+但是UNIX商业成功后,精神不再,AT&T固执的保护版权
+
+4. BSD UNIX- UNIX的重要分支
+1974年12月,加州大学伯克利分校获得UNIX许可证,二次开发打包软件工具和UNIX发行了BSD伯克利软件套件
+1983年的4.2版本BSD实现了TCP/IP协议
+但是后来深受AT&T起诉的影响
+
+5. System-V
+1983年败诉后的AT&T的贝尔电话实验室独立成为贝尔实验室,SystemV UNIX的新特性进程间通信机制
+
+6. UNIX商业化
+- 基于systemV开发
+Bill Joy和人合资成立Sun公司基于BSD开发了SunOS,后发行了Solaris
+IBM发行AIX
+HP开发HP-UX
+教授Tanenbaum开发minix用于教学,--Linux
+
+7. UNIX版权之争
+BSD精神是自由,但是忙于官司,给力Linux Kernel机会
+
+     |--AT&T (1969)-----\
+     |                  |
+     |              V6 (1976)
+     |                  |
+     |              V7 (1979)
+     |                  |
+     |   Novell owns AT&T's Unix (by 1994)
+     |     _____________|____________________
+     |     |       |      |        |         |
+     |    AIX    IRIX    SCO   HP-UX   Solaris 2.X
+     |   (IBM)   (SGI)          (HP)     (Sun)
+     |
+     |
+     |--Berkley (1977)-----\
+     |                     |
+     |                  1BSD (1977)
+UNIX-|                     |
+     |                4.4BSD (1993)
+     |                     |
+     |                   Net/2
+     |                     |
+     |               4.4BSD-Lite (by 1995)
+     |     ________________|____________________________________
+     |     |       |          |         |          |            |
+     |   SunOS   Ultrix   NetBSD    OSF/1   NeXTSTEP   Mac OS X
+     |   (Sun)   (DEC)   (Various)  (DEC)    (NeXT)    (Apple)
+     |                   (FreeBSD)
+     |
+     |
+     |--Hybrids----\
+                   |
+                Linux (Various)
+                   |
+                   |____________________________________________
+                   |    |      |          |              |      |
+                   | RedHat  Debian  Mandrake   Slackware    S.u.S.E.
+                   |                          (Walnut Creek)
+                   |
+                   |_____________________________________________
+                       |        |           |          |        |
+                    MkLinux  LinuxPPC  TurboLinux  OpenLinux  CorelLinux
+                    (Apple)                        (Caldera)   (Corel)
+					
+					

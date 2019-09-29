@@ -1,0 +1,318 @@
+dockerfile 命令
+RUN vs ENTRYPOINT
+ADD vs COPY
+
+
+
+
+
+redis
+
+docker网络模式
+
+k8s集群管理工具 space 隔离
+
+- zabbix的优化： NVPS
+1、减少history保存时间,histroy分区
+2、减少item获取和调整间隔时间timeout
+item工作模式及triggers优化,调整为主动模式
+
+3、减少不必要的监控项
+4、数据库优化
+db server和Zabbix server同一个主机上,socket比tcp快
+将数据库服务器独立,RDS
+使用mysql5.6以上的版本,InoDB引擎
+mysql分区,history表等,可使用分区提升性能
+将数据库表保留在不同的硬盘上，或者做数据库分表，一般采用日期（range）类型的方式将几张大表进行表分区
+
+
+5、硬件优化CPU/内存/SSD
+6、分布式部署
+7、调整zabbix自身配置
+zabbix_server.conf中的StartDBSyncers参数上调
+StartPollers    #填写范围0-1000，默认5 ，轮询处理监控项的进程数
+Debuglevel
+
+
+
+ansible playbook
+
+
+openresty
+
+
+jenkins/maven
+
+-  简述Linux系统的开机启动顺序
+POST加电自检-->MBR引导-->GRUB-->加载内核-->启动init进程-->读取/etc/inittab文件,/etc/init/*.conf文件
+-->使用/etc/rc.d/rc.sysinit初始化脚本-->执行/etc/rc.d/rc脚本（加载/etc/rc3.d/下所有脚本）
+-->执行/etc/rc.d/rc.local-->执行/bin/login登录程序
+
+查询程序运行级别：runlevel
+修改运行级别：init [0123456]
+
+- 简述软链接和硬链接的区别。
+软链接是指创建一个新的文件,block里存放的是被链接文件的文件名指向,软链接的inode与源文件的inode不同,将源文件删除,然后重建,改变了inode,软链接文件仍然有效。
+硬链接是创建一个新的文件名,将它的inode指向源文件的inode,所以硬链接的inode和源文件是相同的,源文件被删除后,硬链接仍然可以有效
+
+
+- 简述LVS的工作模式和调度算法,大并发环境推荐架构
+工作模式：NAT,TUNNEL,DR,FULLNAT
+rr/wrr/dh/sh/lc/wlc/lblc/lblcr/SED/NQ
+大并发环境推荐：DR模式,rr调度算法
+
+- 简述一下DNS的解析过程
+1、在浏览器中输入域名,操作系统会先检查自己本地的hosts文件是否有这个网址映射关系,如果有,就先调用这个IP地址映射,完成域名解析。
+2、如果hosts里没有这个域名的映射,则查找本地DNS解析器缓存,是否有这个网址映射关系,如果有,直接返回,完成域名解析。
+3、如果hosts与本地DNS解析器缓存都没有相应的网址映射关系,首先会找TCP/IP参数中设置的首选DNS服务器,在此我们叫它本地DNS服务器,此服务器收到查询时,如果要查询的域名,包含在本地配置区域资源中,则返回解析结果给客户机,完成域名解析,此解析具有权威性。
+4、如果要查询的域名,不由本地DNS服务器区域解析,但该服务器已缓存了此网址映射关系,则调用这个IP地址映射,完成域名解析,此解析不具有权威性。
+5、如果本地DNS服务器本地区域文件与缓存解析都失效,则根据本地DNS服务器的设置进行查询,本地DNS就把请求发至13台根DNS,根DNS服务器收到请求后会判断这个域名(.com)是谁来授权管理,并会返回一个负责该顶级域名服务器的一个IP。本地DNS服务器收到IP信息后,将会联系负责.com域的这台服务器。这台负责.com域的服务器收到请求后,如果自己无法解析,它就会找一个管理.com域的下一级DNS服务器地址(qq.com)给本地DNS服务器。当本地DNS服务器收到这个地址后,就会找qq.com域服务器,重复上面的动作,进行查询,直至找到www.qq.com主机。
+6、如果用的是转发模式,此DNS服务器就会把请求转发至上一级DNS服务器,由上一级服务器进行解析,上一级服务器如果不能解析,或找根DNS或把转请求转至上上级,以此循环。不管是本地DNS服务器用是是转发,还是根提示,最后都是把结果返回给本地DNS服务器,由此DNS服务器再返回给客户机。
+从客户端到本地DNS服务器是属于递归查询,而DNS服务器之间就是的交互查询就是迭代查询。
+
+-  简述常用高可用技术
+Keepalived：
+Keepalived是一个保证集群高可用的服务软件,用来防止单点故障,使用VRRP协议实现。
+在master和backup之间通过master主动降低自己的权值或者backup检测到master出现故障时,backup将会接管master的工作,继续服务
+
+HAproxy：
+HAProxy提供高可用性、负载均衡以及基于TCP和HTTP应用的代理,支持虚拟主机,它是免费、快速并且可靠的一种解决方案。
+HAProxy特别适用于那些负载特大的web站点,这些站点通常又需要会话保持或七层处理。
+HAProxy运行在当前的硬件上,完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中,
+同时可以保护你的web服务器不被暴露到网络上。
+
+heartbeat+ DRBD：
+heartbeat （Linux-HA）的工作原理：
+heartbeat最核心的包括两个部分,心跳监测部分和资源接管部分,心跳监测可以通过网络链路和串口进行
+而且支持冗余链路,它们之间相互发送报文来告诉对方自己当前的状态,如果在指定的时间内未收到对方发送的报文,那么就认为对方失效,
+这时需启动资源接管模块来接管运行在对方主机上的资源或者服务。
+
+Distributed Replicated Block Device(DRBD)是一个用软件实现的、无共享的、服务器之间镜像块设备内容的存储复制解决方案
+
+数据镜像：
+实时、透明、同步（所有服务器都成功后返回）、异步（本地服务器成功后返回）
+
+- lvs,nginx,HAproxy三者的区别,工作中如何选择：
+LVS的优点：
+1、抗负载能力强、工作在第4层仅作分发之用,没有流量的产生,这个特点也决定了它在负载均衡软件里的性能最强的；无流量,同时保证了均衡器IO的性能不会受到大流量的影响；
+2、工作稳定,自身有完整的双机热备方案,如LVS+Keepalived和LVS+Heartbeat；
+3、应用范围比较广,可以对所有应用做负载均衡；
+4、配置性比较低,这是一个缺点也是一个优点,因为没有可太多配置的东西,所以并不需要太多接触,大大减少了人为出错的几率；
+LVS的缺点：
+1、软件本身不支持正则处理,不能做动静分离,这就凸显了Nginx/HAProxy+Keepalived的优势。
+2、如果网站应用比较庞大,LVS/DR+Keepalived就比较复杂了,特别是后面有Windows Server应用的机器,实施及配置还有维护过程就比较麻烦,相对而言,Nginx/HAProxy+Keepalived就简单多了。
+
+Nginx的优点：
+1、工作在OSI第7层,可以针对http应用做一些分流的策略。比如针对域名、目录结构。它的正则比HAProxy更为强大和灵活；
+2、Nginx对网络的依赖非常小,理论上能ping通就就能进行负载功能,这个也是它的优势所在；
+3、Nginx安装和配置比较简单,测试起来比较方便；
+4、可以承担高的负载压力且稳定,一般能支撑超过几万次的并发量；
+5、Nginx可以通过端口检测到服务器内部的故障,比如根据服务器处理网页返回的状态码、超时等等,并且会把返回错误的请求重新提交到另一个节点；
+6、Nginx不仅仅是一款优秀的负载均衡器/反向代理软件,它同时也是功能强大的Web应用服务器。LNMP现在也是非常流行的web环境,大有和LAMP环境分庭抗礼之势,Nginx在处理静态页面、特别是抗高并发方面相对apache有优势；
+7、Nginx现在作为Web反向加速缓存越来越成熟了,速度比传统的Squid服务器更快,有需求的朋友可以考虑用其作为反向代理加速器；
+Nginx的缺点：
+1、Nginx不支持url来检测。
+2、Nginx仅能支持http和Email,这个它的弱势。
+3、Nginx的Session的保持,Cookie的引导能力相对欠缺。
+
+HAProxy的优点：
+1、HAProxy是支持虚拟主机的,可以工作在4、7层(支持多网段)；
+2、能够补充Nginx的一些缺点比如Session的保持,Cookie的引导等工作；
+3、支持url检测后端的服务器；
+4、它跟LVS一样,本身仅仅就只是一款负载均衡软件；单纯从效率上来讲HAProxy更会比Nginx有更出色的负载均衡速度,在并发处理上也是优于Nginx的；
+5、HAProxy可以对Mysql读进行负载均衡,对后端的MySQL节点进行检测和负载均衡,不过在后端的MySQL slaves数量超过10台时性能不如LVS；
+6、HAProxy的算法较多,达到8种；
+
+LVS：是基于四层的转发
+HAproxy：是基于四层和七层的转发,是专业的代理服务器
+Nginx：是WEB服务器,缓存服务器,又是反向代理服务器,可以做七层的转发
+
+区别：
+LVS由于是基于四层的转发所以只能做端口的转发,而基于URL的、基于目录的这种转发LVS就做不了
+
+工作选择：
+HAproxy和Nginx由于可以做七层的转发,所以URL和目录的转发都可以做
+在很大并发量的时候我们就要选择LVS,像中小型公司的话并发量没那么大选择HAproxy或者Nginx足已
+由于HAproxy由是专业的代理服务器,配置简单,所以中小型企业推荐使用HAproxy
+
+- 简述TCP三次握手的过程？
+连接请求--syn+seq
+连接允许--syn+seq+ack
+ACK---syn+seq+ack
+
+sed -i '/^\s*$/d'  #替换并删除空行
+
+- 防火墙允许本机80端口
+#!/bin/bash
+#this is a server firewall
+#updated by yehaifeng
+
+#define var
+IPT=/sbin/iptables
+
+#Remove any existing rules
+$IPT -F
+$IPT -X
+$IPT -Z
+
+#setting default firewallpolicy
+$IPT --policy OUTPUT ACCEPT
+$IPT --policy FORWARD DROP
+$IPT -P INPUT DROP
+
+#setting for loopback interface
+$IPT -A INPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
+
+#accept 80 port only
+$IPT -A INPUT -p tcp --dport 80 -j ACCEPT
+
+#save iptables
+/etc/init.d/iptables save
+
+- 将/logs目录下3天前的文件转移到/tmp目录下
+#!/bin/bash
+#this is to move file 3 yearago from /logs to /tmp
+
+#define var
+FILE_FROM=/logs
+FILE_TO=/tmp
+DAY_AGO=3
+
+cd $FILE_FROM
+for file in `find $FILE_FROM -type f -mtime +3`
+do
+    /bin/mv $FILE_FROM/$file $FILE_TO/$file
+done
+
+
+- 行nginx日志统计,得到访问ip最多的前10个
+cat bak_logs.sh
+#!/bin/bash
+#this is to backup logs
+#define var
+LOG_FILE=/nginx/default/access.log
+
+awk '{print $1}' /application/nginx/logs/access.log |sort|uniq -c|sort -r|head -10 > /tmp/ip_max.txt
+echo /tmp/ip_max.txt
+
+
+- 每天1:00备份/var/log目录下前一天的日志文件并存放到当前目录的btslog目录中,并删除15天前的log备份文件
+cat bak_logs.sh
+
+#!/bin/bash
+#this is to backup logs
+
+#define var
+YESTERDAY=`date +%F -d '-1 day'`
+LOG_DIR=/var/log
+BAK_DIR=/var/log/btslog
+LOG_FILE=btsvr.log
+
+cd $LOG_DIR/
+if [ -f $LOG_DIR/$LOG_FILE.$YESTERDAY] ;then {
+tar zcf $LOG_DIR/$LOG_FILE.$YESTERDAY.tar.gz$LOG_DIR/$LOG_FILE.$YESTERDAY
+/bin/mv $LOG_DIR/$LOG_FILE.$YESTERDAY.tar.gz/BAK_DIR/
+}
+
+else
+    echo "the file is not exist."
+fi
+
+- 灰度发布如何实现？
+
+- Mongodb熟悉吗,一般部署几台？
+一般mongodb部署主从、或者mongodb分片集群；建议3台或5台服务器来部署。
+MongoDB分片的基本思想就是将集合切分成小块。这些块分散到若干片里面,每个片只负责总数据的一部分。 
+对于客户端来说,无需知道数据被拆分了,也无需知道服务端哪个分片对应哪些数据。
+数据在分片之前需要运行一个路由进程,进程名为mongos。这个路由器知道所有数据的存放位置,知道数据和片的对应关系。对客户端来说,它仅知道连接了一个普通的mongod,在请求数据的过程中,通过路由器上的数据和片的对应关系,路由到目标数据所在的片上,如果请求有了回应,路由器将其收集起来回送给客户端。
+
+
+- 如何发布和回滚,用jenkins又是怎么实现？
+发布：
+jenkins配置好代码路径（SVN或GIT）,然后拉代码,打tag。需要编译就编译,编译之后推送到发布服务器（jenkins里面可以调脚本）
+然后从分发服务器往下分发到业务服务器上。
+
+回滚：
+按照版本号到发布服务器找到对应的版本推送
+
+- Tomcat工作模式？
+Tomcat是一个JSP/Servlet容器。其作为Servlet容器,有三种工作模式：
+独立的Servlet容器、进程内的Servlet容器和进程外的Servlet容器
+
+进入Tomcat的请求可以根据Tomcat的工作模式分为如下两类：
+Tomcat作为应用程序服务器：请求来自于前端的web服务器,这可能是Apache,IIS, Nginx等；
+Tomcat作为独立服务器：请求来自于web浏览器；
+
+- 监控用什么实现的？
+现在公司的业务都跑在阿里云上,我们首选的监控就是用阿里云监控,阿里云监控自带了ECS、RDS等服务的监控模板,可结合自定义报警规则来触发监控项。
+在IDC,用的是zabbix监控方案,zabbix图形界面丰富,也自带很多监控模板,
+特别是多个分区、多个网卡等自动发现并进行监控做得非常不错,不过需要在每台客户机（被监控端）安装zabbix agent。
+
+- 怎么备份数据的,包括数据库备份？
+生产环境下,不管是应用数据、还是数据库数据首先在部署的时候就会有主从架构、或者集群,这本身就是属于数据的热备份；
+其实考虑冷备份,用专门一台服务器做为备份服务器,比如可以用rsync+inotify配合计划任务来实现数据的冷备份
+如果是发版的包备份,正常情况下有台发布服务器,每次发版都会保存好发版的包
+
+
+- redis集群的原理,redis分片是怎么实现的,你们公司redis用在了哪些环境？
+reids集群原理：
+redis 3.0版本之前是不支持集群的,官方推荐最大的节点数量为1000,至少需要3(Master)+3(Slave)才能建立集群
+是无中心的分布式存储架构,可以在多个节点之间进行数据共享,解决了Redis高可用、可扩展等问题。
+集群可以将数据自动切分(split)到多个节点,当集群中的某一个节点故障时,redis还可以继续处理客户端的请求。
+
+redis分片：
+分片(partitioning)就是将你的数据拆分到多个 Redis 实例的过程,这样每个实例将只包含所有键的子集。
+当数据量大的时候,把数据分散存入多个数据库中,减少单节点的连接压力,实现海量数据存储。
+
+分片部署方式一般分为以下三种：
+1）在客户端做分片；这种方式在客户端确定要连接的redis实例,然后直接访问相应的redis实例；
+2）在代理中做分片；这种方式中,客户端并不直接访问redis实例,它也不知道自己要访问的具体是哪个redis实例,
+而是由代理转发请求和结果；其工作过程为：客户端先将请求发送给代理,代理通过分片算法确定要访问的是哪个redis实例,
+然后将请求发送给相应的redis实例,redis实例将结果返回给代理,代理最后将结果返回给客户端。
+3）在redis服务器端做分片；这种方式被称为“查询路由”,在这种方式中客户端随机选择一个redis实例发送请求,
+如果所请求的内容不再当前redis实例中它会负责将请求转交给正确的redis实例,也有的实现中
+redis实例不会转发请求,而是将正确redis的信息发给客户端,由客户端再去向正确的redis实例发送请求。
+
+redis用在了哪些环境：
+java、php环境用到了redis,主要缓存有登录用户信息数据、设备详情数据、会员签到数据等
+
+- 会使用哪些虚拟化技术？
+vmware vsphere及kvm
+vmware 是属于原生架构虚拟化技术,也就是可直接在硬件上运行
+kvm属于寄居架构的虚拟化技术,它是依托在系统之上运行
+
+vmware vcenter管理上比较方便,图形管理界面功能很强大,稳定性强,一般比较适合企业使用
+KVM管理界面稍差点,需要管理人员花费点时间学习它的维护管理技术
+
+- 有人反应,调取后端接口时特别慢,你会如何排查？
+哪个服务应用或者页面调取哪个接口慢,叫他把页面或相关的URL发给你
+1、首先,最直观的分析就是用浏览器按F12,看下是哪一块的内容过慢（DNS解析、网络加载、大图片、还是某个文件内容等）
+如果有,就对症下药去解决（图片慢就优化图片、网络慢就查看内网情况等）
+2、其次,看后端服务的日志,其实大多数的问题看相关日志是最有效分析,最好用tail -f 跟踪一下日志,当然你也要点击测试来访问接口日志才会打出来
+3、最后,排除sql,找到sql去mysql执行一下,看看时间是否很久,如果很久,就要优化SQL问题了,看看索引情况啥的,针对性优化
+数据量太大的能分表就分表,能分库就分库。如果SQL没啥问题,那可能就是写的逻辑代码的问题了,一行行审代码,找到耗时的地方改造,优化逻辑。
+
+- cpu单核和多核有啥区别？
+双核CPU就是能处理多份任务,顺序排成队列来处理
+单核CPU一次处理一份任务,轮流处理每个程序任务
+双核的优势不是频率,而是对付同时处理多件事情
+
+
+- 颜色
+red_color='\E[1;31m'
+green_color='\E[1;32m'
+yellow='\E[1;33m'
+blue='\E[1;34m'
+pink='\E[1;35m'
+res='\E[0m'
+echo -e "${red_color}===red color===${res}"
+echo -e "${yellow} ===== yellow color=====${res}"
+echo -e  "${blue}====blue color===${res}"
+echo -e "${pink}the fruit is betatufile ${res}"
+echo -e "the sky is ${green_color}green${res}"
+
+- sed处理文本,出现乱码问题
+iconv -f -c utf8 -t gbk
+
+in this context   关于这点;由此而论;由于这个原因;在这个背景下

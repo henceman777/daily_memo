@@ -1,0 +1,555 @@
+一.容器核心技术
+1. 容器规范
+容器不光指docker,还有CoreOS的rkt
+CoreOS/Docker/Google等公司成立的一个OCI组织,指定开放的容器规范
+runtime spec和imamge format spec,保证了容器的可移植性和互操作性
+
+- runtime
+是容器真正运行的地方,需要和操作系统kernel紧密协作
+java程序好比是容器,JVM类比runtime
+容器的三种runtime:
+- lxc
+Docker最初使用LXC作为runtime
+- runc
+Docker自己开发的容器runtime,也是Docker现在默认的runtime
+- rkt
+是CoreOS开发的runtime,符合OCI且能够运行Docker容器
+
+2. 容器管理工具
+lxd是LXC对应的管理工具
+runc的管理工具是docker engine;包含后台的daemon和cli两部分
+rkt的管理工具是rkt CLI
+
+3. 容器定义工具
+docker image
+dockerfile包含若干命令的文本,创建docker image
+ACI(App Container Image),CoreOS开发的rkt容器image格式
+
+- registry存放image的仓库
+Docker Hub/Quay.io
+
+- 容器OS
+CoreOS/atmoic/ubuntu Core 专门运行容器的操作系统
+
+二.容器平台技术
+使得容器能作为集群运行在分布式环境中
+1. 容器编排引擎
+微服务架构,应用被划分为不同的组件,以服务的形式运行在各自容器中,通过API对外提供服务
+每个组件运行多个相同的容器,集群的容器会根据业务需要动态的创建迁移和销毁
+编排orchestration,包括容器管理,调度,集群定义和服务发现等
+- docker Swarm是Docker开发的编排引擎
+- K8s是Google开发的开源编排引擎,支持Docker和CoreOS容器
+- mesos+marathon是通用的集群资源调度平台,
+
+2. 容器管理平台
+架构在编排容器引擎之上的更通用的平台,支持多种编排引擎
+Rancher和ContainerShip
+
+3. 基于容器PaaS
+Deis/Flynn/Dokku
+
+
+4. 容器支持的技术
+- 容器网络
+Docker Network是docker云生的网络解决方案,
+Flannel
+Weave
+Calico
+
+- 服务发现
+负载增加时,集群会自动创建新的容器.一种让client知道如何访问容器服务
+Etcd
+Consul
+zookeeper
+
+- 监控
+docker ps/top/stats
+docker stats API
+sysdig
+cAdvisor/Heapster
+Weave Scope
+
+- 数据管理
+Flocker保证持久化数据动态迁移
+
+- 日志管理
+docker logs
+logspout
+
+- 安全性
+OpenSCAP对容器镜像扫描,发现潜在漏洞
+
+
+三. 搭建实验环境
+1. 环境选择
+- 管理工具
+Docker engine
+- runtime
+Runc
+- Ubuntu
+
+2. 安装Docker
+https://docs.docker.com/engine/installation/
+
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common 
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+ 
+sudo add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable" 
+
+sudo apt-get update
+sudo apt-get install docker-ce
+
+docker run -d -p 80:80 httpd #运行容器
+
+镜像加速:
+Daocloud.io注册,登录点击加速器
+copy加速器的命令执行,然后重启dcoker deamon
+
+四. 容器概念
+容器时轻量级,可移植,自包含的软件打包技术,应用几乎可以在任意地方运行
+
+1.容器和虚拟机
+容器在操作系统的用户空间中,与操作系统的其他进程隔离
+虚拟机使用Hypervisor管理
+
+docker将集装箱思想运用在软件打包上,一次打包任意运行
+
+五. Docker核心组件
+1.docker client
+docker命令
+
+2.docker daemon
+docker服务器组件,后台服务运行
+编辑/etc/systemd/system/multi-user.target.wants/docker.service
+在环境变量 ExecStart后添加 -H tcp://0.0.0.0,允许来自任意IP的客户端连接
+systemctl daemon-reload
+systemctl restart docker.service
+docker -H ip info #即可远程查看
+
+3.docker image
+
+4.Registry
+
+5.docker container
+镜像的运行实例,可以通过CLI或者API启动控制容器
+
+六. Docker组件协议
+1. docker ps或者docker container ls
+
+
+七. 镜像
+linux是由内核空间和用户空间组成的
+启动时会加载bootfs文件系统,之后bootfs卸载
+rootfs包括/dev, /proc, /bin等
+
+容器只能公用host的kernel
+
+镜像时一种分层结构,copy-on-write
+
+容器启动后一个新的可写层被加载到顶部,容器层不存镜像变化
+
+1. 构建镜像
+- docker commit
+
+- Dockerfile
+FROM #指定base镜像
+MAINTAINER #作者
+COPY #复制
+ADD   #会自动解压
+ENV   #环境变量
+EXPOSE  #指定端口
+VOLUME  #指定存储卷
+WORKDIR  #指定当前工作目录
+RUN  #运行指定命令,用于安装软件
+CMD #设置容器启动后默认执行的命令,能被docker run后的命令行参数替换
+    #如果 docker run 指定了其他命令,CMD 指定的默认命令将被忽略。
+    #如果 Dockerfile 中有多个 CMD 指令,只有最后一个 CMD 有效。
+    #CMD ["param1","param2"] 为 ENTRYPOINT 提供额外的参数
+ENTRYPOINT  #配置启动时运行的命令,只有最后一个生效,CMD或者RUN之后的参数会传递给ENTRYPOINT
+			#指令可让容器以应用程序或者服务的形式运行
+			#不会被忽略,一定会被执行,即使运行 docker run 时指定了其他命令
+ENTRYPOINT ["/bin/echo", "Hello"]  
+CMD ["world"] 
+
+CMD 和 ENTRYPOINT 推荐使用 Exec 格式,因为指令可读性更强,更容易理解
+apt-get update 和 apt-get install 被放在一个 RUN 指令中执行,这样能够保证每次安装的是最新的包
+
+两种方式指定 RUN、CMD 和 ENTRYPOINT 要运行的命令：Shell 格式和 Exec 格式
+当指令执行时,会直接调用 <command>,不会被 shell 解析
+
+- 
+docker login -u jinmeng260
+docker tag docker-demo:0.1 jinmeng260/nginx:v1
+docker push jinmeng260/nginx:v1
+
+
+
+docker run ubuntu pwd
+CMD命令
+ENTRYPOINT命令
+
+docker run --name "my_ubuntu" -d ubuntu /bin/bash -c "while True;do sleep 1;done"
+
+docker attach  #attach到容器
+docker exec -it container_id bash
+
+attach直接进入容器启动的终端不会启动新的进程
+exec则是在容器内打开新的终端,可以启动新的进程
+
+docker run -it busybox
+
+- 容器运行总结:
+CMD或Entrypoint或docker run指定的命令运行结束后,容器停止
+exec -it 进入容器
+-d后台启动
+
+docker kill #发送SIGKILL信号
+docker start
+docker run -d --restart=always httpd  #自动重启
+
+docker pause/unpause
+docker rm -v $(docker ps -qa -f status=exited)  #删除容器
+
+docker run实际上是docker create组合docker start
+
+二十七. 限制容器内存使用
+1. 内存配额
+docker run -m 200M --memory-swap=300M ubuntu
+docker run -it -m 200M --memory-swap=300M progrium/stress --vm 1 --vm-bytes 280M  #一个内存工作线程,每个线程280M内存
+
+2. 限制CPU
+docker run --name "container_A" -c 1024 ubuntu  #设置cpu权重
+按权重分配 CPU 只会发生在 CPU 资源紧张的情况下
+
+3. 限制block IO, Block IO 指的是磁盘的读写,docker 可通过设置权重、限制 bps 和 iops 的方式控制容器读写磁盘的带宽
+docker run -it --name container_A --blkio-weight 600 ubuntu   
+docker run -it --name container_B --blkio-weight 300 ubuntu 
+
+- 限制bps和iops
+docker run -it --device-write-bps /dev/sda:30MB ubuntu #限制容器写 /dev/sda 的速率为 30 MB/s
+
+三十. 容器实现的底层技术
+cgroup; 显示了linux操作系统的CPU/内存/IO资源的限额
+/sys/fs/cgroup/cpu/docker 目录中,Linux 会为每个容器创建一个 cgroup
+
+namespace; 管理着host中的全局唯一资源,实现了容器间资源的隔离,6种namespace: 
+- mount实现文件系统
+- UTS让容器有自己的hostname
+- IPC拥有自己的共享内存和信号量来实现进程间通信
+- PID容器有自己的一套PID
+- Network模拟独立的网卡,IP和路由等资源
+- User让容器自己管理用户
+
+1. Docker的网络
+docker network ls
+
+none网络就是没有网络
+host网络的容器共享Docker host的网络,性能好,端口易冲突
+bridge网络,docker0的桥是容器默认桥接使用的网卡,
+	veth pair是一种成对出现的特殊网络设备,可以把它们想象成由一根虚拟网线连接起来的一对网卡,网卡的一头（eth0@if34）在容器中,另一头（veth28c57df）挂在网桥 docker0 上
+	网关即是docker0
+	
+用户自定义的网络,
+- bridge网络
+docker network --driver bridge my_net  #会生成一个类似br-21ada112开头的网桥
+brctl show 	
+docker network --driver bridge --subnet 172.22.16.0/24 --gateway 172.22.16.1 my_net2
+docker run -it --network=my_net2 busybox #指定使用的网络
+docker run -it --network=my_net2 --ip 172.22.16.7 busybox #可以指定容器的静态IP
+
+- 容器的联通性:
+docker network connect my_net2 2112121  #实现容器的联通
+
+- 容器间通信的方式:
+IP通信
+Docker DNS Server: 只能用于自定义网络,
+docker run -it --network=my_net2 --name=bbox1 busybox
+docker run -it --network=my_net2 --name=bbox2 busybox
+
+join容器:使多个容器共享一个网络栈,共享网卡和配置信息
+docker run -it --network=container:web1 busybox  #指定joined容器web1,web1和busy共享网络
+
+- 容器访问外部网络,通过NAT
+
+- 外部网络访问容器, 端口映射
+docker run -d -p 8080:80 httpd
+docker port container_id
+每映射一个端口host会启动一个docker-proxy进程来处理访问容器流量
+ps -ef|grep docker-proxy
+
+三十一. docker的两种存储资源
+1. storage driver管理的镜像层和容器层
+镜像分层结构只读RO,最上层容器是可写的RW,新数据存放最上层容器层
+修改现有数据会从镜像层复制到容器层,保存在容器层
+AUFS/Device mapper/Btrfs/OverlayFS/VFS/ZFS, 优先使用默认的storage driver
+docker info
+
+2. data volume 本质上是Docker host文件系统中的目录,直接mount到容器的文件系统中
+- bind mount是将已存在的目录或文件mount到容器
+docker run -d -p 80:80 -v ~/htdocs:/usr/loca/apache2/htdocs:ro httpd
+
+- docker managed volume 不需要指定mount的源
+会申请在/var/lib/docker/volumes/下的一个目录,原有数据会复制到volume
+
+docker volume
+
+3. volume实现数据共享
+docker cp ~/htdocs/index.html 123231zdas:/usr/local/apache2/htdocs
+
+volume container专门提供volume的容器,
+docker create --name vc_data -v ~/htdocs:/usr/loca/apache2/htdocs \
+-v /other/useful/tools busybox
+然后其他容器可以
+docker run --name web01 -d -p 80 --volumes-from vs_data httpd
+
+也可以将数据完全放到volume container中
+FROM busybox:latest
+ADD htdocs /usr/loca/apache2/htdocs
+VOLUME /usr/loca/apache2/htdocs
+
+docker build -t datapacked .
+docker create --name vc_data datapacked
+docker run -d -p 80:80 --volumes-from vs_data httpd
+
+4. volume的生命周期
+- 备份
+本地registry
+docker run -d -p 5000:5000 -v /myregistry:/var/lib/registry registry:2
+
+恢复
+迁移
+销毁
+
+
+三十三. Docker Machine
+multi-host环境,用docker machine批量安装和配置docker host,可以是本地的虚拟机、物理机也可以是云主机
+docker machine的这些环境成为provider
+
+docker-machine create --driver [provider] hostx
+
+1. 安装docker-machine
+curl -L https://github.com/docker/machine/releases/download/v0.9.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+chmod +x /tmp/docker-machine &&
+sudo cp /tmp/docker-machine /usr/local/bin/docker-machine 
+
+docker-machine version
+
+machine就是运行docker daemon的主机
+
+docker-machine ls
+配置多主机前先做ssh互信
+
+docker-machine create --driver generic --generic-ip-address=ip01 host01
+
+2. 管理docker machine
+docker -H tcp://ip:2376 ps #远程执行docker命令
+docker-machine env host01
+eval $(docker-machine env host01)
+eval $(docker-machine env host02)  #切换到host02
+docker-machine upgrade host01 host02#更新machine的docker到最新版本
+docker-machine config host01  #查看machine的docker daemon配置
+docker-machine scp host01:/tmp/a host02:/tmp/b  #拷贝文件
+
+3. 跨主机的网络方案, 
+- docker原生的overlay和macvlan
+- flanned,weave和calico等
+
+libnetwork是docker容器网络库,核心是定义CNM容器网络模型
+- sandbox
+容器网络栈,包含容器的interface/路由表/DNS设置
+- endpoint
+作用是将sandbox接入network,典型实现是veth pair
+- network
+包含一个endpoint,可以实现bridge、vlan等
+
+
+4. 准备overlay网络
+docker overlay网络需要一个key-value数据库保存网络状态信息(network/endpoint/IP等)
+Cosul/Etcd和zookeeper等
+
+docker run -d -p 8500:8500 -h consul --name consul progrium/consul -server -bootstrap
+vi /etc/systemd/system/docker.service
+
+... --cluster-store=consul://ip:8500 --cluster-advertise=en0s8:2376
+
+systemctl daemon-reload
+systemctl restart docker.service
+
+5. 开始创建overlay网络
+docker network create -d overlay ov_net1
+docker network ls
+docker network inspect ov_net1 #查看详细信息
+
+docker run -itd --name bbox1 --network ov_net1 busybox #在ov_net1下运行busybox
+docker exec bbox1 ip r
+docker network inspect docker_gwbridge
+ifconfig docker_gwbridge
+
+- overlay实现跨主机通信
+docker run -itd --name bbox2 --network ov_net1 busybox #host2上
+docker exec bbox2 ip r
+docker exec bbox2 ping -c 2 bbox1
+
+docker会为每个overlay网络创建一个独立的network namespace
+一个br0,endpoint由veth pair实现,一端接容器中eth0另一端接到namespace的br0中
+br0 除了连接所有的 endpoint，还会连接一个 vxlan 设备，用于与其他 host 建立 vxlan tunnel
+
+ln -s /var/run/docker/netns /var/run/docker/netns
+ip netns
+ip netns exec 1-2112zdasda brctl show
+
+overlay的隔离性：
+docker create -d overlay ov_net2 #创建另一个overlay网络ov_net2
+docker run -itd --name bbox3 --network ov_net2 busybox
+不同的overlay间是隔离的,要实现bbox3和bbox1的通信,可以
+docker network connect ov_net1 bbox3
+
+- overlay IPAM
+默认分配24位掩码的子网,所有主机共享这个subnet
+docker network create -d overlay --subnet ip/24 ov_net3
+
+6. macvlan网络
+本身是linux kernel的模块,允许同一个物理网卡上配置多个mac地址,本质是网卡虚拟化技术
+性能极好,不需要创建bridge而是直接通过以太interface连接到物理网络
+
+ip link set enp0s9 promisc on #打开混杂模式
+ip link show enp0s9
+
+- 创建macvlan网络mac_net1
+docker network create -d macvlan \
+--subnet=ip/24 \
+--gateway=... \
+-o parent=enp0s9 mac_net1
+
+host1上运行bbox1并连接到mac_net1
+docker run -itd --name bbox1 --ip=ip1 --network mac_net1 busybox
+docker run -itd --name bbox2 --ip=ip2 --network mac_net1 busybox
+
+macvlan没有DNS功能,overlay是具有DNS的
+
+- macvlan网络结构分析
+macvlan不依赖bridge,比如brctl show 可以查看有没有新的bridge
+
+- 用sub-interface实现多macvlan网络
+docker network create -d macvlan -o parent=enp0s9 mac_net2  #会报错
+
+不同 macvlan 网络不能 在二层上 通信。在三层上可以通过网关将 macvlan 连通，下面我们就启用网关
+设置网关并转发 VLAN10 和 VLAN20 的流量
+sysctl net.ipv4.ip_forward
+
+7. flannel
+由CoreOS开发的容器网络解决方案,为每个host分配subnet,容器从中分配IP,这些IP可以在host间路由
+
+- 配置etcd
+ETCD_VER=v2.3.7
+DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download
+curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+mkdir -p /tmp/test-etcd && tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/test-etcd --strip-components=1
+cp /tmp/test-etcd/etcd* /usr/local/bin/ 
+
+etcd -listen-client-urls http://192.168.56.101:2379 -advertise-client-urls http://192.168.56.101:2379
+
+etcdctl --endpoints=192.168.56.101:2379 set foo "bar"  #测试
+etcdctl --endpoints=192.168.56.101:2379 get foo 
+
+
+- build flannel
+docker pull cloudman6/kube-cross:v1.6.2-2
+docker tag cloudman6/kube-cross:v1.6.2-2 gcr.io/google_containers/kube-cross:v1.6.2-2 
+
+git clone https://github.com/coreos/flannel.git
+cd flannel && make dist/flanneld-amd64
+
+scp dist/flanneld-amd64 192.168.56.104:/usr/local/bin/flanneld
+scp dist/flanneld-amd64 192.168.56.105:/usr/local/bin/flanneld 
+
+vi flannel-config.json  #将flannel网络的配置信息保存到etcd
+{
+  "Network": "10.2.0.0/16",
+  "SubnetLen": 24,
+  "Backend": {
+    "Type": "vxlan"
+  }
+}
+
+etcdctl --endpoints=192.168.56.101:2379 set /docker-test/network/config < flannel-config.json
+etcdctl --endpoints=192.168.56.101:2379 get /docker-test/network/config
+
+/docker-test/network/config 是此 etcd 数据项的 key，其 value 为 flannel-config.json 的内容
+
+
+flanneld -etcd-endpoints=http://192.168.56.101:2379 -iface=enp0s8 -etcd-prefix=/docker-test/network #启动flannel
+
+ip addr show flannel.1
+ip rounte
+
+vi /etc/systemd/system/docker.service  #配置docker使用flannel
+[Service]
+.... --bip=10.2.40.1/24 --mtu=1450
+
+cat /run/flannel/subnet.env
+
+systemctl daemon-reload
+systemctl restart docker.service
+
+docker run -itd --name bbox1 busybox #容器即已连接到flannel网络
+docker run -itd --name bbox2 busybox 
+
+- flannel的网络连通性
+flannel的网络隔离,独立的subnet,flannel.1将subnet连接起来,flannel不提供隔离
+flannel默认是使用bridge网络,容器通过docker0 NAT访问外网;通过主机端口映射,外网可以访问容器
+
+- 使用flannel的host-gw backend
+vi flannel-config.json  #先修改flannel的配置文件
+{
+ "Network": "10.2.0.0/16",
+ "SubnetLen": 24,
+ "Backend": {
+   "Type": "host-gw"
+ }
+}
+
+etcdctl --endpoints=192.168.56.101:2379 set /docker-test/network/config < flannel-config.json #更新etcd数据库
+flanneld -etcd-endpoints=http://192.168.56.101:2379 -iface=enp0s8 -etcd-prefix=/docker-test/network #重启flanneld进程
+
+- host-gw 和 vxlan 这两种 backend 做个简单比较
+host-gw 把每个主机都配置成网关，主机知道其他主机的 subnet 和转发地址。vxlan 则在主机间建立隧道，不同主机的容器都在一个大的网段内（比如 10.2.0.0/16）。
+虽然 vxlan 与 host-gw 使用不同的机制建立主机之间连接，但对于容器则无需任何改变，bbox1 仍然可以与 bbox2 通信。
+由于 vxlan 需要对数据进行额外打包和拆包，性能会稍逊于 host-gw。
+
+
+8. Weave网络
+Weaveworks开发的容器解决方案,Weave类似以太网虚拟机无需NAT和端口映射
+weave还有DNS模块使容器可以通过hostname访问
+
+weave不依赖分布式数据库etcd和consul
+
+- 安装部署weave
+curl -L git.io/weave -o /usr/local/bin/weave
+chmod a+x /usr/local/bin/weave
+
+weave launch #启动weave
+weave主程序建立weave网络,收发数据提供DNS服务
+weaveplugin实现docker网络
+weaveproxy提供docker命令的代理服务
+
+- weave的网络结构分析
+eval $(weave env)
+eval $(weave env --restore)  #用来恢复之前的环境
+docker run -itd --name bbox1 busybox
+
+- weave scope
+
+
+
+八十三. Prometheus
+
+
